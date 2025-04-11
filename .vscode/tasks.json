@@ -12,7 +12,7 @@
                 "../include",
                 "-L",
                 "../lib",
-                "${workspaceFolder}/src/main.cpp",
+                "${workspaceFolder}/src/MainFrame.cpp",
                 "${workspaceFolder}/src/glad.c",
                 "-lglfw3dll",
                 "-o",
