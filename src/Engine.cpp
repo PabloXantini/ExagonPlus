@@ -1,49 +1,87 @@
-#ifndef ENGINE_HPP
-#define ENGINE_HPP
-
 #include "../include/glad/glad.h"
-#include "../include/GLFW/glfw3.h"
 
+#include "game/Engine.hpp"
 #include <iostream>
 #include <vector>
 
-class Engine {
-//Pruebas
-    public:
-        const char* vertexShaderSource;
-        const char* fgvertexShaderSource;
-        
-        std::vector<float> vertexs;
-        unsigned int VBO, VAO;
+Engine::Engine() {
+    setupShaders();
+}
 
-        Engine();
-        int initEngine();
+void Engine::setupShaders() {
+    const char* vertexShaderSource = "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main() {\n"
+        "   gl_Position = vec4(aPos, 1.0);\n"
+        "}\0";
+
+    const char* fragmentShaderSource = "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main() {\n"
+        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "}\n\0";
+
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+    shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+}
+
+void Engine::render(const ExagonPanel& panel, unsigned int shaderProgram) {
+    glUseProgram(shaderProgram);
+    glBindVertexArray(panel.getVAO());
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glBindVertexArray(0);
+}
+/*
+class Engine {
+    //Pruebas
+    public:
+    const char* vertexShaderSource;
+    const char* fgvertexShaderSource;
+    
+    std::vector<float> vertexs;
+    unsigned int VBO, VAO;
+    
+    Engine();
+        unsigned int initEngine();
         void buildvertexShader(unsigned int &vshader, const char* src);
         void buildfgvertexShader(unsigned int &fgvshader, const char* src);
         void linkShader(unsigned int &shprogram, unsigned int &vshader, unsigned int &fgvshader);
         void clearBuffers(int shaders);
-};
-
-Engine::Engine() {
-   vertexShaderSource = "#version 330 core\n"
+    };
+    
+    Engine::Engine() {
+        vertexShaderSource = "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
         "void main()\n"
         "{\n"
         "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
         "}\0";
-   fgvertexShaderSource = "#version 330 core\n"
+        fgvertexShaderSource = "#version 330 core\n"
         "out vec4 FragColor;\n"
         "void main()\n"
         "{\n"
         "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
         "}\n\0";
-    vertexs = {
-        -0.5f, 0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f, 0.5f, 0.0f 
+        vertexs = {
+            -0.5f, 0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.0f, 0.5f, 0.0f 
+        };
     };
-};
-
+    
 void Engine::buildvertexShader(unsigned int &vshader, const char* src){
     //Hace build del motor de formas
     //vshader=glCreateShader(GL_VERTEX_SHADER);
@@ -92,7 +130,7 @@ void Engine::linkShader(unsigned int &shprogram, unsigned int &vshader, unsigned
     glDeleteShader(fgvshader);
 }
 
-int Engine::initEngine(){
+unsigned int Engine::initEngine(){
     unsigned int vertexShader=glCreateShader(GL_VERTEX_SHADER);
     unsigned int fgvertexShader=glCreateShader(GL_FRAGMENT_SHADER);;
     unsigned int shvprogram=glCreateProgram();
@@ -101,26 +139,26 @@ int Engine::initEngine(){
     buildvertexShader(vertexShader, vertexShaderSource);
     buildfgvertexShader(fgvertexShader, fgvertexShaderSource);
     linkShader(shvprogram,vertexShader,fgvertexShader);
-
+    
     //Motor de formas
     //Genera buffers
     glGenVertexArrays(1, &VAO);
-
+    
     glGenBuffers(1, &VBO);
-
+    
     //Copia para que los use openGL
     glBindVertexArray(VAO);
-
+    
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexs), vertexs.data(), GL_DYNAMIC_DRAW);
-
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexs.data()), vertexs.data(), GL_DYNAMIC_DRAW);
+    
     //Setup
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
     glBindVertexArray(0);
-
+    
     return shvprogram;
 }
 
@@ -131,4 +169,5 @@ void Engine::clearBuffers(int shaders) {
 }
 
 #endif
+*/
 

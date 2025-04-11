@@ -1,78 +1,80 @@
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
 
+#include "game/ExagonGameProcess.hpp"
+#include "game/ExagonPanel.hpp"
+#include "game/Engine.hpp"
+
 #include <iostream>
 
-#include "ExagonPanel.cpp"
-#include "Engine.cpp"
 
-//Configuracion de pantalla
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow* window);
+
+//Configuracion de la pantalla
 const unsigned int SCR_WIDTH = 1200;
 const unsigned int SCR_HEIGHT = 900;
 
-//Declaro los shaders
-unsigned int shaders;
-
-//Ajusta la pantalla
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    glViewport(0, 0, width, height);
-} 
-
-//Manejador de eventos de teclado
-void processInput(GLFWwindow *window)
-{
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-}
-
-int main(){
-    //Inicializa todo el contexto de la ventana
+//Arranca el juego
+int main() {
+    //Inicializa el contexto de la pantalla
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Crea la ventana
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "ExagonPlus", NULL, NULL);
-    //Validar si se creo
-    if(window==NULL){
-        std::cout <<"La creación de la ventana ha fallado" << std::endl;
+    //Crea la ventana
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Hexagon Game", NULL, NULL);
+    if (!window) {
+        std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
-    glfwMakeContextCurrent(window);
 
-    //Tamanio de la ventana
+    //instancia la ventana
+    glfwMakeContextCurrent(window);
+    //Setea el tamanio de la ventana
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    
-    //Validar si el inicializador de OpenGL se ejecuto (glad)
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
-        std::cout << "La inicializacion de GLAD ha fallado" << std::endl;
+    //Evalua si arranco GLAD(El linker para usar OpenGL)
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-    
-    shaders=LoadEngine();
-    
-    //Blockeo FPS por rendimiento -- despue se ve
+
+    //Llamo a los objetos necesarios
+    ExagonGameProcess gameProcess;
+    ExagonPanel panel(gameProcess);
+    Engine engine;
+
+    //Bloqueo de FPS
     glfwSwapInterval(1);
-    
-    //Motor
-    while(!glfwWindowShouldClose(window)){
-        //Inputs
+
+    //Corredor del juego -- Lo puedo incluir en Engine
+    while (!glfwWindowShouldClose(window)) {
         processInput(window);
-        //Render
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        PaintGame(shaders); 
-        //Interrupciones
+
+        engine.render(panel, engine.shaderProgram);
+
         glfwSwapBuffers(window);
-        glfwPollEvents();   
+        glfwPollEvents();
     }
 
-    Clear(shaders);
-
+    //Cierra la ventana
     glfwTerminate();
     return 0;
+}
+
+//Eventos de teclado
+void processInput(GLFWwindow* window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+}
+
+//Ajustar el tamanio de la ventana
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
 }
