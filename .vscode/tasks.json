@@ -15,6 +15,7 @@
                 "${workspaceFolder}/src/MainFrame.cpp",
                 "${workspaceFolder}/src/glad.c",
                 "-lglfw3dll",
+                "-lFreeImage",
                 "-o",
                 "${workspaceFolder}/ExagonPlus.exe"
             ],
