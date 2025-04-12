@@ -4,7 +4,6 @@
 #include "game/ExagonGameProcess.hpp"
 #include "game/ExagonPanel.hpp"
 #include "game/Engine.hpp"
-
 #include "ImageProcessor.cpp"
 
 #include <iostream>
@@ -12,7 +11,7 @@
 //Declaracion de funciones
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-GLFWimage load_icon(const char* filepath);
+GLFWimage load_icon(int resID);
 
 //Configuracion de la pantalla
 const unsigned int SCR_WIDTH = 1200;
@@ -21,11 +20,10 @@ const unsigned int SCR_HEIGHT = 900;
 //Iconos
 GLFWimage icons[2];
 
-
 //Arranca el juego
 int main() {
-    icons[0] = load_icon("res/LogoFitDragon.png");
-    icons[1] = load_icon("res/LogoFitDragon.png");
+    icons[0] = load_icon(IDR_PNG1);
+    icons[1] = load_icon(IDR_PNG1);
     //Inicializa el contexto de la pantalla
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -94,10 +92,10 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 //Aniade el icono del programa
-GLFWimage load_icon(const char* filepath) {
+GLFWimage load_icon(int resID) {
     GLFWimage image;
     int width, height;
-    image.pixels = loadImage(filepath, width, height);
+    image.pixels = loadImage(resID, width, height);
     image.width = width;
     image.height = height;
     return image;

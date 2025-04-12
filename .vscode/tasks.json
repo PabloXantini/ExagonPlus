@@ -1,7 +1,28 @@
 {
     "tasks": [
         {
+            "type": "shell",
+            "label": "Compilar recursos",
+            "command": "windres",
+            "args": [
+                "${workspaceFolder}/src/resource.rc",
+                "-O", "coff",
+                "-o", "${workspaceFolder}/src/resource.o"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+        },
+        {
             "type": "cppbuild",
+            "dependsOn": ["Compilar recursos"],
             "label": "C/C++: g++.exe compilar archivo activo",
             "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
             "args": [
@@ -14,6 +35,7 @@
                 "../lib",
                 "${workspaceFolder}/src/MainFrame.cpp",
                 "${workspaceFolder}/src/glad.c",
+                "${workspaceFolder}/src/resource.o",
                 "-lglfw3dll",
                 "-lFreeImage",
                 "-o",
