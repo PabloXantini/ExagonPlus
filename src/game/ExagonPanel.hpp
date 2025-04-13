@@ -33,7 +33,6 @@ unsigned int ExagonPanel::getVAO() const {
 //Configura los buffers
 void ExagonPanel::setupBuffers() {
     const std::vector<float>& verts = background.getVertexs();
-    unsigned int vnum = background.getVertexCount();
     /*
     std::cout << "Número de vértices: " << background.getVertexCount() << std::endl;
     for (float v : background.getVertexs()) {

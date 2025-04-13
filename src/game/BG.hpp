@@ -2,6 +2,7 @@
 #define BG_HPP
 
 #include "Engine.hpp"
+#include "Shaders.hpp"
 
 #include <vector>
 #include <cmath>
@@ -9,9 +10,11 @@
 
 class BG{
     private:
+        //Variables propias de la clase
         std::vector<float> vertexs={};
         unsigned int vnumber = 3;
         float radius=1.2f;
+        //Objectos usados
         Engine engine;
         void pushCoors(float x, float y, float z){
             vertexs.push_back(x);
@@ -52,7 +55,7 @@ class BG{
         }
         //Mostrar
         void show(unsigned int rVAO){
-            engine.renderPolygon(rVAO, engine.shaderProgram, getVertexCount());
+            engine.renderPolygon(rVAO, engine.getShaderProgram(BASIC), getVertexCount());
         }
 };
 

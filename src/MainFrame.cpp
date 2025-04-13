@@ -1,6 +1,7 @@
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
 
+#include "game/Shaders.hpp"
 #include "game/Engine.hpp"
 #include "game/ExagonGameProcess.hpp"
 #include "game/ExagonPanel.hpp"
@@ -69,7 +70,7 @@ int main() {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         //prerender
-        engine.fixScreenProportion(window);
+        engine.fixScreenProportion(window, engine.getShaderProgram(BASIC));
         //render
         panel.paint();
         //handler

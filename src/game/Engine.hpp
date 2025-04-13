@@ -1,18 +1,25 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
+#include "Shaders.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <map>
 
 class Engine {
     private:
+        std::map<Shader, unsigned int> shaders;
         void setupShaders();
         unsigned int loadShader(const char* vertexPath, const char* fragmentPath);
     public:
-        unsigned int shaderProgram;
         Engine();
-        void fixScreenProportion(GLFWwindow* window);
+        //Getters
+        unsigned int getShaderProgram(Shader label){
+            return shaders[label];
+        }
+        void fixScreenProportion(GLFWwindow* window, unsigned int shaderProgram);
         void renderPolygon(unsigned int rVAO, unsigned int shaderProgram, unsigned int sides);
 };
 
@@ -21,45 +28,7 @@ Engine::Engine() {
 }
 
 void Engine::setupShaders() {
-    shaderProgram=loadShader("shaders/shape.vert","shaders/shape.frag");
-    //std::cout<<"Hola?"<<std::endl;
-    std::cout<<shaderProgram<<std::endl;
-    /*
-    //Aqui en su lugar cargare shaders uno por uno
-    const char* vertexShaderSource = "#version 330 core\n"
-        "layout (location = 0) in vec3 aPos;\n"
-        "uniform float uAspect;\n"
-        "void main() {\n"
-        "   vec3 scaled = aPos;\n"
-        "   scaled.x /= uAspect;\n"
-        "   gl_Position = vec4(scaled, 1.0);\n"
-        "}\0";
-
-    const char* fragmentShaderSource = "#version 330 core\n"
-        "out vec4 FragColor;\n"
-        "void main() {\n"
-        "   FragColor = vec4(0.39f, 0.44f, 0.91f, 1.0f);\n"
-        "}\n\0";
-
-    //Parte para crear y compilar un VertexShader
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-
-    //Parte para crear y compilar un fragmentShader
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    //Parte del programa
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    */
+    shaders[BASIC]=loadShader("shaders/shape.vert","shaders/shape.frag");
 }
 
  unsigned int Engine::loadShader(const char* vertexPath, const char* fragmentPath){
@@ -111,7 +80,7 @@ void Engine::setupShaders() {
     glAttachShader(program, vertex);
     glAttachShader(program, fragment);
     glLinkProgram(program);
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success)
     {
         glGetShaderInfoLog(vertex, 512, NULL, infoLog);
@@ -131,7 +100,7 @@ void Engine::renderPolygon(unsigned int rVAO, unsigned int shaderProgram, unsign
     glBindVertexArray(0);
 }
 
-void Engine::fixScreenProportion(GLFWwindow* window){
+void Engine::fixScreenProportion(GLFWwindow* window, unsigned int shaderProgram){
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     float aspect = (float)width / (float)height;
