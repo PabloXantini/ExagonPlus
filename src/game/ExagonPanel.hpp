@@ -3,16 +3,24 @@
 
 #include "ExagonGameProcess.hpp"
 
+#include <vector>
+
+struct ObjectBuffer {
+    unsigned int VAO; 
+    unsigned int VBO;
+};
+
 class ExagonPanel {
     private:
-        unsigned int VAO, VBO;
+        std::vector<ObjectBuffer> buffers={};
         const ExagonGameProcess &gameProcess;
         BG background;
     public:
         //Constructor
         ExagonPanel(const ExagonGameProcess &gameProcess);
         //Methods
-        unsigned int getVAO() const;
+        unsigned int getVAO(unsigned int index) const;
+        ObjectBuffer createBuffer(const std::vector<float>& verts);
         void setupBuffers();
         void paint();
 };
@@ -26,24 +34,18 @@ ExagonPanel::ExagonPanel(const ExagonGameProcess& gameProcess)
 }
 
 //Getters
-unsigned int ExagonPanel::getVAO() const {
-    return VAO;
+unsigned int ExagonPanel::getVAO(unsigned int index) const {
+    return buffers.at(index).VAO;
 }
 
-//Configura los buffers
-void ExagonPanel::setupBuffers() {
-    const std::vector<float>& verts = background.getVertexs();
-    /*
-    std::cout << "Número de vértices: " << background.getVertexCount() << std::endl;
-    for (float v : background.getVertexs()) {
-        std::cout << v << " ";
-    }
-    */
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+//Crea un buffer para un objeto
+ObjectBuffer ExagonPanel::createBuffer(const std::vector<float>& verts){
+    struct ObjectBuffer newBuffer;
+    glGenVertexArrays(1, &newBuffer.VAO);
+    glGenBuffers(1, &newBuffer.VBO);
     
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindVertexArray(newBuffer.VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, newBuffer.VBO);
     glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -51,10 +53,19 @@ void ExagonPanel::setupBuffers() {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    return newBuffer;
+}
+
+//Configura los buffers
+void ExagonPanel::setupBuffers() {
+    //Pusheo todas las cosas necesarias
+    buffers.push_back(createBuffer(background.getVertexs()));
+
 }
 
 void ExagonPanel::paint(){
-    background.show(getVAO());
+    background.show(getVAO(0));
 }
 
 #endif
