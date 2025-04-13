@@ -1,6 +1,8 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
+#include <iostream>
+
 class Engine {
     private:
         void setupShaders();
@@ -54,7 +56,7 @@ void Engine::setupShaders() {
 void Engine::renderPolygon(unsigned int rVAO, unsigned int shaderProgram, unsigned int sides){
     glUseProgram(shaderProgram);
     glBindVertexArray(rVAO);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, sides/3);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, sides);
     glBindVertexArray(0);
 }
 

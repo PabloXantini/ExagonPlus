@@ -4,23 +4,41 @@
 #include "Engine.hpp"
 
 #include <vector>
+#include <cmath>
+#include <iostream>
 
 class BG{
     private:
-        std::vector<float> vertexs = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.5f, 0.5f, 0.0f,
-            -0.5f, 0.5f, 0.0f
-        };
-        unsigned int vnumber = vertexs.size();
+        std::vector<float> vertexs={};
+        unsigned int vnumber = 3;
+        float radius=1.2f;
         Engine engine;
+        void pushCoors(float x, float y, float z){
+            vertexs.push_back(x);
+            vertexs.push_back(y);
+            vertexs.push_back(z);
+        }
+        std::vector<float> setRegular(float radius, unsigned int vnumber){
+            vertexs.clear();
+            float x=0.0f;
+            float y=0.0f;
+            float z=0.0f;
+            float anglex = (float)(4*acos(0.0)/vnumber);
+            for (int i=0; i<vnumber; i++){
+                x=radius*cos(anglex*i);
+                y=radius*sin(anglex*i);
+                pushCoors(x, y, z); 
+            }
+            return vertexs;
+        }
     public:
         //Constructors
         BG()=default;
-        BG(const std::vector<float> vxs){
-            vertexs=vxs;
+        BG(float radius, unsigned int vnum){
+            vertexs = setRegular(radius, vnum);
+            vnumber = vnum;
         }
+
         //Getters
         const std::vector<float>&getVertexs() const {
             return vertexs;
@@ -34,7 +52,7 @@ class BG{
         }
         //Mostrar
         void show(unsigned int rVAO){
-            engine.renderPolygon(rVAO, engine.shaderProgram, vnumber);
+            engine.renderPolygon(rVAO, engine.shaderProgram, getVertexCount());
         }
 };
 

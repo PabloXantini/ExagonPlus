@@ -40,7 +40,6 @@
                 "-lFreeImage",
                 "-o",
                 "${workspaceFolder}/ExagonPlus.exe",
-                "-mwindows"
             ],
             "options": {
                 "cwd": "${fileDirname}"
