@@ -3,19 +3,22 @@
 
 #include "BG.hpp"
 
+#include <iostream>
+
 class ExagonGameProcess {
-public:
-    ExagonGameProcess();
-    const BG& getBG() const;
-private:
-    BG bg;
+    private:
+        BG bg;
+    public:
+        //Constructor
+        ExagonGameProcess()=default;
+        //Getters   
+        const BG& getBG() const {
+            return bg;
+        }
+        //Setters
+        void setBG(BG tobg){
+            bg=tobg;
+        }
 };
-
-ExagonGameProcess::ExagonGameProcess() {}
-
-//Getters
-const BG& ExagonGameProcess::getBG() const {
-    return bg;
-}
 
 #endif

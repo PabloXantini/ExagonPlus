@@ -1,9 +1,9 @@
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
 
+#include "game/Engine.hpp"
 #include "game/ExagonGameProcess.hpp"
 #include "game/ExagonPanel.hpp"
-#include "game/Engine.hpp"
 #include "ImageProcessor.cpp"
 
 #include <iostream>
@@ -57,7 +57,6 @@ int main() {
     //Llamo a los objetos necesarios
     ExagonGameProcess gameProcess;
     ExagonPanel panel(gameProcess);
-    Engine engine;
 
     //Bloqueo de FPS
     glfwSwapInterval(1);
@@ -66,10 +65,10 @@ int main() {
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        engine.render(panel, engine.shaderProgram);
+        panel.paint();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -39,7 +39,8 @@
                 "-lglfw3dll",
                 "-lFreeImage",
                 "-o",
-                "${workspaceFolder}/ExagonPlus.exe"
+                "${workspaceFolder}/ExagonPlus.exe",
+                "-mwindows"
             ],
             "options": {
                 "cwd": "${fileDirname}"
