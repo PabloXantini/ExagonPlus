@@ -20,7 +20,7 @@ class ExagonPanel {
 //Constructor
 ExagonPanel::ExagonPanel(const ExagonGameProcess& gameProcess)
     :gameProcess(gameProcess),
-    background(0.9f,6) 
+    background(0.9f,5) 
 {
     setupBuffers();
 }
@@ -34,12 +34,12 @@ unsigned int ExagonPanel::getVAO() const {
 void ExagonPanel::setupBuffers() {
     const std::vector<float>& verts = background.getVertexs();
     unsigned int vnum = background.getVertexCount();
-
+    /*
     std::cout << "Número de vértices: " << background.getVertexCount() << std::endl;
     for (float v : background.getVertexs()) {
         std::cout << v << " ";
     }
-
+    */
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     

@@ -2,10 +2,13 @@
 #define ENGINE_HPP
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 class Engine {
     private:
         void setupShaders();
+        unsigned int loadShader(const char* vertexPath, const char* fragmentPath);
     public:
         unsigned int shaderProgram;
         Engine();
@@ -18,6 +21,11 @@ Engine::Engine() {
 }
 
 void Engine::setupShaders() {
+    shaderProgram=loadShader("shaders/shape.vert","shaders/shape.frag");
+    //std::cout<<"Hola?"<<std::endl;
+    std::cout<<shaderProgram<<std::endl;
+    /*
+    //Aqui en su lugar cargare shaders uno por uno
     const char* vertexShaderSource = "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
         "uniform float uAspect;\n"
@@ -51,6 +59,69 @@ void Engine::setupShaders() {
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+    */
+}
+
+ unsigned int Engine::loadShader(const char* vertexPath, const char* fragmentPath){
+    //Flujo de archivos
+    std::string vertexCode;
+    std::string fragmentCode;
+    std::ifstream vShaderFile(vertexPath);
+    std::ifstream fShaderFile(fragmentPath);
+    std::stringstream vShaderStream, fShaderStream;
+
+    vShaderStream << vShaderFile.rdbuf();
+    fShaderStream << fShaderFile.rdbuf();
+
+    vertexCode = vShaderStream.str();
+    fragmentCode = fShaderStream.str();
+
+    //Variables finales
+    const char* vShaderCode = vertexCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
+    
+    unsigned int vertex, fragment;  //Shaders
+    int success;                    //Exito
+    char infoLog[512];              //Info
+
+    // Vertex
+    vertex = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex, 1, &vShaderCode, NULL);
+    glCompileShader(vertex);
+    glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertex, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    // Fragment
+    fragment = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment, 1, &fShaderCode, NULL);
+    glCompileShader(fragment);
+    glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertex, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    // Shader Program
+    unsigned int program = glCreateProgram();
+    glAttachShader(program, vertex);
+    glAttachShader(program, fragment);
+    glLinkProgram(program);
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertex, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+
+    glDeleteShader(vertex);
+    glDeleteShader(fragment);
+
+    return program;
 }
 
 void Engine::renderPolygon(unsigned int rVAO, unsigned int shaderProgram, unsigned int sides){
