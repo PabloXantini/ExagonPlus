@@ -7,6 +7,7 @@ class Engine {
     public:
         unsigned int shaderProgram;
         Engine();
+        void fixScreenProportion(GLFWwindow* window);
         void renderPolygon(unsigned int rVAO, unsigned int shaderProgram, unsigned int sides);
 };
 
@@ -17,9 +18,11 @@ Engine::Engine() {
 void Engine::setupShaders() {
     const char* vertexShaderSource = "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
+        "uniform float uAspect;\n"
         "void main() {\n"
         "   vec3 scaled = aPos;\n"
-        "   gl_Position = vec4(aPos, 1.0);\n"
+        "   scaled.x /= uAspect;\n"
+        "   gl_Position = vec4(scaled, 1.0);\n"
         "}\0";
 
     const char* fragmentShaderSource = "#version 330 core\n"
@@ -53,6 +56,14 @@ void Engine::renderPolygon(unsigned int rVAO, unsigned int shaderProgram, unsign
     glBindVertexArray(rVAO);
     glDrawArrays(GL_TRIANGLE_FAN, 0, sides/3);
     glBindVertexArray(0);
+}
+
+void Engine::fixScreenProportion(GLFWwindow* window){
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    float aspect = (float)width / (float)height;
+    int aspectLoc = glGetUniformLocation(shaderProgram, "uAspect");
+    glUniform1f(aspectLoc, aspect);
 }
 
 #endif
