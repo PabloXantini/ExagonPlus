@@ -1,7 +1,9 @@
 #version 330 core
 
 layout (location = 0) in vec3 aPos;
-    uniform float uAspect;
+
+uniform float uAspect;
+
 void main() {
     vec3 scaled = aPos;
     scaled.x /= uAspect;

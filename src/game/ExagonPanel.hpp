@@ -102,7 +102,7 @@ void ExagonPanel::setupBuffers() {
     std::cout << "]" << std::endl;
     */
     //Se puede comentar esto para que solo me dibuje el orden de los poligonos
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void ExagonPanel::clearBuffers() {

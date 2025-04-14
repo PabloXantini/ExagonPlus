@@ -1,8 +1,8 @@
 #ifndef BG_HPP
 #define BG_HPP
 
-#include "Engine.hpp"
-#include "Shaders.hpp"
+#include "GEngine/Engine.hpp"
+#include "GEngine/Shaders.hpp"
 
 #include <vector>
 #include <cmath>
@@ -14,7 +14,7 @@ class BG{
         std::vector<float> vertexs={};
         std::vector<unsigned int> indexes={};
         unsigned int vnumber = 3;
-        float radius=1.2f;
+        float radius=1.2f;    
         //Objectos usados
         Engine engine;
         void pushCoors(float x, float y, float z){
@@ -75,7 +75,9 @@ class BG{
         }
         //Mostrar
         void show(unsigned int rVAO){
-            engine.renderPolygon(rVAO, engine.getShaderProgram(BASIC), getIndexes().size());
+            //float time = glfwGetTime();
+            //int colorIndex = static_cast<int>(time) % colors.size();
+            engine.renderPolygon(rVAO, getIndexes().size());
         }
 };
 
