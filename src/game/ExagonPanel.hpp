@@ -20,8 +20,11 @@ class ExagonPanel {
         ExagonPanel(const ExagonGameProcess &gameProcess);
         //Methods
         unsigned int getVAO(unsigned int index) const;
+        std::vector<unsigned int> getAllVAOs(const std::vector<ObjectBuffer>& buffers);
+        std::vector<unsigned int> getAllVBOs(const std::vector<ObjectBuffer>& buffers);
         ObjectBuffer createBuffer(const std::vector<float>& verts);
         void setupBuffers();
+        void clearBuffers();
         void paint();
 };
 
@@ -35,7 +38,25 @@ ExagonPanel::ExagonPanel(const ExagonGameProcess& gameProcess)
 
 //Getters
 unsigned int ExagonPanel::getVAO(unsigned int index) const {
-    return buffers.at(index).VAO;
+    return this->buffers.at(index).VAO;
+}
+
+std::vector<unsigned int> ExagonPanel::getAllVAOs(const std::vector<ObjectBuffer>& buffers) {
+    std::vector<unsigned int> VAOs;
+    VAOs.reserve(buffers.size());
+    for (const auto& buffer : buffers) {
+        VAOs.push_back(buffer.VAO);
+    }
+    return VAOs;
+}
+
+std::vector<unsigned int> ExagonPanel::getAllVBOs(const std::vector<ObjectBuffer>& buffers) {
+    std::vector<unsigned int> VBOs;
+    VBOs.reserve(buffers.size());
+    for (const auto& buffer : buffers) {
+        VBOs.push_back(buffer.VBO);
+    }
+    return VBOs;
 }
 
 //Crea un buffer para un objeto
@@ -61,11 +82,17 @@ ObjectBuffer ExagonPanel::createBuffer(const std::vector<float>& verts){
 void ExagonPanel::setupBuffers() {
     //Pusheo todas las cosas necesarias
     buffers.push_back(createBuffer(background.getVertexs()));
+}
 
+void ExagonPanel::clearBuffers() {
+    auto vaos = getAllVAOs(buffers);
+    auto vbos = getAllVBOs(buffers);
+    glDeleteVertexArrays(vaos.size(), vaos.data());
+    glDeleteBuffers(vbos.size(), vbos.data());
 }
 
 void ExagonPanel::paint(){
-    background.show(getVAO(0));
+    background.show(this->getVAO(0));
 }
 
 #endif

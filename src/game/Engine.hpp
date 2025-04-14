@@ -21,6 +21,7 @@ class Engine {
         }
         void fixScreenProportion(GLFWwindow* window, unsigned int shaderProgram);
         void renderPolygon(unsigned int rVAO, unsigned int shaderProgram, unsigned int sides);
+        void clearShaders();
 };
 
 Engine::Engine() {
@@ -31,7 +32,7 @@ void Engine::setupShaders() {
     shaders[BASIC]=loadShader("shaders/shape.vert","shaders/shape.frag");
 }
 
- unsigned int Engine::loadShader(const char* vertexPath, const char* fragmentPath){
+unsigned int Engine::loadShader(const char* vertexPath, const char* fragmentPath){
     //Flujo de archivos
     std::string vertexCode;
     std::string fragmentCode;
@@ -106,6 +107,13 @@ void Engine::fixScreenProportion(GLFWwindow* window, unsigned int shaderProgram)
     float aspect = (float)width / (float)height;
     int aspectLoc = glGetUniformLocation(shaderProgram, "uAspect");
     glUniform1f(aspectLoc, aspect);
+}
+
+void Engine::clearShaders(){
+    for(const auto& [type, program] : shaders){
+        glDeleteProgram(program);
+        std::cout<<program<<std::endl;
+    }
 }
 
 #endif

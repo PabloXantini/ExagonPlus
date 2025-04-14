@@ -1,5 +1,5 @@
 {
-    "configurations": [    
+    "configurations": [     
         {
             "name": "C/C++: g++.exe Compilar y depurar el archivo activo",
             "type": "cppdbg",

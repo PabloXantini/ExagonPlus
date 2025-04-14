@@ -63,6 +63,7 @@ int main() {
     //Bloqueo de FPS
     glfwSwapInterval(1);
 
+    
     //Corredor del juego -- Lo puedo incluir en Engine
     while (!glfwWindowShouldClose(window)) {
         //events
@@ -77,6 +78,10 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+
+    //Limpio todo al cerrar
+    panel.clearBuffers(); //Graficadora
+    engine.clearShaders(); //Motor
 
     //Cierra la ventana
     glfwTerminate();
