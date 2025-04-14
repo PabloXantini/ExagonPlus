@@ -29,6 +29,7 @@ Engine::Engine() {
 }
 
 void Engine::setupShaders() {
+    //Aqui se supone que cargo dinamicamente los shaders
     shaders[BASIC]=loadShader("shaders/shape.vert","shaders/shape.frag");
 }
 
@@ -94,10 +95,10 @@ unsigned int Engine::loadShader(const char* vertexPath, const char* fragmentPath
     return program;
 }
 
-void Engine::renderPolygon(unsigned int rVAO, unsigned int shaderProgram, unsigned int sides){
+void Engine::renderPolygon(unsigned int rVAO, unsigned int shaderProgram, unsigned int nindexes){
     glUseProgram(shaderProgram);
     glBindVertexArray(rVAO);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, sides);
+    glDrawElements(GL_TRIANGLES, nindexes, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 

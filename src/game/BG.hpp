@@ -12,6 +12,7 @@ class BG{
     private:
         //Variables propias de la clase
         std::vector<float> vertexs={};
+        std::vector<unsigned int> indexes={};
         unsigned int vnumber = 3;
         float radius=1.2f;
         //Objectos usados
@@ -21,12 +22,18 @@ class BG{
             vertexs.push_back(y);
             vertexs.push_back(z);
         }
+        void pushVTriangle(float a, float b, float c){
+            indexes.push_back(a);
+            indexes.push_back(b);
+            indexes.push_back(c);
+        }
         std::vector<float> setRegular(float radius, unsigned int vnumber){
             vertexs.clear();
             float x=0.0f;
             float y=0.0f;
             float z=0.0f;
             float anglex = (float)(4*acos(0.0)/vnumber);
+            pushCoors(x, y, z);
             for (int i=0; i<vnumber; i++){
                 x=radius*cos(anglex*i);
                 y=radius*sin(anglex*i);
@@ -34,11 +41,20 @@ class BG{
             }
             return vertexs;
         }
+        std::vector<unsigned int> createIndexes(unsigned int vnumber){
+            indexes.clear();
+            for(int i=1; i<vnumber; i++){
+                pushVTriangle(0, i, i+1);
+            }
+            pushVTriangle(0, vnumber, 1);
+            return indexes;
+        }
     public:
         //Constructors
         BG()=default;
         BG(float radius, unsigned int vnum){
             vertexs = setRegular(radius, vnum);
+            indexes = createIndexes(vnum);
             vnumber = vnum;
         }
 
@@ -46,8 +62,12 @@ class BG{
         const std::vector<float>&getVertexs() const {
             return vertexs;
         }
-        const unsigned int&getVertexCount() const {
-            return vnumber;
+        const std::vector<unsigned int>&getIndexes() const {
+            return indexes;
+        }
+        const unsigned int getVertexCount() const {
+            unsigned int vnum = vnumber+1;
+            return vnum;
         }
         //Setters
         void setVertexs(std::vector<float> vxs) {
@@ -55,7 +75,7 @@ class BG{
         }
         //Mostrar
         void show(unsigned int rVAO){
-            engine.renderPolygon(rVAO, engine.getShaderProgram(BASIC), getVertexCount());
+            engine.renderPolygon(rVAO, engine.getShaderProgram(BASIC), getIndexes().size());
         }
 };
 

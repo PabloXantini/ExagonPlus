@@ -6,8 +6,9 @@
 #include <vector>
 
 struct ObjectBuffer {
-    unsigned int VAO; 
-    unsigned int VBO;
+    unsigned int VAO; //Vertex Array Object: Define el objecto de vertices
+    unsigned int VBO; //Vertex Buffer Object: Define en donde se van a guardar los vertices
+    unsigned int EBO=0; //Element Buffer Object: Define como se van a dibujar los vertices
 };
 
 class ExagonPanel {
@@ -22,7 +23,7 @@ class ExagonPanel {
         unsigned int getVAO(unsigned int index) const;
         std::vector<unsigned int> getAllVAOs(const std::vector<ObjectBuffer>& buffers);
         std::vector<unsigned int> getAllVBOs(const std::vector<ObjectBuffer>& buffers);
-        ObjectBuffer createBuffer(const std::vector<float>& verts);
+        ObjectBuffer createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes);
         void setupBuffers();
         void clearBuffers();
         void paint();
@@ -60,15 +61,26 @@ std::vector<unsigned int> ExagonPanel::getAllVBOs(const std::vector<ObjectBuffer
 }
 
 //Crea un buffer para un objeto
-ObjectBuffer ExagonPanel::createBuffer(const std::vector<float>& verts){
+ObjectBuffer ExagonPanel::createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes){
     struct ObjectBuffer newBuffer;
+
+    //Asigno IDs para VAO, VBO, EBO
     glGenVertexArrays(1, &newBuffer.VAO);
     glGenBuffers(1, &newBuffer.VBO);
-    
+    //Opcional
+    if(indexes) glGenBuffers(1, &newBuffer.EBO);
+
+    //Asignacion de memoria para VAO
     glBindVertexArray(newBuffer.VAO);
+    //Asignacion de memoria para VBO
     glBindBuffer(GL_ARRAY_BUFFER, newBuffer.VBO);
     glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_STATIC_DRAW);
-
+    //Opcional: Asignacion de memoria para EBO
+    if(indexes){
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newBuffer.EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes->size() * sizeof(unsigned int), indexes->data(), GL_STATIC_DRAW);
+    }
+    //Setup de argumentos para el buffer
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
@@ -81,7 +93,16 @@ ObjectBuffer ExagonPanel::createBuffer(const std::vector<float>& verts){
 //Configura los buffers
 void ExagonPanel::setupBuffers() {
     //Pusheo todas las cosas necesarias
-    buffers.push_back(createBuffer(background.getVertexs()));
+    buffers.push_back(createBuffer(background.getVertexs(), &background.getIndexes()));
+    /*
+    std::cout << "[ ";
+    for (float val : background.getIndexes()) {
+        std::cout << val << " ";
+    }
+    std::cout << "]" << std::endl;
+    */
+    //Se puede comentar esto para que solo me dibuje el orden de los poligonos
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void ExagonPanel::clearBuffers() {

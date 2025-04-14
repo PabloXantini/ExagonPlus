@@ -1,3 +1,6 @@
+#include <windows.h>
+#include <psapi.h>
+
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
 
@@ -13,6 +16,7 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
 GLFWimage load_icon(int resID);
+void printMemoryUsage();
 
 //Configuracion de la pantalla
 const unsigned int SCR_WIDTH = 1200;
@@ -74,6 +78,8 @@ int main() {
         engine.fixScreenProportion(window, engine.getShaderProgram(BASIC));
         //render
         panel.paint();
+        //Debugging
+        //printMemoryUsage();
         //handler
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -107,4 +113,12 @@ GLFWimage load_icon(int resID) {
     image.width = width;
     image.height = height;
     return image;
+}
+
+//==========================================DEBUGGING=========================================================
+void printMemoryUsage() {
+    PROCESS_MEMORY_COUNTERS memCounter;
+    if (GetProcessMemoryInfo(GetCurrentProcess(), &memCounter, sizeof(memCounter))) {
+        std::cout << "Memoria en uso: " << memCounter.WorkingSetSize / 1024 << " KB" << std::endl;
+    }
 }
