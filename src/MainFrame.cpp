@@ -60,9 +60,7 @@ int main() {
     }
 
     //Llamo a los objetos necesarios
-    Engine engine;
-    ExagonGameProcess gameProcess;
-    ExagonPanel panel(gameProcess);
+    ExagonPanel panel;
 
     //Bloqueo de FPS
     glfwSwapInterval(1);
@@ -74,10 +72,8 @@ int main() {
         processInput(window);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        //prerender
-        engine.fixScreenProportion(window);
         //render
-        panel.paint();
+        panel.paint(window);
         //Debugging
         //printMemoryUsage();
         //handler
@@ -87,7 +83,7 @@ int main() {
 
     //Limpio todo al cerrar
     panel.clearBuffers(); //Graficadora
-    engine.clearShaders(); //Motor
+    panel.clearEngine(); //Motor
 
     //Cierra la ventana
     glfwTerminate();

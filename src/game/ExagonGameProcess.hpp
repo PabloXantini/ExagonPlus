@@ -1,26 +1,31 @@
 #ifndef EXAGON_GAME_PROCESS_HPP
 #define EXAGON_GAME_PROCESS_HPP
 
+#include "Color.h"
+#include "BGType.hpp"
 #include "BG.hpp"
 
 class ExagonGameProcess {
     private:
-        BG bg;
+        //Una prueba de colores como si los estuviera pasando desde otro programa
+        std::vector<RGBColor> pcolors={
+            {1.0f,0.0f,0.0f},//Rojo
+            {0.0f,1.0f,0.0f},//Verde
+            {0.0f,0.0f,1.0f}//Azul
+        };
+        //Aqui nacen los objetos que quiera usar en el juego
+        BG background;
     public:
         //Constructor
         ExagonGameProcess();
         //Getters   
-        const BG& getBG() const {
-            return bg;
-        }
-        //Setters
-        void setBG(BG tobg){
-            bg=tobg;
+        BG& getBG() {
+            return background;
         }
 };
 
 ExagonGameProcess::ExagonGameProcess():
-    bg(1.2f,7)
+    background(0.9f,7,pcolors,Type::CLASSIC)
     {
 
     }

@@ -6,8 +6,6 @@
 #include "../../resource.h"
 
 #include <iostream>
-//#include <fstream>
-//#include <sstream>
 #include <map>
 
 class Engine {
@@ -25,6 +23,7 @@ class Engine {
         }
         void fixScreenProportion(GLFWwindow* window);
         void renderPolygon(unsigned int rVAO, unsigned int sides);
+        void renderPolygon2(unsigned int rVAO, unsigned int vertexcount);
         void clearShaders();
 };
 
@@ -37,13 +36,20 @@ Engine::Engine()
 //Posibilly to deprecate
 void Engine::setupShaders(){
     //Aqui se supone que cargo dinamicamente los shaders
-    //shaders[BASIC]=loadShader("shaders/shape.vert","shaders/shape.frag"); 
+    //Si se me complica manejar los shader aca, lo borro
 }
 
-void Engine::renderPolygon(unsigned int rVAO, unsigned int nindexes){
+void Engine::renderPolygon(unsigned int rVAO, unsigned int nindexes) {
     BASIC.use();
     glBindVertexArray(rVAO);
     glDrawElements(GL_TRIANGLES, nindexes, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}
+
+void Engine::renderPolygon2(unsigned int rVAO, unsigned int vertexcount){
+    BASIC.use();
+    glBindVertexArray(rVAO);
+    glDrawArrays(GL_TRIANGLES, 0, vertexcount);
     glBindVertexArray(0);
 }
 
@@ -56,10 +62,7 @@ void Engine::fixScreenProportion(GLFWwindow* window){
 }
 
 void Engine::clearShaders(){
-    for(const auto& [type, program] : shaders){
-        glDeleteProgram(program);
-        std::cout<<program<<std::endl;
-    }
+    BASIC.kill();
 }
 
 #endif

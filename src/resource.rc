@@ -1,5 +1,5 @@
 #include "resource.h"
 
-IDR_PNG1        RCDATA  "res\\LogoFitDragon.png"
-IDR_VSHADER1     RCDATA  "game\\GEngine\\shaders\\shape.vert"
-IDR_FSHADER1     RCDATA  "game\\GEngine\\shaders\\shape.frag"
+IDR_PNG1            RCDATA  "res\\LogoFitDragon.png"
+IDR_VSHADER1        RCDATA  "game\\GEngine\\shaders\\shape.vert"
+IDR_FSHADER1        RCDATA  "game\\GEngine\\shaders\\shape.frag"

@@ -1,6 +1,7 @@
 #ifndef EXAGON_PANEL_HPP
 #define EXAGON_PANEL_HPP
 
+#include "GEngine/Engine.hpp"
 #include "ExagonGameProcess.hpp"
 
 #include <vector>
@@ -14,25 +15,27 @@ struct ObjectBuffer {
 class ExagonPanel {
     private:
         std::vector<ObjectBuffer> buffers={};
-        const ExagonGameProcess &gameProcess;
-        BG background;
+        ExagonGameProcess game;
+        Engine engine;
+        //BG background;
     public:
         //Constructor
-        ExagonPanel(const ExagonGameProcess &gameProcess);
+        ExagonPanel();
         //Methods
         unsigned int getVAO(unsigned int index) const;
         std::vector<unsigned int> getAllVAOs(const std::vector<ObjectBuffer>& buffers);
         std::vector<unsigned int> getAllVBOs(const std::vector<ObjectBuffer>& buffers);
-        ObjectBuffer createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes);
+        ObjectBuffer createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor);
         void setupBuffers();
         void clearBuffers();
-        void paint();
+        void clearEngine();
+        void paint(GLFWwindow* window);
 };
 
 //Constructor
-ExagonPanel::ExagonPanel(const ExagonGameProcess& gameProcess)
-    :gameProcess(gameProcess),
-    background(0.9f,5) 
+ExagonPanel::ExagonPanel():
+    engine(),
+    game()
 {
     setupBuffers();
 }
@@ -61,7 +64,7 @@ std::vector<unsigned int> ExagonPanel::getAllVBOs(const std::vector<ObjectBuffer
 }
 
 //Crea un buffer para un objeto
-ObjectBuffer ExagonPanel::createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes){
+ObjectBuffer ExagonPanel::createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor){
     struct ObjectBuffer newBuffer;
 
     //Asigno IDs para VAO, VBO, EBO
@@ -81,8 +84,18 @@ ObjectBuffer ExagonPanel::createBuffer(const std::vector<float>& verts, const st
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes->size() * sizeof(unsigned int), indexes->data(), GL_STATIC_DRAW);
     }
     //Setup de argumentos para el buffer
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    if(hasColor){
+        //Position
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        //Color
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+    }else{
+        //Color
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+    }
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -93,14 +106,17 @@ ObjectBuffer ExagonPanel::createBuffer(const std::vector<float>& verts, const st
 //Configura los buffers
 void ExagonPanel::setupBuffers() {
     //Pusheo todas las cosas necesarias
-    buffers.push_back(createBuffer(background.getVertexs(), &background.getIndexes()));
-    /*
+    //Buffer sin peso de color
+    //buffers.push_back(createBuffer3D(game.getBG().getVertexs(), & game.getBG().getIndexes(),false));
+    //Buffer con peso de color
+    buffers.push_back(createBuffer3D(game.getBG().getVertexs(),NULL,true));
+    ///*
     std::cout << "[ ";
-    for (float val : background.getIndexes()) {
+    for (float val : game.getBG().getVertexs()) {
         std::cout << val << " ";
     }
     std::cout << "]" << std::endl;
-    */
+    //*/
     //Se puede comentar esto para que solo me dibuje el orden de los poligonos
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
@@ -112,8 +128,13 @@ void ExagonPanel::clearBuffers() {
     glDeleteBuffers(vbos.size(), vbos.data());
 }
 
-void ExagonPanel::paint(){
-    background.show(this->getVAO(0));
+void ExagonPanel::paint(GLFWwindow* window){
+    engine.fixScreenProportion(window);
+    game.getBG().show(this->getVAO(0));
+}
+
+void ExagonPanel::clearEngine() {
+    engine.clearShaders();
 }
 
 #endif
