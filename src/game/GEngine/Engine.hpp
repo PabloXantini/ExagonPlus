@@ -28,7 +28,7 @@ class Engine {
 };
 
 Engine::Engine()
-    :BASIC(IDR_VSHADER1,IDR_FSHADER1)
+    :BASIC(IDR_VSHADER2,IDR_FSHADER2)
 {
     //setupShaders();
 }

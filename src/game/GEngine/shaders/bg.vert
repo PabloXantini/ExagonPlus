@@ -1,18 +1,16 @@
 #version 330 core
 
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in int colorIndex;
+layout (location = 1) in vec3 aColor;
 
 //aspecto
 uniform float uAspect;
-//rango de colores
-uniform vec3 pcolors[50]
-
-out vec3 FragColor;
+//colores a pasar
+out vec3 oFragColor;
 
 void main() {
     //Color
-    FragColor = pcolors[colorIndex];
+    oFragColor = aColor;
     //Posicion
     vec3 scaled = aPos;
     scaled.x /= uAspect;

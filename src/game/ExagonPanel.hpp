@@ -89,7 +89,7 @@ ObjectBuffer ExagonPanel::createBuffer3D(const std::vector<float>& verts, const 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
         //Color
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
         glEnableVertexAttribArray(1);
     }else{
         //Color
@@ -118,7 +118,7 @@ void ExagonPanel::setupBuffers() {
     std::cout << "]" << std::endl;
     //*/
     //Se puede comentar esto para que solo me dibuje el orden de los poligonos
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void ExagonPanel::clearBuffers() {
