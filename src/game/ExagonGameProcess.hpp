@@ -14,19 +14,22 @@ class ExagonGameProcess {
             {0.0f,0.0f,1.0f}//,//Azul
             //{1.0f,1.0f,0.0f}//Amarillo
         };
+        //Objetos de referencia
+        Engine& EnginePlaceHolder;
         //Aqui nacen los objetos que quiera usar en el juego
         BG background;
     public:
         //Constructor
-        ExagonGameProcess();
+        ExagonGameProcess(Engine& enginehere);
         //Getters   
         BG& getBG() {
             return background;
         }
 };
 
-ExagonGameProcess::ExagonGameProcess():
-    background(0.9f,6,pcolors,Type::CLASSIC)
+ExagonGameProcess::ExagonGameProcess(Engine& plhEngine):
+    EnginePlaceHolder(plhEngine),
+    background(plhEngine, 0.9f,6,pcolors,Type::CLASSIC)
     {
 
     }

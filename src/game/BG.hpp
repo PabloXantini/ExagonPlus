@@ -16,30 +16,18 @@ struct Coor3D {
     float z;
 };
 
-/*
-struct RGBColor {
-    float R;
-    float G;
-    float B;
-};
-
-enum class Type {
-    CLASSIC,
-    INDEXED
-};
-*/
-
 class BG{
     private:
         //Variables propias de la clase
-        std::vector<float> vertexs={};
-        std::vector<unsigned int> indexes={};
-        unsigned int vnumber = 3;
+        std::vector<unsigned int> IDs={};       //Esto me permite saber que IDs tienen cada forma que vaya a renderizar
+        std::vector<float> vertexs={};          //Vertices del objeto
+        std::vector<unsigned int> indexes={};   //Indices de generacion
+        unsigned int vnumber = 3;               
         float radius=1.2f;
         //Colores
         std::vector<RGBColor> pcolors={};
         //Objectos usados
-        Engine engine;
+        Engine& engine;
         //Metodos
         void pushColor(RGBColor color){
             vertexs.push_back(color.R);
@@ -136,21 +124,34 @@ class BG{
     public:
         //Constructors
         BG()=default;
-        BG(float radius, unsigned int vnum, std::vector<RGBColor>&colors, Type type):
-            engine()
+        BG(Engine& engine, float radius, unsigned int vnum, std::vector<RGBColor>&colors, Type type):
+            engine(engine)
         {
             pcolors = colors;
             vnumber = vnum;
             if(type==Type::INDEXED){
                 vertexs = setRegular(radius, vnum);
                 indexes = createIndexes(vnum);
+                //Memoria del objeto
+                IDs.push_back(engine.createBuffer3D(vertexs, &indexes, false).VAO);
             }else if (type==Type::CLASSIC){
                 vertexs = rawsetRegular(radius, vnum);
                 vertexs = addColors(vertexs.size()/3, colors);
+                //Memoria del objeto
+                IDs.push_back(engine.createBuffer3D(vertexs, NULL, true).VAO);
             }
+            //Comentalo si quieres
+            std::cout << "[ ";
+            for (float val : vertexs) {
+                std::cout << val << " ";
+            }
+            std::cout << "]" << std::endl;
         }
 
         //Getters
+        unsigned int getID(unsigned int index) const {
+            return IDs.at(index);
+        }
         const std::vector<float>&getVertexs() const {
             return vertexs;
         }
@@ -166,10 +167,8 @@ class BG{
             vertexs=vxs;
         }
         //Mostrar
-        void show(unsigned int rVAO) {
-            //float time = glfwGetTime();
-            //int colorIndex = static_cast<int>(time) % colors.size();
-            engine.renderPolygon2(rVAO, getVertexs().size());
+        void show() {
+            engine.renderPolygon2(this->getID(0), getVertexs().size());
         }
 };
 

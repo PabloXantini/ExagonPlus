@@ -4,9 +4,6 @@
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
 
-#include "game/GEngine/Shaders.hpp"
-#include "game/GEngine/Engine.hpp"
-#include "game/ExagonGameProcess.hpp"
 #include "game/ExagonPanel.hpp"
 #include "ImageProcessor.cpp"
 
@@ -75,14 +72,13 @@ int main() {
         //render
         panel.paint(window);
         //Debugging
-        //printMemoryUsage();
+        printMemoryUsage();
         //handler
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     //Limpio todo al cerrar
-    panel.clearBuffers(); //Graficadora
     panel.clearEngine(); //Motor
 
     //Cierra la ventana
