@@ -28,48 +28,75 @@ class BG{
         unsigned int vnumber = 3;               //Lados del escenario               
         float radius=1.2f;                      //Es para setear el largo del escenario
         std::vector<RGBColor> pcolors={};       //Gama de colores
-        //Objectos usados
+        //Objectos de referencia
         Engine* engine;
-        //Metodos
+        //Metodos de creacion
+        /*
+            Añade un color a la mezcla de vertices
+        */
         void pushColor(RGBColor color){
             vertexs.push_back(color.R);
             vertexs.push_back(color.G);
             vertexs.push_back(color.B);
         }
+        /*
+            Añade un color a la mezcla de vertices, en base a un vector determinado
+        */
         void pushColor(std::vector<float>&vertexs, RGBColor color){
             vertexs.push_back(color.R);
             vertexs.push_back(color.G);
             vertexs.push_back(color.B);
         }
+        /*
+            Añade un color a la mezcla de vertices, dependiendo del desplazamiento
+        */
         void insertColorAt(RGBColor color, int offset){
             vertexs.insert(vertexs.begin()+offset, color.R);
             vertexs.insert(vertexs.begin()+offset+1, color.G);
             vertexs.insert(vertexs.begin()+offset+2, color.B);
         }
+        /*
+            Añade una coordenada 3D
+        */
         void pushCoor3D(Coor3D coors){
             vertexs.push_back(coors.x);
             vertexs.push_back(coors.y);
             vertexs.push_back(coors.z);
         }
+        /*
+            Añade una coordenada 3D, en base a un vector determinado
+        */
         void pushCoor3D(std::vector<float>&vertexs, Coor3D coors){
             vertexs.push_back(coors.x);
             vertexs.push_back(coors.y);
             vertexs.push_back(coors.z);
         }
+        /*
+            Añade una coordenada 3D y un color a la vez al conjunto de vértices
+        */
         void pushCoor3DWRGB(Coor3D coor, RGBColor color){
             pushCoor3D(coor);
             pushColor(color);
         }
+        /*
+            Inserta un triangulo al conjunto de indices
+        */
         void pushVTriangle(float a, float b, float c){
             indexes.push_back(a);
             indexes.push_back(b);
             indexes.push_back(c);
         }
+        /*
+            Inserta un triangulo indicado por las coordenadas del triangulo
+        */
         void pushTriangle(Coor3D A, Coor3D B, Coor3D C){
             pushCoor3D(A);
             pushCoor3D(B);
             pushCoor3D(C);
         }
+        /*
+            Guarda datos escenciales para el trazado del escenario (traza un poligono regular), usando indices
+        */
         std::vector<float> setRegular(float radius, unsigned int vnumber){
             vertexs.clear();
             Coor3D currentcoor;
@@ -85,6 +112,20 @@ class BG{
             }
             return vertexs;
         }
+        /*
+            Crea los indices, con lo que se va trazar cada triangulo de manera INDEXED
+        */
+        std::vector<unsigned int> createIndexes(unsigned int vnumber){
+            indexes.clear();
+            for(int i=1; i<vnumber; i++){
+                pushVTriangle(0, i, i+1);
+            }
+            pushVTriangle(0, vnumber, 1);
+            return indexes;
+        }
+        /*
+            Guarda datos escenciales para el trazado del escenario (traza un poligono regular), con vertices puros
+        */
         std::vector<float> rawsetRegular(float radius, unsigned int vnumber){
             vertexs.clear();
             std::vector<Coor3D> tempv={};
@@ -103,14 +144,9 @@ class BG{
 
             return vertexs;
         }
-        std::vector<unsigned int> createIndexes(unsigned int vnumber){
-            indexes.clear();
-            for(int i=1; i<vnumber; i++){
-                pushVTriangle(0, i, i+1);
-            }
-            pushVTriangle(0, vnumber, 1);
-            return indexes;
-        }
+        /*
+            Crea los triangulos de manera bruta para la manera CLASSIC
+        */
         std::vector<float> createTriangles(std::vector<Coor3D>coors){
             for(int i=1; i<(coors.size()-1); i++){
                 pushTriangle(coors.at(0), coors.at(i), coors.at(i+1));
@@ -118,35 +154,36 @@ class BG{
             pushTriangle(coors.at(0), coors.at(coors.size()-1), coors.at(1));
             return vertexs;
         }
+        /*
+            Inserta los colores en las coordenadas de las posiciones con algo de estilo
+        */
         std::vector<float> addColors(unsigned int vnum, unsigned int timesto, std::vector<RGBColor>&colors){
-            std::cout << "Numero de vertices: " << vnum << std::endl;
-            //std::vector<float> newVertexs;
-            //Coor3D coorcopy;
-            //RGBColor c;
+            //std::cout << "Numero de vertices: " << vnum << std::endl;
             int offset = 6;
             int checkin = 0;
             for(int i=0; i<vnum-timesto; i++){
-                std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
+                //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
                 insertColorAt(setColorPattern(checkin, timesto, colors), 3+i*offset);
-                //Define el ultimo color si el poligono es par
                 checkin++;
             }
+            //Define el ultimo color si el poligono es par
             if((vnum/3)%2==0){
                 for(int i=0;i<timesto;i++){
-                    std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
+                    //std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
                     insertColorAt(setColorPattern(checkin, timesto, colors), 3+(vnum-timesto+i)*offset);
-                    std::cout << "Paso la prueba " << std::endl;
                     checkin++;
                 }
             }else{
                 for(int i=0;i<timesto;i++){
-                    std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
+                    //std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
                     insertColorAt(colors.back(), 3+(vnum-timesto+i)*offset);
-                    std::cout << "Paso la prueba " << std::endl;
                 }
             }
             return vertexs;
         }
+        /*
+            Establece el patron de los colores, 3 se usa para imprimir los triangulos de un solo color, mas o menos generan gradientes
+        */
         RGBColor setColorPattern(int check, unsigned int timesto, std::vector<RGBColor>&colors){
             if (colors.empty() || timesto == 0) return RGBColor{0.0f, 0.0f, 0.0f};
             int index = (check / timesto) % (colors.size()-1);

@@ -72,7 +72,7 @@ int main() {
         //render
         panel.paint(window);
         //Debugging
-        printMemoryUsage();
+        //printMemoryUsage();
         //handler
         glfwSwapBuffers(window);
         glfwPollEvents();
