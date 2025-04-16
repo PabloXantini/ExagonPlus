@@ -1,6 +1,8 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
+#include "../include/glad/glad.h"
+
 #include "Shader.hpp"
 #include "Shaders.hpp"
 #include "../../resource.h"
@@ -59,8 +61,7 @@ class Engine {
 Engine::Engine()
     :BASIC(IDR_VSHADER2,IDR_FSHADER2)
 {
-    //setupShaders();
-    std::cout<<"Oh me creooo"<<std::endl;
+    std::cout<<"Oh me creooo, dice Engine o Motor"<<std::endl;
 }
 
 //Posibilly to deprecate

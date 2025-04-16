@@ -4,12 +4,12 @@
 #include "GEngine/Engine.hpp"
 #include "ExagonGameProcess.hpp"
 
-#include <vector>
+#include <iostream>
 
 class ExagonPanel {
     private:
-        ExagonGameProcess game;
         Engine engine;
+        ExagonGameProcess game;
     public:
         //Constructor
         ExagonPanel();
@@ -21,9 +21,9 @@ class ExagonPanel {
 //Constructor
 ExagonPanel::ExagonPanel():
     engine(),
-    game(engine)
+    game(&engine)
 {
-    //setupBuffers();
+    std::cout<<"Oh me creooo, dice Panel"<<std::endl;
 }
 
 void ExagonPanel::paint(GLFWwindow* window){

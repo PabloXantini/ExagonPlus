@@ -19,17 +19,24 @@ struct Coor3D {
 class BG{
     private:
         //Variables propias de la clase
+        //Graficos
         std::vector<unsigned int> IDs={};       //Esto me permite saber que IDs tienen cada forma que vaya a renderizar
         std::vector<float> vertexs={};          //Vertices del objeto
         std::vector<unsigned int> indexes={};   //Indices de generacion
-        unsigned int vnumber = 3;               
-        float radius=1.2f;
-        //Colores
-        std::vector<RGBColor> pcolors={};
+        //General
+        unsigned int timesto = 3;               //Veces en la que se reproducir el patron
+        unsigned int vnumber = 3;               //Lados del escenario               
+        float radius=1.2f;                      //Es para setear el largo del escenario
+        std::vector<RGBColor> pcolors={};       //Gama de colores
         //Objectos usados
-        Engine& engine;
+        Engine* engine;
         //Metodos
         void pushColor(RGBColor color){
+            vertexs.push_back(color.R);
+            vertexs.push_back(color.G);
+            vertexs.push_back(color.B);
+        }
+        void pushColor(std::vector<float>&vertexs, RGBColor color){
             vertexs.push_back(color.R);
             vertexs.push_back(color.G);
             vertexs.push_back(color.B);
@@ -40,6 +47,11 @@ class BG{
             vertexs.insert(vertexs.begin()+offset+2, color.B);
         }
         void pushCoor3D(Coor3D coors){
+            vertexs.push_back(coors.x);
+            vertexs.push_back(coors.y);
+            vertexs.push_back(coors.z);
+        }
+        void pushCoor3D(std::vector<float>&vertexs, Coor3D coors){
             vertexs.push_back(coors.x);
             vertexs.push_back(coors.y);
             vertexs.push_back(coors.z);
@@ -106,39 +118,62 @@ class BG{
             pushTriangle(coors.at(0), coors.at(coors.size()-1), coors.at(1));
             return vertexs;
         }
-        std::vector<float> addColors(unsigned int vnum, std::vector<RGBColor>&colors){
+        std::vector<float> addColors(unsigned int vnum, unsigned int timesto, std::vector<RGBColor>&colors){
+            std::cout << "Numero de vertices: " << vnum << std::endl;
+            //std::vector<float> newVertexs;
+            //Coor3D coorcopy;
+            //RGBColor c;
             int offset = 6;
             int checkin = 0;
-            for(int i=0; i<vnum; i++){
-                insertColorAt(setColorPattern(checkin, 3, colors), 3+i*offset);
+            for(int i=0; i<vnum-timesto; i++){
+                std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
+                insertColorAt(setColorPattern(checkin, timesto, colors), 3+i*offset);
+                //Define el ultimo color si el poligono es par
                 checkin++;
+            }
+            if((vnum/3)%2==0){
+                for(int i=0;i<timesto;i++){
+                    std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
+                    insertColorAt(setColorPattern(checkin, timesto, colors), 3+(vnum-timesto+i)*offset);
+                    std::cout << "Paso la prueba " << std::endl;
+                    checkin++;
+                }
+            }else{
+                for(int i=0;i<timesto;i++){
+                    std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
+                    insertColorAt(colors.back(), 3+(vnum-timesto+i)*offset);
+                    std::cout << "Paso la prueba " << std::endl;
+                }
             }
             return vertexs;
         }
         RGBColor setColorPattern(int check, unsigned int timesto, std::vector<RGBColor>&colors){
             if (colors.empty() || timesto == 0) return RGBColor{0.0f, 0.0f, 0.0f};
-            int index = (check / timesto) % colors.size();
+            int index = (check / timesto) % (colors.size()-1);
             RGBColor currentColor = colors.at(index);
             return currentColor;
         }
+
     public:
         //Constructors
         BG()=default;
-        BG(Engine& engine, float radius, unsigned int vnum, std::vector<RGBColor>&colors, Type type):
+        BG(Engine* engine, float radius, unsigned int vnum, unsigned int patterntimesto, std::vector<RGBColor>&colors, Type type):
             engine(engine)
         {
+            std::cout<<"Oh me creooo, dice BG"<<std::endl;
             pcolors = colors;
             vnumber = vnum;
+            timesto = patterntimesto;
             if(type==Type::INDEXED){
                 vertexs = setRegular(radius, vnum);
                 indexes = createIndexes(vnum);
                 //Memoria del objeto
-                IDs.push_back(engine.createBuffer3D(vertexs, &indexes, false).VAO);
+                IDs.push_back(engine->createBuffer3D(vertexs, &indexes, false).VAO);
             }else if (type==Type::CLASSIC){
                 vertexs = rawsetRegular(radius, vnum);
-                vertexs = addColors(vertexs.size()/3, colors);
+                vertexs = addColors(vertexs.size()/3, timesto, colors);
                 //Memoria del objeto
-                IDs.push_back(engine.createBuffer3D(vertexs, NULL, true).VAO);
+                IDs.push_back(engine->createBuffer3D(vertexs, NULL, true).VAO);
             }
             //Comentalo si quieres
             std::cout << "[ ";
@@ -168,7 +203,7 @@ class BG{
         }
         //Mostrar
         void show() {
-            engine.renderPolygon2(this->getID(0), getVertexs().size());
+            engine->renderPolygon2(this->getID(0), getVertexs().size());
         }
 };
 
