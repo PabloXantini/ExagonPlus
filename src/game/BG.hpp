@@ -266,6 +266,12 @@ class BG{
             std::rotate(vertexcolors.begin(), vertexcolors.begin()+timesto, vertexcolors.end());
             engine->updateBufferColorWeight(this->getID(0), vertexcolors);
         }
+        /*
+            Cambia el HUE del escenario
+        */
+        void changeBGHue(float time, float BGHueFactor, float BGHueSpeed){
+            engine->changeHue(time, BGHueFactor, BGHueSpeed);
+        }
 };
 
 #endif

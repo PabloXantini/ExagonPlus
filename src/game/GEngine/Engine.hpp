@@ -57,6 +57,7 @@ class Engine {
         void fixScreenProportion(GLFWwindow* window);
         void renderPolygon(unsigned int rVAO, unsigned int sides);
         void renderPolygon2(unsigned int rVAO, unsigned int vertexcount);
+        void changeHue(float change, float hueFactor, float hueSpeed);
         void clearShaders();
 };
 
@@ -142,26 +143,33 @@ void Engine::clearBuffers() {
 }
 
 //Render Methods
+//Renderiza un poligono con indices
 void Engine::renderPolygon(unsigned int rVAO, unsigned int nindexes) {
     BASIC.use();
     glBindVertexArray(rVAO);
     glDrawElements(GL_TRIANGLES, nindexes, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
-
+//Renderiza un poligono con vertices
 void Engine::renderPolygon2(unsigned int rVAO, unsigned int vertexcount){
     BASIC.use();
     glBindVertexArray(rVAO);
     glDrawArrays(GL_TRIANGLES, 0, vertexcount);
     glBindVertexArray(0);
 }
-
+//Arregla la resolucion de pantalla
 void Engine::fixScreenProportion(GLFWwindow* window){
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     float aspect = (float)width / (float)height;
     int aspectLoc = glGetUniformLocation(BASIC.getID(), "uAspect");
     glUniform1f(aspectLoc, aspect);
+}
+//Cambia el HUE del escenario
+void Engine::changeHue(float time, float hueFactor, float hueSpeed){
+    BASIC.setFloat("uTime",time);
+    BASIC.setFloat("HueFactor",hueFactor);
+    BASIC.setFloat("HueSpeed",hueSpeed);
 }
 
 void Engine::clearShaders(){
