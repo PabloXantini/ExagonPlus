@@ -2,6 +2,9 @@
 #define ENGINE_HPP
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Shader.hpp"
 #include "Shaders.hpp"
@@ -57,6 +60,7 @@ class Engine {
         void fixScreenProportion(GLFWwindow* window);
         void renderPolygon(unsigned int rVAO, unsigned int sides);
         void renderPolygon2(unsigned int rVAO, unsigned int vertexcount);
+        void rotate3D(float time, float RX, float RY, float RZ);
         void changeHue(float change, float hueFactor, float hueSpeed);
         void clearShaders();
 };
@@ -164,6 +168,14 @@ void Engine::fixScreenProportion(GLFWwindow* window){
     float aspect = (float)width / (float)height;
     int aspectLoc = glGetUniformLocation(BASIC.getID(), "uAspect");
     glUniform1f(aspectLoc, aspect);
+}
+//Transformaciones
+void Engine::rotate3D(float time, float RX, float RY, float RZ){
+    glm::mat4 rot = glm::mat4(1.0);
+    rot = glm::rotate(rot, glm::radians(time*RX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
+    rot = glm::rotate(rot, glm::radians(time*RY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
+    rot = glm::rotate(rot, glm::radians(time*RZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
+    BASIC.setMat4("transRotation",rot);
 }
 //Cambia el HUE del escenario
 void Engine::changeHue(float time, float hueFactor, float hueSpeed){

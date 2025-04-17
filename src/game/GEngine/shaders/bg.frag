@@ -5,6 +5,7 @@ in vec3 oFragColor; //Color original del vertice
 out vec4 FragColor; //Color de salida
 
 // Variables de set del shader
+//HUE
 uniform float uTime;
 uniform float HueFactor;
 uniform float HueSpeed;

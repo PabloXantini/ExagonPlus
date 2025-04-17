@@ -22,13 +22,14 @@ class BG{
         //Variables propias de la clase
         //Graficos
         std::vector<unsigned int> IDs={};       //Esto me permite saber que IDs tienen cada forma que vaya a renderizar
-        std::vector<float> vertexs={};          //Vertices del objeto
         std::vector<unsigned int> indexes={};   //Indices de generacion
+        std::vector<float> vertexs={};          //Vertices brutos del objeto
+        std::vector<RGBColor> vertexcolors={};  //Gama de colores POR VERTICE
         //General
+        std::vector<float> skvertexs={};        //Coordenadas generales (Util para heredar)
         unsigned int timesto = 3;               //Veces en la que se reproducir el patron
         unsigned int vnumber = 3;               //Lados del escenario               
         float radius=1.2f;                      //Es para setear el largo del escenario
-        std::vector<RGBColor> vertexcolors={};  //Gama de colores POR VERTICE
         std::vector<RGBColor> pcolors={};       //Gama de colores
         //Objectos de referencia
         Engine* engine;
@@ -272,6 +273,12 @@ class BG{
         */
         void changeBGHue(float time, float BGHueFactor, float BGHueSpeed){
             engine->changeHue(time, BGHueFactor, BGHueSpeed);
+        }
+        /*
+            Rota el escenario
+        */
+        void rotateBG(float time, float RX, float RY, float RZ){
+            engine->rotate3D(time, RX, RY, RZ);
         }
 };
 
