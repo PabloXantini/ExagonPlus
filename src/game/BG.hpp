@@ -6,6 +6,7 @@
 #include "BGType.hpp"
 #include "Color.h"
 
+#include <algorithm>
 #include <vector>
 #include <cmath>
 #include <iostream>
@@ -27,6 +28,7 @@ class BG{
         unsigned int timesto = 3;               //Veces en la que se reproducir el patron
         unsigned int vnumber = 3;               //Lados del escenario               
         float radius=1.2f;                      //Es para setear el largo del escenario
+        std::vector<RGBColor> vertexcolors={};  //Gama de colores POR VERTICE
         std::vector<RGBColor> pcolors={};       //Gama de colores
         //Objectos de referencia
         Engine* engine;
@@ -41,11 +43,17 @@ class BG{
         }
         /*
             Añade un color a la mezcla de vertices, en base a un vector determinado
+            void pushColor(std::vector<float>&vertexs, RGBColor color){
+                vertexs.push_back(color.R);
+                vertexs.push_back(color.G);
+                vertexs.push_back(color.B);
+            }
         */
-        void pushColor(std::vector<float>&vertexs, RGBColor color){
-            vertexs.push_back(color.R);
-            vertexs.push_back(color.G);
-            vertexs.push_back(color.B);
+        /*
+            Añade un color a la mezcla de vertices, en base a un vector de Colores determinado
+        */
+        void pushColor(std::vector<RGBColor>&colors, RGBColor color){
+            colors.push_back(color);
         }
         /*
             Añade un color a la mezcla de vertices, dependiendo del desplazamiento
@@ -161,22 +169,29 @@ class BG{
             //std::cout << "Numero de vertices: " << vnum << std::endl;
             int offset = 6;
             int checkin = 0;
+            RGBColor newColor;
             for(int i=0; i<vnum-timesto; i++){
                 //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
-                insertColorAt(setColorPattern(checkin, timesto, colors), 3+i*offset);
+                newColor = setColorPattern(checkin, timesto, colors);
+                insertColorAt(newColor, 3+i*offset);
+                pushColor(vertexcolors, newColor);
                 checkin++;
             }
             //Define el ultimo color si el poligono es par
             if((vnum/3)%2==0){
                 for(int i=0;i<timesto;i++){
                     //std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
-                    insertColorAt(setColorPattern(checkin, timesto, colors), 3+(vnum-timesto+i)*offset);
+                    newColor = setColorPattern(checkin, timesto, colors);
+                    insertColorAt(newColor, 3+(vnum-timesto+i)*offset);
+                    pushColor(vertexcolors, newColor);
                     checkin++;
                 }
             }else{
+                //pushColor(vertexcolors, colors.back());
                 for(int i=0;i<timesto;i++){
                     //std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
                     insertColorAt(colors.back(), 3+(vnum-timesto+i)*offset);
+                    pushColor(vertexcolors, newColor);
                 }
             }
             return vertexs;
@@ -190,7 +205,6 @@ class BG{
             RGBColor currentColor = colors.at(index);
             return currentColor;
         }
-
     public:
         //Constructors
         BG()=default;
@@ -234,6 +248,9 @@ class BG{
             unsigned int vnum = vnumber+1;
             return vnum;
         }
+        const std::vector<RGBColor>&getColors() const {
+            return pcolors;
+        }
         //Setters
         void setVertexs(std::vector<float> vxs) {
             vertexs=vxs;
@@ -241,6 +258,13 @@ class BG{
         //Mostrar
         void show() {
             engine->renderPolygon2(this->getID(0), getVertexs().size());
+        }
+        /*
+            Intercambia los colores de BG con los de su vecino
+        */
+        void swapColors(){
+            std::rotate(vertexcolors.begin(), vertexcolors.begin()+timesto, vertexcolors.end());
+            engine->updateBufferColorWeight(this->getID(0), vertexcolors);
         }
 };
 

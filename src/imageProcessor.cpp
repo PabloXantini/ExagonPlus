@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <filesystem>
 
-#include "../include/FreeImage/FreeImage.h"
+#include <FreeImage/FreeImage.h>
 
 #include "resource.h"
 

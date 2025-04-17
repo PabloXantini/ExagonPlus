@@ -29,6 +29,7 @@ ExagonPanel::ExagonPanel():
 void ExagonPanel::paint(GLFWwindow* window){
     //El orden de renderizado
     engine.fixScreenProportion(window);
+    game.PlayLevel();
     game.getBG().show();
 }
 

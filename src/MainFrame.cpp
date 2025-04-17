@@ -1,8 +1,8 @@
 #include <windows.h>
 #include <psapi.h>
 
-#include "../include/glad/glad.h"
-#include "../include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "game/ExagonPanel.hpp"
 #include "ImageProcessor.cpp"

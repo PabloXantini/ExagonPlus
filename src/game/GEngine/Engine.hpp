@@ -1,11 +1,12 @@
 #ifndef ENGINE_HPP
 #define ENGINE_HPP
 
-#include "../include/glad/glad.h"
+#include <glad/glad.h>
 
 #include "Shader.hpp"
 #include "Shaders.hpp"
 #include "../../resource.h"
+#include "../Color.h"
 
 #include <iostream>
 #include <vector>
@@ -50,6 +51,7 @@ class Engine {
         }
         //Memory Methods
         ObjectBuffer createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor);
+        void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors);
         void clearBuffers();
         //Graph Methods
         void fixScreenProportion(GLFWwindow* window);
@@ -104,7 +106,7 @@ ObjectBuffer Engine::createBuffer3D(const std::vector<float>& verts, const std::
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
     }
-
+    //Desvincular
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
@@ -112,6 +114,23 @@ ObjectBuffer Engine::createBuffer3D(const std::vector<float>& verts, const std::
     buffers.push_back(newBuffer);
 
     return newBuffer;
+}
+
+//Actualiza el peso de colores
+void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& colors){
+    int stride=6;
+    std::vector<float> colorspace;
+    for (auto& c : colors){
+        pushColor(colorspace, c);
+    }
+    //Abre el buffer en cuestion
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    for (size_t i=0; i<colors.size();++i) {
+        GLintptr offset = 3*sizeof(float) + i*stride*sizeof(float);
+        glBufferSubData(GL_ARRAY_BUFFER, offset, 3*sizeof(float), &colorspace[i*3]);
+    }
+    //Desvincula en buffer
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 //Limpia todos los buffers

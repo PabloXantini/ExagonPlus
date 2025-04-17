@@ -3,7 +3,11 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include/glad/**",
+                "${workspaceFolder}/include/GLFW/**",
+                "${workspaceFolder}/include/FreeImage/**",
+                "${workspaceFolder}/include/KHR/**"
             ],
             "defines": [
                 "_DEBUG",

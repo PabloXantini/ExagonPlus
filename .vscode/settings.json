@@ -69,6 +69,12 @@
         "xlocmon": "cpp",
         "xloctime": "cpp",
         "xtree": "cpp",
-        "fstream": "cpp"
-    }
+        "fstream": "cpp",
+        "cstdarg": "cpp",
+        "functional": "cpp",
+        "unordered_map": "cpp",
+        "xhash": "cpp"
+    },
+    "cmake.useCMakePresets": "never",
+    "cmake.ignoreCMakeListsMissing": true
 }
