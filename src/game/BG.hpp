@@ -257,6 +257,18 @@ class BG{
         void setVertexs(std::vector<float> vxs) {
             vertexs=vxs;
         }
+        /*
+            Vista
+        */
+        void setCamera(float x, float y, float z){
+            engine->setupView(x, y, z);
+        }
+        /*
+            Escala
+        */
+        void setScale(float factor){
+            engine->setupscale3D(factor);
+        }
         //Mostrar
         void show() {
             engine->renderPolygon2(this->getID(0), getVertexs().size());
@@ -279,6 +291,12 @@ class BG{
         */
         void rotateBG(float time, float RX, float RY, float RZ){
             engine->rotate3D(time, RX, RY, RZ);
+        }
+        /*
+            Escala el escenario
+        */
+        void scaleBG(float factor){
+            engine->scale3D(factor);
         }
 };
 

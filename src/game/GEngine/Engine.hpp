@@ -58,9 +58,15 @@ class Engine {
         void clearBuffers();
         //Graph Methods
         void fixScreenProportion(GLFWwindow* window);
+        void setPerspective(float FOV, float aspect, float nearD, float farD);
+        void setupPerspective(float FOV, float aspect, float nearD, float farD);
+        void setupView(float x, float y, float z);
+        void translateView(float x, float y, float z);
         void renderPolygon(unsigned int rVAO, unsigned int sides);
         void renderPolygon2(unsigned int rVAO, unsigned int vertexcount);
         void rotate3D(float time, float RX, float RY, float RZ);
+        void setupscale3D(float factor);
+        void scale3D(float factor);
         void changeHue(float change, float hueFactor, float hueSpeed);
         void clearShaders();
 };
@@ -69,6 +75,8 @@ Engine::Engine()
     :BASIC(IDR_VSHADER2,IDR_FSHADER2)
 {
     std::cout<<"Oh me creooo, dice Engine o Motor"<<std::endl;
+    //glEnable(GL_DEPTH_TEST);
+    //setPerspective(45.0f, 400, 300, 0.1f, 100.0f);
 }
 
 //Posibilly to deprecate
@@ -166,10 +174,40 @@ void Engine::fixScreenProportion(GLFWwindow* window){
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     float aspect = (float)width / (float)height;
-    int aspectLoc = glGetUniformLocation(BASIC.getID(), "uAspect");
-    glUniform1f(aspectLoc, aspect);
+    BASIC.setFloat("uAspect", aspect);
+    setupPerspective(45.0f, aspect, 0.1f, 100.0f);
+    //float aspect = (float)width / (float)height;
+    //int aspectLoc = glGetUniformLocation(BASIC.getID(), "uAspect");
+    //glUniform1f(aspectLoc, aspect);
 }
-//Transformaciones
+//Transformaciones Perpespectiva
+//Establecer perspectiva
+void Engine::setupPerspective(float FOV, float aspect, float nearD, float farD){
+    BASIC.use();
+    glm::mat4 projection = glm::mat4(1.0);
+    projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
+    BASIC.setMat4("transProjection",projection);
+}
+void Engine::setPerspective(float FOV, float aspect, float nearD, float farD){
+    glm::mat4 projection = glm::mat4(1.0);
+    projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
+    BASIC.setMat4("transProjection",projection);
+}
+//Transformaciones Vista
+//Mover camara
+void Engine::setupView(float x, float y, float z){
+    BASIC.use();
+    glm::mat4 view = glm::mat4(1.0);
+    view = glm::lookAt(glm::vec3(x, y, z), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    BASIC.setMat4("transView",view);
+}
+void Engine::translateView(float x, float y, float z){
+    glm::mat4 view = glm::mat4(1.0);
+    view = glm::translate(view, glm::vec3(x, y, z));
+    BASIC.setMat4("transView",view);
+}
+//Transformaciones Modelo
+//Rotacion en 3 dimensiones
 void Engine::rotate3D(float time, float RX, float RY, float RZ){
     glm::mat4 rot = glm::mat4(1.0);
     rot = glm::rotate(rot, glm::radians(time*RX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
@@ -177,6 +215,20 @@ void Engine::rotate3D(float time, float RX, float RY, float RZ){
     rot = glm::rotate(rot, glm::radians(time*RZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
     BASIC.setMat4("transRotation",rot);
 }
+//Escalado
+//Escalado
+void Engine::setupscale3D(float factor){
+    BASIC.use();
+    glm::mat4 sc = glm::mat4(1.0);
+    sc = glm::scale(sc, glm::vec3(factor));
+    BASIC.setMat4("transScale",sc);
+}
+void Engine::scale3D(float factor){
+    glm::mat4 sc = glm::mat4(1.0);
+    sc = glm::scale(sc, glm::vec3(factor));
+    BASIC.setMat4("transScale",sc);
+}
+
 //Cambia el HUE del escenario
 void Engine::changeHue(float time, float hueFactor, float hueSpeed){
     BASIC.setFloat("uTime",time);

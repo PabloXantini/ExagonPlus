@@ -10,23 +10,26 @@ class ExagonPanel {
     private:
         Engine engine;
         ExagonGameProcess game;
+        GLFWwindow* window;
     public:
         //Constructor
-        ExagonPanel();
+        ExagonPanel(GLFWwindow* window);
         //Methods
-        void paint(GLFWwindow* window);
+        void paint();
         void clearEngine();
 };
 
 //Constructor
-ExagonPanel::ExagonPanel():
+ExagonPanel::ExagonPanel(GLFWwindow* window):
     engine(),
     game(&engine)
 {
     std::cout<<"Oh me creooo, dice Panel"<<std::endl;
+    this->window = window;
+    engine.fixScreenProportion(window);
 }
 
-void ExagonPanel::paint(GLFWwindow* window){
+void ExagonPanel::paint(){
     //El orden de renderizado
     engine.fixScreenProportion(window);
     game.PlayLevel();

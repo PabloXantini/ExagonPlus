@@ -4,9 +4,14 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 
 //Aspecto
-uniform float uAspect;
+//uniform float uAspect;
+//Vista
+uniform mat4 transProjection;
+//Camara
+uniform mat4 transView;
 //Transformaciones
 uniform mat4 transRotation;
+uniform mat4 transScale;
 
 //colores a pasar
 out vec3 oFragColor;
@@ -15,9 +20,13 @@ void main() {
     //Color
     oFragColor = aColor;
     //Posicion
-    vec4 rotated = transRotation * vec4(aPos, 1.0);
+    //vec4 rotated = transRotation * vec4(aPos, 1.0);
     //Ajustar el aspecto
-    rotated.x /= uAspect;
+    //rotated.x /= uAspect;
     //Setear la posicion final
-    gl_Position = rotated;
+    //gl_Position = rotated;
+    //gl_Position = transProjection * transView * transRotation * transScale * vec4(aPos, 1.0); 
+    vec4 result = transProjection * transView * transRotation * transScale * vec4(aPos, 1.0); 
+    //result.x /= uAspect;
+    gl_Position = vec4(result);
 };

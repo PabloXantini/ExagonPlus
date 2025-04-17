@@ -57,7 +57,7 @@ int main() {
     }
 
     //Llamo a los objetos necesarios
-    ExagonPanel panel;
+    ExagonPanel panel(window);
 
     //Bloqueo de FPS
     glfwSwapInterval(1);
@@ -70,7 +70,7 @@ int main() {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         //render
-        panel.paint(window);
+        panel.paint();
         //Debugging
         //printMemoryUsage();
         //handler
