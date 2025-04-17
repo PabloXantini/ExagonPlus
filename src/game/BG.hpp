@@ -190,7 +190,8 @@ class BG{
                 //pushColor(vertexcolors, colors.back());
                 for(int i=0;i<timesto;i++){
                     //std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
-                    insertColorAt(colors.back(), 3+(vnum-timesto+i)*offset);
+                    newColor = colors.back();
+                    insertColorAt(newColor, 3+(vnum-timesto+i)*offset);
                     pushColor(vertexcolors, newColor);
                 }
             }

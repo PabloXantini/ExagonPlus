@@ -39,7 +39,7 @@ class ExagonGameProcess {
 
 ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
-    background(EnginePlaceHolder, 0.9f,6,3,pcolors,Type::CLASSIC)
+    background(EnginePlaceHolder, 0.9f,5,3,pcolors,Type::CLASSIC)
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
 }
