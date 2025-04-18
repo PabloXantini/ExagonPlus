@@ -18,6 +18,10 @@ class ExagonGameProcess {
         //Cambio de color
         float hueFactor=0.2f;
         float hueSpeed=0.5f;
+        //Perspectiva
+        float nearD=0.1f;
+        float farD=100.f;
+        float FOV=45.0f;
         //Camara
         float CameraX = 0.0f;
         float CameraY = 0.0f;
@@ -55,7 +59,8 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
     background(EnginePlaceHolder, 0.9f,5,3,pcolors,Type::CLASSIC)
 {
-    std::cout<<"Oh me creooo, dice el juego"<<std::endl;  
+    std::cout<<"Oh me creooo, dice el juego"<<std::endl;
+    background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
     background.setScale(scale);
 }

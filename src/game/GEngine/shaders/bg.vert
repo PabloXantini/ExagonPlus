@@ -20,13 +20,6 @@ void main() {
     //Color
     oFragColor = aColor;
     //Posicion
-    //vec4 rotated = transRotation * vec4(aPos, 1.0);
-    //Ajustar el aspecto
-    //rotated.x /= uAspect;
-    //Setear la posicion final
-    //gl_Position = rotated;
-    //gl_Position = transProjection * transView * transRotation * transScale * vec4(aPos, 1.0); 
     vec4 result = transProjection * transView * transRotation * transScale * vec4(aPos, 1.0); 
-    //result.x /= uAspect;
     gl_Position = vec4(result);
 };

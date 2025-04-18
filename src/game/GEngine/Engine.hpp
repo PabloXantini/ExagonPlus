@@ -2,6 +2,8 @@
 #define ENGINE_HPP
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -9,9 +11,11 @@
 #include "Shader.hpp"
 #include "Shaders.hpp"
 #include "../../resource.h"
+#include "../../ImageProcessor.cpp"
 #include "../Color.h"
 
 #include <iostream>
+#include <unordered_map>
 #include <vector>
 #include <map>
 
@@ -21,16 +25,30 @@ struct ObjectBuffer {
     unsigned int EBO=0; //Element Buffer Object: Define como se van a dibujar los vertices
 };
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
 class Engine {
     private:
         //Variables propias del motor
-        std::vector<ObjectBuffer> buffers={};
+        unsigned int Rwidth = 1200;                 //Valor reservado para el ancho
+        unsigned int Rheight = 900;                 //Valor reservado para el alto
+        float GnearD=0.1f;                          //Valor por defecto del nearD
+        float GfarD=100.f;                          //Valor por defecto del farD
+        float GFOV=45.0f;                           //Valor por defecto del FOV
+        std::vector<ObjectBuffer> buffers={};       //Buffers generados
         std::map<ShaderName, unsigned int> shaders; //Posibility to deprecate
+        std::unordered_map<int, bool> keyStates;    //Tokens de teclado
+        GLFWwindow* window;                         //Ventana
+        //Shaders usados
+        //Shader BASIC;
+        Shader* BASIC;
+        //Methods
         void setupShaders();
-        Shader BASIC;
+        GLFWimage load_icon(int resID);
     public:
         //Constructor
         Engine();
+        ~Engine();
         //Getters
         unsigned int getShaderProgram(ShaderName label){
             return shaders[label];
@@ -42,8 +60,7 @@ class Engine {
                 VAOs.push_back(buffer.VAO);
             }
             return VAOs;
-        }
-        
+        }     
         std::vector<unsigned int> getAllVBOs(const std::vector<ObjectBuffer>& buffers) {
             std::vector<unsigned int> VBOs;
             VBOs.reserve(buffers.size());
@@ -52,39 +69,183 @@ class Engine {
             }
             return VBOs;
         }
+        //Setters
+        void setFOV(float FOV){
+            GFOV=FOV;
+        }
+        void setnearD(float nearD){
+            GnearD=nearD;
+        }
+        void setfarD(float farD){
+            GfarD=farD;
+        }
+        //Linking
+        bool linkGLAD();
+        //Window Methods
+        bool initWindow(int width, int height, const char* title);
+        void setWindowsIcons(std::vector<int>& iconsID);
+        void initWindowResizing();
+        void resize(int width, int height);
+        void blockFPS(int FPSRate);
+        bool isWindowOpen();
+        void destroyWindow();
+        void init();
+        void handle();
+        void close();
+        //Keyboard Methods
+        void pollInput();
+        bool isKeyPressed(int key);
         //Memory Methods
         ObjectBuffer createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor);
         void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors);
+        void initShaders();
         void clearBuffers();
+        void clearShaders();
         //Graph Methods
         void fixScreenProportion(GLFWwindow* window);
         void setPerspective(float FOV, float aspect, float nearD, float farD);
-        void setupPerspective(float FOV, float aspect, float nearD, float farD);
+        //void setupPerspective(float FOV, float aspect, float nearD, float farD);
+        void modifyPerspective(float FOV, float nearD, float farD);
         void setupView(float x, float y, float z);
         void translateView(float x, float y, float z);
+        void rendWindowBackground();
         void renderPolygon(unsigned int rVAO, unsigned int sides);
         void renderPolygon2(unsigned int rVAO, unsigned int vertexcount);
         void rotate3D(float time, float RX, float RY, float RZ);
         void setupscale3D(float factor);
         void scale3D(float factor);
         void changeHue(float change, float hueFactor, float hueSpeed);
-        void clearShaders();
 };
 
-Engine::Engine()
-    :BASIC(IDR_VSHADER2,IDR_FSHADER2)
-{
+//Callback
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+    void* ptr = glfwGetWindowUserPointer(window);
+    if (ptr) {
+        Engine* engine = static_cast<Engine*>(ptr);
+        engine->resize(width, height);  // Llama al método de la clase
+    }
+    std::cout<<"Cambio"<<std::endl;
+}
+
+Engine::Engine(){
     std::cout<<"Oh me creooo, dice Engine o Motor"<<std::endl;
     //glEnable(GL_DEPTH_TEST);
     //setPerspective(45.0f, 400, 300, 0.1f, 100.0f);
+    //Inicia el motor
 }
 
+Engine::~Engine(){
+    delete BASIC;
+}
 //Posibilly to deprecate
 void Engine::setupShaders(){
     //Aqui se supone que cargo dinamicamente los shaders
     //Si se me complica manejar los shader aca, lo borro
 }
+void Engine::initShaders(){
+    BASIC = new Shader(IDR_VSHADER2,IDR_FSHADER2);
+}
+//Private methods
+GLFWimage Engine::load_icon(int resID) {
+    GLFWimage image;
+    int width, height;
+    image.pixels = loadImage(resID, width, height);
+    image.width = width;
+    image.height = height;
+    return image;
+}
+//Link Methods
+//Evalua si arranco GLAD(El linker para usar OpenGL)
+bool Engine::linkGLAD(){
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return false;
+    }
+    return true;
+}
+//Window Methods
+//Crea una ventana
+bool Engine::initWindow(int width, int height, const char* title){
+    //Inicializa el contexto de la pantalla
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    window = glfwCreateWindow(width, height, title, NULL, NULL);
+    if (!window) {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return false;
+    }
+    //Le dice a OpenGL cual es la ventana que va a renderizar
+    glfwMakeContextCurrent(window);
+    return true;
+}
+//Aniade iconos a la aplicacion
+void Engine::setWindowsIcons(std::vector<int>& iconsID){
+    if (!window) {
+        std::cout << "GLFW window don't exists" << std::endl;
+        return;
+    }
+    std::vector<GLFWimage> icons(iconsID.size());
+    for (size_t i = 0; i < iconsID.size(); ++i) {
+        icons[i] = load_icon(iconsID[i]);
+    }
+    glfwSetWindowIcon(window, static_cast<int>(icons.size()), icons.data());
+    for (auto& icon : icons) {
+        delete[] icon.pixels;
+    }
+}
+//Inicia el reescalado
+void Engine::initWindowResizing(){
+    glfwSetWindowUserPointer(window, this);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+}
+//Coreccion de reescalado
+void Engine::resize(int width, int height){
+    Rwidth=width;
+    Rheight=height;
+    float aspect = (float)width / (float)height;
+    setPerspective(GFOV, aspect, GnearD, GfarD);
+}
+//Bloquea los FPS
+void Engine::blockFPS(int FPSRate){
+    if(FPSRate==0){
+        std::cout << "FPS block not sucessfull" << std::endl;
+        return;
+    }  
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    int refreshRate = mode->refreshRate;
+    if (mode) {
+        std::cout << "Refresh Rate: " << mode->refreshRate << " Hz" << std::endl;
+    }
+    int block = refreshRate/FPSRate;
+    glfwSwapInterval(block);
+}
+//Ventana abierta
+bool Engine::isWindowOpen(){
+    return !glfwWindowShouldClose(window);
+}
+//Destruye la ventan
+void Engine::destroyWindow(){
+    glfwTerminate();
+}
+//Controlador del motor
+void Engine::handle(){
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
 
+//Keyboard Methods
+//Seteo de Teclas
+void Engine::pollInput() {
+    for (int key = 0; key < 350; ++key)
+        keyStates[key] = glfwGetKey(window, key) == GLFW_PRESS;
+}
+bool Engine::isKeyPressed(int key) {
+    return keyStates[key];
+}
 //Memory Methods
 //Crea un buffer para un objeto
 ObjectBuffer Engine::createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor){
@@ -155,16 +316,21 @@ void Engine::clearBuffers() {
 }
 
 //Render Methods
+//Establece el color de la pantalla
+void Engine::rendWindowBackground(){
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
 //Renderiza un poligono con indices
 void Engine::renderPolygon(unsigned int rVAO, unsigned int nindexes) {
-    BASIC.use();
+    BASIC->use();
     glBindVertexArray(rVAO);
     glDrawElements(GL_TRIANGLES, nindexes, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 //Renderiza un poligono con vertices
 void Engine::renderPolygon2(unsigned int rVAO, unsigned int vertexcount){
-    BASIC.use();
+    BASIC->use();
     glBindVertexArray(rVAO);
     glDrawArrays(GL_TRIANGLES, 0, vertexcount);
     glBindVertexArray(0);
@@ -174,37 +340,37 @@ void Engine::fixScreenProportion(GLFWwindow* window){
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     float aspect = (float)width / (float)height;
-    BASIC.setFloat("uAspect", aspect);
-    setupPerspective(45.0f, aspect, 0.1f, 100.0f);
-    //float aspect = (float)width / (float)height;
-    //int aspectLoc = glGetUniformLocation(BASIC.getID(), "uAspect");
-    //glUniform1f(aspectLoc, aspect);
+    setPerspective(45.0f, aspect, 0.1f, 100.0f);
 }
 //Transformaciones Perpespectiva
-//Establecer perspectiva
-void Engine::setupPerspective(float FOV, float aspect, float nearD, float farD){
-    BASIC.use();
-    glm::mat4 projection = glm::mat4(1.0);
-    projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
-    BASIC.setMat4("transProjection",projection);
-}
+//Establecer perspectiva con las proporciones de la pantalla
 void Engine::setPerspective(float FOV, float aspect, float nearD, float farD){
+    BASIC->use();
     glm::mat4 projection = glm::mat4(1.0);
     projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
-    BASIC.setMat4("transProjection",projection);
+    BASIC->setMat4("transProjection",projection);
 }
+
+void Engine::modifyPerspective(float FOV, float nearD, float farD){
+    float aspect = (float)Rwidth/(float)Rheight;
+    setPerspective(FOV, aspect, nearD, farD);
+    //glm::mat4 projection = glm::mat4(1.0);
+    //projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
+    //BASIC->setMat4("transProjection",projection);
+}
+
 //Transformaciones Vista
 //Mover camara
 void Engine::setupView(float x, float y, float z){
-    BASIC.use();
+    BASIC->use();
     glm::mat4 view = glm::mat4(1.0);
     view = glm::lookAt(glm::vec3(x, y, z), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    BASIC.setMat4("transView",view);
+    BASIC->setMat4("transView",view);
 }
 void Engine::translateView(float x, float y, float z){
     glm::mat4 view = glm::mat4(1.0);
     view = glm::translate(view, glm::vec3(x, y, z));
-    BASIC.setMat4("transView",view);
+    BASIC->setMat4("transView",view);
 }
 //Transformaciones Modelo
 //Rotacion en 3 dimensiones
@@ -213,31 +379,37 @@ void Engine::rotate3D(float time, float RX, float RY, float RZ){
     rot = glm::rotate(rot, glm::radians(time*RX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
     rot = glm::rotate(rot, glm::radians(time*RY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
     rot = glm::rotate(rot, glm::radians(time*RZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
-    BASIC.setMat4("transRotation",rot);
+    BASIC->setMat4("transRotation",rot);
 }
-//Escalado
 //Escalado
 void Engine::setupscale3D(float factor){
-    BASIC.use();
+    BASIC->use();
     glm::mat4 sc = glm::mat4(1.0);
     sc = glm::scale(sc, glm::vec3(factor));
-    BASIC.setMat4("transScale",sc);
+    BASIC->setMat4("transScale",sc);
 }
+//Escalado
 void Engine::scale3D(float factor){
     glm::mat4 sc = glm::mat4(1.0);
     sc = glm::scale(sc, glm::vec3(factor));
-    BASIC.setMat4("transScale",sc);
+    BASIC->setMat4("transScale",sc);
 }
 
 //Cambia el HUE del escenario
 void Engine::changeHue(float time, float hueFactor, float hueSpeed){
-    BASIC.setFloat("uTime",time);
-    BASIC.setFloat("HueFactor",hueFactor);
-    BASIC.setFloat("HueSpeed",hueSpeed);
+    BASIC->setFloat("uTime",time);
+    BASIC->setFloat("HueFactor",hueFactor);
+    BASIC->setFloat("HueSpeed",hueSpeed);
+}
+//Eliminar shaders
+void Engine::clearShaders(){
+    BASIC->kill();
 }
 
-void Engine::clearShaders(){
-    BASIC.kill();
+//Cierra el motor
+void Engine::close(){
+    clearBuffers();
+    clearShaders();
 }
 
 #endif

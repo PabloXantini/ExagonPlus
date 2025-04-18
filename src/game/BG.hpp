@@ -260,6 +260,15 @@ class BG{
         /*
             Vista
         */
+        void setPerspective(float FOV, float nearD, float farD){
+            engine->setFOV(FOV);
+            engine->setnearD(nearD);
+            engine->setfarD(farD);
+            engine->modifyPerspective(FOV, nearD, farD);
+        }
+        /*
+            Vista
+        */
         void setCamera(float x, float y, float z){
             engine->setupView(x, y, z);
         }

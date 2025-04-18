@@ -8,37 +8,37 @@
 
 class ExagonPanel {
     private:
-        Engine engine;
+        Engine* engine;
         ExagonGameProcess game;
-        GLFWwindow* window;
+        //GLFWwindow* window;
     public:
         //Constructor
-        ExagonPanel(GLFWwindow* window);
+        ExagonPanel(Engine* engine);
         //Methods
-        void paint();
+        void run();
         void clearEngine();
 };
 
 //Constructor
-ExagonPanel::ExagonPanel(GLFWwindow* window):
-    engine(),
-    game(&engine)
+ExagonPanel::ExagonPanel(Engine* engine):
+    engine(engine),
+    game(engine)
 {
     std::cout<<"Oh me creooo, dice Panel"<<std::endl;
-    this->window = window;
-    engine.fixScreenProportion(window);
+    //this->window = window;
+    //engine->fixScreenProportion(window);
 }
 
-void ExagonPanel::paint(){
+void ExagonPanel::run(){
     //El orden de renderizado
-    engine.fixScreenProportion(window);
+    //engine->fixScreenProportion(window);
     game.PlayLevel();
     game.getBG().show();
 }
 
 void ExagonPanel::clearEngine() {
-    engine.clearBuffers();
-    engine.clearShaders();
+    engine->clearBuffers();
+    engine->clearShaders();
 }
 
 #endif
