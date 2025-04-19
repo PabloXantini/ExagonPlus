@@ -2,6 +2,7 @@
 #define EXAGON_GAME_PROCESS_HPP
 
 #include "Color.h"
+#include "Time.hpp"
 #include "BGType.hpp"
 #include "BG.hpp"
 
@@ -40,10 +41,18 @@ class ExagonGameProcess {
             {0.071f, 0.267f, 0.612f}//,//ColO
             //{1.0f,1.0f,0.0f}//El ultimo solo se renderiza cuando es impar
         };
+        enum moveFunction {
+            LINEAR,
+            EASEIN,
+            EASEOUT,
+            EXPONENTIAL
+        };
         //Objetos de referencia
         Engine* EnginePlaceHolder;
         //Aqui nacen los objetos que quiera usar en el juego
+        Timer gameTime;
         BG background;
+        void changeDynamicSideBG(float time, int sides, float duration, moveFunction movetype);
     public:
         //Constructor
         ExagonGameProcess(Engine* enginehere);
@@ -57,7 +66,8 @@ class ExagonGameProcess {
 
 ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
-    background(EnginePlaceHolder, 0.9f,5,3,pcolors,Type::CLASSIC)
+    gameTime(),
+    background(EnginePlaceHolder, 0.9f,6,3,pcolors,Type::CLASSIC)
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     background.setPerspective(FOV, nearD, farD);  
@@ -66,18 +76,32 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
 }
 
 void ExagonGameProcess::PlayLevel(){
-    float time = glfwGetTime(); //Tiempo en general
+    float time = gameTime.getTime(); //Tiempo en general
     timer2 = time;
     //std::cout<<time<<std::endl;
+    //Cosas que se hacen siempre
     background.changeBGHue(time, hueFactor, hueSpeed);
-    //background.setCamera(CameraX, CameraY, CameraZ);
-    background.scaleBG(scale);
     background.rotateBG(time, deltaRotX, deltaRotY, deltaRotZ);
     if((time-timer1)>=colorSwapRatio){
         timer1=time;
         background.swapColors();
         //std::cout<<"Cambio de color"<<std::endl;
-    }    
+    }
+        
 }
+
+void ExagonGameProcess::changeDynamicSideBG(float time, int sides, float duration, moveFunction movetype){
+    std::cout<<time<<std::endl;
+    switch (movetype){
+        case LINEAR:
+
+            break;
+    }
+}
+//Para el escenario
+float moveLinear(float time, float duration){
+    return 1.0f;
+}
+//Para es escalado y movimiento
 
 #endif

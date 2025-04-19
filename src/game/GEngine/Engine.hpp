@@ -119,22 +119,19 @@ class Engine {
 
 //Callback
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    if (height == 0) return;
     glViewport(0, 0, width, height);
     void* ptr = glfwGetWindowUserPointer(window);
     if (ptr) {
         Engine* engine = static_cast<Engine*>(ptr);
         engine->resize(width, height);  // Llama al método de la clase
     }
-    std::cout<<"Cambio"<<std::endl;
+    //std::cout<<"Cambio"<<std::endl;
 }
 
 Engine::Engine(){
     std::cout<<"Oh me creooo, dice Engine o Motor"<<std::endl;
-    //glEnable(GL_DEPTH_TEST);
-    //setPerspective(45.0f, 400, 300, 0.1f, 100.0f);
-    //Inicia el motor
 }
-
 Engine::~Engine(){
     delete BASIC;
 }
@@ -236,13 +233,13 @@ void Engine::handle(){
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
-
 //Keyboard Methods
 //Seteo de Teclas
 void Engine::pollInput() {
     for (int key = 0; key < 350; ++key)
         keyStates[key] = glfwGetKey(window, key) == GLFW_PRESS;
 }
+//Checar que numero de tecla se activo
 bool Engine::isKeyPressed(int key) {
     return keyStates[key];
 }
@@ -289,7 +286,6 @@ ObjectBuffer Engine::createBuffer3D(const std::vector<float>& verts, const std::
 
     return newBuffer;
 }
-
 //Actualiza el peso de colores
 void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& colors){
     int stride=6;
@@ -306,7 +302,6 @@ void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& co
     //Desvincula en buffer
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-
 //Limpia todos los buffers
 void Engine::clearBuffers() {
     auto vaos = getAllVAOs(buffers);
@@ -314,7 +309,6 @@ void Engine::clearBuffers() {
     glDeleteVertexArrays(vaos.size(), vaos.data());
     glDeleteBuffers(vbos.size(), vbos.data());
 }
-
 //Render Methods
 //Establece el color de la pantalla
 void Engine::rendWindowBackground(){
@@ -350,15 +344,10 @@ void Engine::setPerspective(float FOV, float aspect, float nearD, float farD){
     projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
     BASIC->setMat4("transProjection",projection);
 }
-
 void Engine::modifyPerspective(float FOV, float nearD, float farD){
     float aspect = (float)Rwidth/(float)Rheight;
     setPerspective(FOV, aspect, nearD, farD);
-    //glm::mat4 projection = glm::mat4(1.0);
-    //projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
-    //BASIC->setMat4("transProjection",projection);
 }
-
 //Transformaciones Vista
 //Mover camara
 void Engine::setupView(float x, float y, float z){
@@ -394,7 +383,6 @@ void Engine::scale3D(float factor){
     sc = glm::scale(sc, glm::vec3(factor));
     BASIC->setMat4("transScale",sc);
 }
-
 //Cambia el HUE del escenario
 void Engine::changeHue(float time, float hueFactor, float hueSpeed){
     BASIC->setFloat("uTime",time);
@@ -405,7 +393,6 @@ void Engine::changeHue(float time, float hueFactor, float hueSpeed){
 void Engine::clearShaders(){
     BASIC->kill();
 }
-
 //Cierra el motor
 void Engine::close(){
     clearBuffers();

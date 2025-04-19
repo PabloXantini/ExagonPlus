@@ -43,14 +43,6 @@ class BG{
             vertexs.push_back(color.B);
         }
         /*
-            Añade un color a la mezcla de vertices, en base a un vector determinado
-            void pushColor(std::vector<float>&vertexs, RGBColor color){
-                vertexs.push_back(color.R);
-                vertexs.push_back(color.G);
-                vertexs.push_back(color.B);
-            }
-        */
-        /*
             Añade un color a la mezcla de vertices, en base a un vector de Colores determinado
         */
         void pushColor(std::vector<RGBColor>&colors, RGBColor color){
@@ -278,7 +270,9 @@ class BG{
         void setScale(float factor){
             engine->setupscale3D(factor);
         }
-        //Mostrar
+        /*
+            Renderizar/Mostrar
+        */
         void show() {
             engine->renderPolygon2(this->getID(0), getVertexs().size());
         }

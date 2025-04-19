@@ -15,8 +15,7 @@ class ExagonPanel {
         //Constructor
         ExagonPanel(Engine* engine);
         //Methods
-        void run();
-        void clearEngine();
+        void show();
 };
 
 //Constructor
@@ -29,16 +28,11 @@ ExagonPanel::ExagonPanel(Engine* engine):
     //engine->fixScreenProportion(window);
 }
 
-void ExagonPanel::run(){
+void ExagonPanel::show(){
     //El orden de renderizado
     //engine->fixScreenProportion(window);
     game.PlayLevel();
     game.getBG().show();
-}
-
-void ExagonPanel::clearEngine() {
-    engine->clearBuffers();
-    engine->clearShaders();
 }
 
 #endif
