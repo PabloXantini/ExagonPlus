@@ -24,13 +24,10 @@ ExagonPanel::ExagonPanel(Engine* engine):
     game(engine)
 {
     std::cout<<"Oh me creooo, dice Panel"<<std::endl;
-    //this->window = window;
-    //engine->fixScreenProportion(window);
 }
 
 void ExagonPanel::show(){
     //El orden de renderizado
-    //engine->fixScreenProportion(window);
     game.PlayLevel();
     game.getBG().show();
 }

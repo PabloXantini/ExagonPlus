@@ -17,7 +17,6 @@ const char TITLE[] = "ExagonPlus";
 const unsigned int SCR_WIDTH = 1200;
 const unsigned int SCR_HEIGHT = 900;
 //Iconos de la aplicacion
-//GLFWimage icons[2];
 std::vector<int> iconsref ={IDR_PNG1, IDR_PNG1};
 
 //Arranca el juego

@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <algorithm>
 #include <iostream>
 
 class Timer {
@@ -13,6 +14,7 @@ class Timer {
         float deltaTime;
     public:
         Timer() {
+            glfwSetTime(0.0f);
             temp=glfwGetTime();
             std::cout<<"Oh me creooo, dice el tiempo"<<std::endl;
         };
@@ -23,9 +25,14 @@ class Timer {
         }
         float getDeltaTime() {
             time=glfwGetTime();
-            deltaTime=time-temp;
+            deltaTime=std::min(time-temp,0.5f);
             temp=time;
             return deltaTime;
+        }
+        //Setters
+        void restart() {
+            time=0.0f;
+            glfwSetTime(0.0f);
         }  
 };
 

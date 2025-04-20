@@ -3,19 +3,20 @@
 
 #include "Color.h"
 #include "Time.hpp"
+#include "AnimationMaker.hpp"
 #include "BGType.hpp"
 #include "BG.hpp"
 
 #include <iostream>
+#include <functional>
 
 class ExagonGameProcess {
     private:
         //Una prueba de valores como si los estuviera pasando desde otro programa
-        //Duraciones
+        //Escenario
+        unsigned int sides=5;
+        //Ratio
         float colorSwapRatio=1.5f;  //Cada cuantos segundos cambia de color
-
-        float scaleDuration1=3.0f;
-
         //Cambio de color
         float hueFactor=0.2f;
         float hueSpeed=0.5f;
@@ -34,28 +35,35 @@ class ExagonGameProcess {
         float deltaRotZ=-180.0f;    //El que mas nos interesa
         //Timers                
         float timer1 = 0.0f;        //ColorSwap
-        float timer2 = 0.0f;        
+        float timer2 = 0.0f;
+        //Colores
+        std::vector<RGBColor> wallcolors={
+            {0.255f, 0.863f, 1.0f},//ColC - Color principal del centro y la pared
+            {0.2, 0.749, 0.871}//Col2
+        };      
         std::vector<RGBColor> pcolors={
             {0.196f, 0.576f, 0.922f},//Col1
             {0.102f, 0.376f, 0.86f},//Col2
-            {0.071f, 0.267f, 0.612f}//,//ColO
-            //{1.0f,1.0f,0.0f}//El ultimo solo se renderiza cuando es impar
+            {0.071f, 0.267f, 0.612f}//,//ColO - El ultimo solo se renderiza cuando es impar
         };
-        enum moveFunction {
-            LINEAR,
-            EASEIN,
-            EASEOUT,
-            EXPONENTIAL
-        };
+        //Variables propias de la clase
+        //Punteros de funciones
+        std::function<void(float, int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2);
         //Objetos de referencia
         Engine* EnginePlaceHolder;
         //Aqui nacen los objetos que quiera usar en el juego
         Timer gameTime;
         BG background;
-        void changeDynamicSideBG(float time, int sides, float duration, moveFunction movetype);
+        //Punteros de animaciones
+        std::vector<Animation*> animations={};
+        Animation* a1;
+
+        //Methods
+        void changeDynamicSideBG(float deltamov, int sides);
     public:
         //Constructor
         ExagonGameProcess(Engine* enginehere);
+        ~ExagonGameProcess();
         //Getters   
         BG& getBG() {
             return background;
@@ -67,16 +75,22 @@ class ExagonGameProcess {
 ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
     gameTime(),
-    background(EnginePlaceHolder, 0.9f,6,3,pcolors,Type::CLASSIC)
+    background(EnginePlaceHolder, 0.9f,sides,3,pcolors,Type::CLASSIC)
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
+    //Inicializacion del nivel
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
     background.setScale(scale);
+    //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
+    a1=new Animation(3, 2.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
 }
-
+ExagonGameProcess::~ExagonGameProcess(){
+    delete a1;
+}
 void ExagonGameProcess::PlayLevel(){
     float time = gameTime.getTime(); //Tiempo en general
+    float dtime = gameTime.getDeltaTime();
     timer2 = time;
     //std::cout<<time<<std::endl;
     //Cosas que se hacen siempre
@@ -87,20 +101,16 @@ void ExagonGameProcess::PlayLevel(){
         background.swapColors();
         //std::cout<<"Cambio de color"<<std::endl;
     }
-        
+    //Test Timeline
+    if(time>=15.0f){
+        a1->execute(dtime); 
+    }      
 }
+//Pruebas
 
-void ExagonGameProcess::changeDynamicSideBG(float time, int sides, float duration, moveFunction movetype){
-    std::cout<<time<<std::endl;
-    switch (movetype){
-        case LINEAR:
-
-            break;
-    }
-}
-//Para el escenario
-float moveLinear(float time, float duration){
-    return 1.0f;
+void ExagonGameProcess::changeDynamicSideBG(float deltamov, int sides){
+    std::cout<<deltamov<<std::endl;
+    background.softchangeSides(deltamov, sides);
 }
 //Para es escalado y movimiento
 

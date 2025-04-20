@@ -284,6 +284,13 @@ class BG{
             engine->updateBufferColorWeight(this->getID(0), vertexcolors);
         }
         /*
+            Cambia los lados de todo el escenario de manera cinematica
+        */
+        void softchangeSides(float step, int sides){
+            std::cout<<"Esta cambiando"<<std::endl;
+
+        }
+        /*
             Cambia el HUE del escenario
         */
         void changeBGHue(float time, float BGHueFactor, float BGHueSpeed){
