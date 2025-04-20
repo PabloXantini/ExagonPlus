@@ -3,13 +3,17 @@
 
 #include "GEngine/Engine.hpp"
 #include "GEngine/Shaders.hpp"
-#include "BGType.hpp"
 #include "Color.h"
 
 #include <algorithm>
 #include <vector>
 #include <cmath>
 #include <iostream>
+
+enum class Type {
+    CLASSIC,
+    INDEXED
+};
 
 struct Coor3D {
     float x;

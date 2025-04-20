@@ -4,7 +4,6 @@
 #include "Color.h"
 #include "Time.hpp"
 #include "AnimationMaker.hpp"
-#include "BGType.hpp"
 #include "BG.hpp"
 
 #include <iostream>
