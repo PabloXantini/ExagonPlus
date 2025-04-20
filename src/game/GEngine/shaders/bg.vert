@@ -9,7 +9,7 @@ layout (location = 1) in vec3 aColor;
 uniform mat4 transProjection;
 //Camara
 uniform mat4 transView;
-//Transformaciones
+//Transformaciones del Modelo
 uniform mat4 transRotation;
 uniform mat4 transScale;
 

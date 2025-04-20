@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Buffer.hpp"
 #include "Shader.hpp"
 #include "Shaders.hpp"
 #include "../../resource.h"
@@ -18,6 +19,12 @@
 #include <unordered_map>
 #include <vector>
 #include <map>
+
+struct Coor3D {
+    float x;
+    float y;
+    float z;
+};
 
 struct ObjectBuffer {
     unsigned int VAO; //Vertex Array Object: Define el objecto de vertices
@@ -36,6 +43,7 @@ class Engine {
         float GfarD=100.f;                          //Valor por defecto del farD
         float GFOV=45.0f;                           //Valor por defecto del FOV
         std::vector<ObjectBuffer> buffers={};       //Buffers generados
+        std::vector<Buffer> Buffers={};             //Buffers de verdad generados
         std::map<ShaderName, unsigned int> shaders; //Posibility to deprecate
         std::unordered_map<int, bool> keyStates;    //Tokens de teclado
         GLFWwindow* window;                         //Ventana
@@ -53,21 +61,37 @@ class Engine {
         unsigned int getShaderProgram(ShaderName label){
             return shaders[label];
         }
-        std::vector<unsigned int> getAllVAOs(const std::vector<ObjectBuffer>& buffers) {
+        std::vector<unsigned int> getAllVAOs(const std::vector<Buffer>& buffers) {
             std::vector<unsigned int> VAOs;
             VAOs.reserve(buffers.size());
             for (const auto& buffer : buffers) {
-                VAOs.push_back(buffer.VAO);
+                VAOs.push_back(buffer.getVAO());
             }
             return VAOs;
         }     
-        std::vector<unsigned int> getAllVBOs(const std::vector<ObjectBuffer>& buffers) {
+        std::vector<unsigned int> getAllVBOs(const std::vector<Buffer>& buffers) {
             std::vector<unsigned int> VBOs;
             VBOs.reserve(buffers.size());
             for (const auto& buffer : buffers) {
-                VBOs.push_back(buffer.VBO);
+                VBOs.push_back(buffer.getVBO());
             }
             return VBOs;
+        }
+        std::vector<unsigned int> getAllEBOs(const std::vector<Buffer>& buffers) {
+            std::vector<unsigned int> EBOs;
+            EBOs.reserve(buffers.size());
+            for (const auto& buffer : buffers) {
+                EBOs.push_back(buffer.getEBO());
+            }
+            return EBOs;
+        }
+        Buffer* findBufferByVBO(unsigned int VBO) {
+            for (Buffer& buffer : Buffers) {
+                if (buffer.getVBO() == VBO) {
+                    return &buffer;
+                }
+            }
+            return nullptr;
         }
         //Setters
         void setFOV(float FOV){
@@ -96,8 +120,9 @@ class Engine {
         void pollInput();
         bool isKeyPressed(int key);
         //Memory Methods
+        unsigned int createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
         ObjectBuffer createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor);
-        void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors);
+        void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors,unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         void initShaders();
         void clearBuffers();
         void clearShaders();
@@ -114,6 +139,7 @@ class Engine {
         void rotate3D(float time, float RX, float RY, float RZ);
         void setupscale3D(float factor);
         void scale3D(float factor);
+        void polygonRadiusPolarMorph3D(float angleFrom, float angleTo, float radius, float step);
         void changeHue(float change, float hueFactor, float hueSpeed);
 };
 
@@ -244,7 +270,7 @@ bool Engine::isKeyPressed(int key) {
     return keyStates[key];
 }
 //Memory Methods
-//Crea un buffer para un objeto
+//Crea un buffer para un objeto - Posibililly to deprecate
 ObjectBuffer Engine::createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor){
     struct ObjectBuffer newBuffer;
 
@@ -286,9 +312,25 @@ ObjectBuffer Engine::createBuffer3D(const std::vector<float>& verts, const std::
 
     return newBuffer;
 }
+//Crea un buffer para un objeto dado argumentos
+unsigned int Engine::createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace){
+    Buffer newBuffer(verts, indexes, numargs);
+    for(auto& arg : argsspace){
+        newBuffer.addAttribute(arg);
+    }
+    Buffers.push_back(std::move(newBuffer));
+    return newBuffer.getVAO();
+}
+
 //Actualiza el peso de colores
-void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& colors){
-    int stride=6;
+void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& colors, unsigned int atribindex, const std::vector<unsigned int>& argsspace){
+    Buffer* buffer = findBufferByVBO(VBO);
+    int start=0;
+    for(int i=0;i<atribindex;i++){
+        start+=argsspace.at(i);
+    }
+    int colorsize=argsspace.at(atribindex);
+    int stride=buffer->getArgSize();
     std::vector<float> colorspace;
     for (auto& c : colors){
         pushColor(colorspace, c);
@@ -296,18 +338,20 @@ void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& co
     //Abre el buffer en cuestion
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     for (size_t i=0; i<colors.size();++i) {
-        GLintptr offset = 3*sizeof(float) + i*stride*sizeof(float);
-        glBufferSubData(GL_ARRAY_BUFFER, offset, 3*sizeof(float), &colorspace[i*3]);
+        GLintptr offset = start*sizeof(float) + i*stride*sizeof(float);
+        glBufferSubData(GL_ARRAY_BUFFER, offset, colorsize*sizeof(float), &colorspace[i*colorsize]);
     }
     //Desvincula en buffer
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 //Limpia todos los buffers
 void Engine::clearBuffers() {
-    auto vaos = getAllVAOs(buffers);
-    auto vbos = getAllVBOs(buffers);
+    auto vaos = getAllVAOs(Buffers);
+    auto vbos = getAllVBOs(Buffers);
+    auto ebos = getAllEBOs(Buffers);
     glDeleteVertexArrays(vaos.size(), vaos.data());
     glDeleteBuffers(vbos.size(), vbos.data());
+    glDeleteBuffers(ebos.size(), ebos.data());
 }
 //Render Methods
 //Establece el color de la pantalla
@@ -382,6 +426,9 @@ void Engine::scale3D(float factor){
     glm::mat4 sc = glm::mat4(1.0);
     sc = glm::scale(sc, glm::vec3(factor));
     BASIC->setMat4("transScale",sc);
+}
+void Engine::polygonRadiusPolarMorph3D(float angleFrom, float angleTo, float radius, float step){
+    
 }
 //Cambia el HUE del escenario
 void Engine::changeHue(float time, float hueFactor, float hueSpeed){

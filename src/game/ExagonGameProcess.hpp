@@ -47,7 +47,7 @@ class ExagonGameProcess {
         };
         //Variables propias de la clase
         //Punteros de funciones
-        std::function<void(float, int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2);
+        std::function<void(Animation*, float, int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         //Objetos de referencia
         Engine* EnginePlaceHolder;
         //Aqui nacen los objetos que quiera usar en el juego
@@ -58,7 +58,7 @@ class ExagonGameProcess {
         Animation* a1;
 
         //Methods
-        void changeDynamicSideBG(float deltamov, int sides);
+        void changeDynamicSideBG(Animation* anim, float deltamov, int sides);
     public:
         //Constructor
         ExagonGameProcess(Engine* enginehere);
@@ -105,12 +105,13 @@ void ExagonGameProcess::PlayLevel(){
         a1->execute(dtime); 
     }      
 }
-//Pruebas
-
-void ExagonGameProcess::changeDynamicSideBG(float deltamov, int sides){
+//Cambia los lados de manera dinamica con morphing
+void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int sides){
     std::cout<<deltamov<<std::endl;
     background.softchangeSides(deltamov, sides);
 }
+//Cambia los lados de manera brusca
+
 //Para es escalado y movimiento
 
 #endif

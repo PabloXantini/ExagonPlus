@@ -15,26 +15,21 @@ enum class Type {
     INDEXED
 };
 
-struct Coor3D {
-    float x;
-    float y;
-    float z;
-};
-
 class BG{
     private:
         //Variables propias de la clase
         //Graficos
-        std::vector<unsigned int> IDs={};       //Esto me permite saber que IDs tienen cada forma que vaya a renderizar
-        std::vector<unsigned int> indexes={};   //Indices de generacion
-        std::vector<float> vertexs={};          //Vertices brutos del objeto
-        std::vector<RGBColor> vertexcolors={};  //Gama de colores POR VERTICE
+        std::vector<unsigned int> IDs={};           //Esto me permite saber que IDs tienen cada forma que vaya a renderizar
+        std::vector<unsigned int> argspace={3,3};   //Pos//Color//toPos
+        std::vector<unsigned int> indexes={};       //Indices de generacion
+        std::vector<float> vertexs={};              //Vertices brutos del objeto
+        std::vector<RGBColor> vertexcolors={};      //Gama de colores POR VERTICE
         //General
-        std::vector<float> skvertexs={};        //Coordenadas generales (Util para heredar)
-        unsigned int timesto = 3;               //Veces en la que se reproducir el patron
-        unsigned int vnumber = 3;               //Lados del escenario               
-        float radius=1.2f;                      //Es para setear el largo del escenario
-        std::vector<RGBColor> pcolors={};       //Gama de colores
+        std::vector<float> skvertexs={};            //Coordenadas generales (Util para heredar)
+        unsigned int timesto = 3;                   //Veces en la que se reproducir el patron
+        unsigned int vnumber = 3;                   //Lados del escenario               
+        float radius=1.2f;                          //Es para setear el largo del escenario
+        std::vector<RGBColor> pcolors={};           //Gama de colores
         //Objectos de referencia
         Engine* engine;
         //Metodos de creacion
@@ -217,12 +212,14 @@ class BG{
                 vertexs = setRegular(radius, vnum);
                 indexes = createIndexes(vnum);
                 //Memoria del objeto
-                IDs.push_back(engine->createBuffer3D(vertexs, &indexes, false).VAO);
+                //IDs.push_back(engine->createBuffer3D(vertexs, &indexes, false).VAO);
+                IDs.push_back(engine->createBuffer(vertexs, &indexes, 3, argspace));
             }else if (type==Type::CLASSIC){
                 vertexs = rawsetRegular(radius, vnum);
                 vertexs = addColors(vertexs.size()/3, timesto, colors);
                 //Memoria del objeto
-                IDs.push_back(engine->createBuffer3D(vertexs, NULL, true).VAO);
+                //IDs.push_back(engine->createBuffer3D(vertexs, NULL, true).VAO);
+                IDs.push_back(engine->createBuffer(vertexs, NULL, 6, argspace));
             }
             //Comentalo si quieres
             std::cout << "[ ";
@@ -285,14 +282,20 @@ class BG{
         */
         void swapColors(){
             std::rotate(vertexcolors.begin(), vertexcolors.begin()+timesto, vertexcolors.end());
-            engine->updateBufferColorWeight(this->getID(0), vertexcolors);
+            engine->updateBufferColorWeight(this->getID(0),vertexcolors,1,argspace);
         }
         /*
-            Cambia los lados de todo el escenario de manera cinematica
+            Reserva la posicion para realizar el morphing
+        */
+        void prepareBG(int sides){
+
+        }
+        /*
+            Cambia los lados de todo el escenario de manera cinematica (morphing)
         */
         void softchangeSides(float step, int sides){
             std::cout<<"Esta cambiando"<<std::endl;
-
+            
         }
         /*
             Cambia el HUE del escenario
