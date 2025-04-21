@@ -73,6 +73,8 @@ class Animation {
             if(executing==false) {
                 hasInited=true;
                 std::cout<<"Inicio la accion"<<std::endl;
+            }else{
+                hasInited=false;
             }
             executing=true;
             timeElapsed+=deltatime;

@@ -29,8 +29,8 @@ class ExagonGameProcess {
         float CameraZ = 2.0f;
         //Transformaciones
         float scale = 1.0f;
-        float deltaRotX=5.0f;
-        float deltaRotY=5.0f;
+        float deltaRotX=1.0f;
+        float deltaRotY=1.0f;
         float deltaRotZ=-180.0f;    //El que mas nos interesa
         //Timers                
         float timer1 = 0.0f;        //ColorSwap
@@ -82,7 +82,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setCamera(CameraX, CameraY, CameraZ);
     background.setScale(scale);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
-    a1=new Animation(3, 2.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a1=new Animation(4, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;
@@ -101,14 +101,24 @@ void ExagonGameProcess::PlayLevel(){
         //std::cout<<"Cambio de color"<<std::endl;
     }
     //Test Timeline
-    if(time>=15.0f){
+    if(time>=11.0f){
         a1->execute(dtime); 
     }      
 }
 //Cambia los lados de manera dinamica con morphing
 void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int sides){
     std::cout<<deltamov<<std::endl;
-    background.softchangeSides(deltamov, sides);
+    if(anim->Inited()){
+        if(this->sides>sides){
+            background.prepareBGforDecrease(sides);
+        }else{
+            background.prepareBGforIncrease(sides);
+        }
+    }
+    background.softchangeSides(deltamov);
+    if(this->sides>sides&&deltamov==1.0f){
+        background.endUpdate(deltamov);
+    }
 }
 //Cambia los lados de manera brusca
 

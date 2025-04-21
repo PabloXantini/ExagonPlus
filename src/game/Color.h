@@ -17,5 +17,11 @@ void pushColor(std::vector<float>&vertexs, RGBColor color){
     vertexs.push_back(color.G);
     vertexs.push_back(color.B);
 }
+/*
+    Añade un color a la mezcla de vertices, en base a un vector de Colores determinado
+*/
+void pushColor(std::vector<RGBColor>&colors, RGBColor color){
+    colors.push_back(color);
+}
 
 #endif

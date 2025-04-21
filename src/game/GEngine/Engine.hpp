@@ -122,8 +122,11 @@ class Engine {
         //Memory Methods
         unsigned int createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
         ObjectBuffer createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor);
+        void updateBuffer(unsigned int VBO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes);
         void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors,unsigned int atribindex, const std::vector<unsigned int>& argsspace);
+        void updateBufferCoorWeight(unsigned int VBO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         void initShaders();
+        void initializeCustom(float radius);
         void clearBuffers();
         void clearShaders();
         //Graph Methods
@@ -139,7 +142,7 @@ class Engine {
         void rotate3D(float time, float RX, float RY, float RZ);
         void setupscale3D(float factor);
         void scale3D(float factor);
-        void polygonRadiusPolarMorph3D(float angleFrom, float angleTo, float radius, float step);
+        void polygonRadiusPolarMorph3D(float radius, float step);
         void changeHue(float change, float hueFactor, float hueSpeed);
 };
 
@@ -168,6 +171,7 @@ void Engine::setupShaders(){
 }
 void Engine::initShaders(){
     BASIC = new Shader(IDR_VSHADER2,IDR_FSHADER2);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 //Private methods
 GLFWimage Engine::load_icon(int resID) {
@@ -321,7 +325,11 @@ unsigned int Engine::createBuffer(const std::vector<float>& verts, const std::ve
     Buffers.push_back(std::move(newBuffer));
     return newBuffer.getVAO();
 }
-
+//Actualiza todo el contenido del buffer
+void Engine::updateBuffer(unsigned int VBO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes){
+    Buffer* buffer = findBufferByVBO(VBO);
+    buffer->updateAll(verts, indexes);
+};
 //Actualiza el peso de colores
 void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& colors, unsigned int atribindex, const std::vector<unsigned int>& argsspace){
     Buffer* buffer = findBufferByVBO(VBO);
@@ -340,6 +348,29 @@ void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& co
     for (size_t i=0; i<colors.size();++i) {
         GLintptr offset = start*sizeof(float) + i*stride*sizeof(float);
         glBufferSubData(GL_ARRAY_BUFFER, offset, colorsize*sizeof(float), &colorspace[i*colorsize]);
+    }
+    //Desvincula en buffer
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+void Engine::updateBufferCoorWeight(unsigned int VBO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace){
+    Buffer* buffer = findBufferByVBO(VBO);
+    int start=0;
+    for(int i=0;i<atribindex;i++){
+        start+=argsspace.at(i);
+    }
+    int coorsize=argsspace.at(atribindex);
+    int stride=buffer->getArgSize();
+    std::vector<float> coorspace;
+    for (auto& coor : coors){
+        coorspace.push_back(coor.x);
+        coorspace.push_back(coor.y);
+        coorspace.push_back(coor.z);
+    }
+    //Abre el buffer en cuestion
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    for (size_t i=0; i<coors.size();++i) {
+        GLintptr offset = start*sizeof(float) + i*stride*sizeof(float);
+        glBufferSubData(GL_ARRAY_BUFFER, offset, coorsize*sizeof(float), &coorspace[i*coorsize]);
     }
     //Desvincula en buffer
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -427,8 +458,9 @@ void Engine::scale3D(float factor){
     sc = glm::scale(sc, glm::vec3(factor));
     BASIC->setMat4("transScale",sc);
 }
-void Engine::polygonRadiusPolarMorph3D(float angleFrom, float angleTo, float radius, float step){
-    
+void Engine::polygonRadiusPolarMorph3D(float radius, float step){
+    BASIC->setFloat("radius",radius);
+    BASIC->setFloat("morphprogress",step);
 }
 //Cambia el HUE del escenario
 void Engine::changeHue(float time, float hueFactor, float hueSpeed){
@@ -444,6 +476,12 @@ void Engine::clearShaders(){
 void Engine::close(){
     clearBuffers();
     clearShaders();
+}
+//Metodos fuera del scope
+void Engine::initializeCustom(float radius){
+    BASIC->use();
+    BASIC->setFloat("radius",radius);
+    BASIC->setFloat("morphprogress",0.0f);
 }
 
 #endif
