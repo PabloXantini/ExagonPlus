@@ -26,11 +26,12 @@ class BG{
 
         std::vector<unsigned int> indexes={};       //Indices de generacion
         std::vector<float> vertexs={};              //Vertices brutos del objeto
-        std::vector<float> dynamicvertexs={};       //Espacio dinamico en el que se guardan los vertices
         
-        std::vector<Coor3D> vcoors={};              //Coordenadas 3D POR VERTICE
-        std::vector<Coor3D> allvcoors={};           //Coordenadas 3D POR VERTICE
-        std::vector<Coor3D> allvcoorscopy={};       //Copia Coordenadas 3D POR VERTICE
+        std::vector<Coor3D> vcoors={};              //Coordenadas 3D POR VERTICE (Origen)
+        std::vector<Coor3D> tovcoors={};            //Coordenadas 3D POR VERTICE (Destino)
+        std::vector<Coor3D> allvcoors={};           //Coordenadas 3D POR VERTICE - Triangulos (Origen)
+        std::vector<Coor3D> toallvcoors={};         //Coordenadas 3D POR VERTICE - Triangulos (Destino)
+
         std::vector<RGBColor> vertexcolors={};      //Gama de colores POR VERTICE
         //General
         std::vector<float> skvertexs={};            //Coordenadas generales (Util para heredar)
@@ -128,10 +129,10 @@ class BG{
             pushCoor3D(B);
             pushCoor3D(C);
         }
-        void pushTriangle2(Coor3D A, Coor3D B, Coor3D C){
-            pushCoor3D(allvcoors, A);
-            pushCoor3D(allvcoors, B);
-            pushCoor3D(allvcoors, C);
+        void pushTriangle(std::vector<Coor3D>& mesh, Coor3D A, Coor3D B, Coor3D C){
+            pushCoor3D(mesh, A);
+            pushCoor3D(mesh, B);
+            pushCoor3D(mesh, C);
         }
         /*
             Guarda datos escenciales para el trazado del escenario (traza un poligono regular), usando indices
@@ -180,7 +181,7 @@ class BG{
                 vcoors.push_back(currentcoor);
             }
             vertexs=createTriangles(vcoors);
-            allvcoors=createTriangles2(vcoors);
+            allvcoors=createTriangles(allvcoors, vcoors);
             reserveArgSpace();
             return vertexs;
         }
@@ -189,38 +190,51 @@ class BG{
         */
         std::vector<Coor3D> setNewRegular(float radius, unsigned int vnumber){
             restartSpacing();
-            std::vector<Coor3D> vcoorscopy=vcoors;
+            std::vector<Coor3D> cvcoors=vcoors;//Guarda las coordenadas anteriores
+            //Reinicia las coordenadas
             vcoors.clear();
+            tovcoors.clear();
+            //Logica sacada otra vez para formar el nuevo poligono
             Coor3D currentcoor;
             currentcoor.x=0.0f;
             currentcoor.y=0.0f;
             currentcoor.z=0.0f;
             float anglex = (float)(4*acos(0.0)/vnumber);
             vcoors.push_back(currentcoor);
+            tovcoors.push_back(currentcoor);
             for (int i=0; i<vnumber; i++){
                 currentcoor.x=radius*cos(anglex*i);
                 currentcoor.y=radius*sin(anglex*i);
                 vcoors.push_back(currentcoor);
+                tovcoors.push_back(currentcoor);
             }
-            if(this->vnumber>=vnumber){
-                vertexs.clear();
-                vertexs=createTriangles(vcoors);
-                allvcoors.clear();
-                allvcoorscopy=createTriangles2(vcoors);
+            //Evalua los casos en los que debe reducir el numero de poligonos
+            if(this->vnumber>=vnumber){                 //Decrease
                 for(int i=0; i<(this->vnumber-vnumber); i++){
-                    vcoors.push_back(vcoors.back());
+                    tovcoors.push_back(tovcoors.back());
                 }
-            }else{
+                //Prepara las coordenadas
+                vertexs.clear();
+                allvcoors.clear();
+                toallvcoors.clear();
+
+                toallvcoors=createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
+                vertexs=createTriangles(vcoors);                    //Pos Atrib 0              
+                allvcoors=createTriangles(allvcoors, vcoors);       //Pos Atrib 2
+            }else{                                      //Increase
                 for(int i=0; i<(vnumber-this->vnumber); i++){
-                    vcoorscopy.push_back(vcoorscopy.back());
+                    cvcoors.push_back(cvcoors.back());
                 }
                 vertexs.clear();
-                vertexs=createTriangles(vcoorscopy);
+                allvcoors.clear();
+                toallvcoors.clear();
+
+                vertexs=createTriangles(cvcoors);         //Pre Atrib 0
+                allvcoors=createTriangles(allvcoors, vcoors);       //No lo uso pero se actualiza de la clase             
+                toallvcoors=createTriangles(toallvcoors, tovcoors);   //Pre Atrib 2
             }
-            allvcoors.clear();
-            allvcoors=createTriangles2(vcoors);
             reserveArgSpace();
-            return allvcoors;
+            return toallvcoors;
         }
         /*
             Crea los triangulos de manera bruta para la manera CLASSIC
@@ -232,12 +246,15 @@ class BG{
             pushTriangle(coors.at(0), coors.at(coors.size()-1), coors.at(1));
             return vertexs;
         }
-        std::vector<Coor3D> createTriangles2(std::vector<Coor3D>coors){
+        /*
+            Crea los triangulos de manera bruta para la manera CLASSIC usando coordenadas
+        */
+        std::vector<Coor3D> createTriangles(std::vector<Coor3D>&vcoors, std::vector<Coor3D>coors){
             for(int i=1; i<(coors.size()-1); i++){
-                pushTriangle2(coors.at(0), coors.at(i), coors.at(i+1));
+                pushTriangle(vcoors, coors.at(0), coors.at(i), coors.at(i+1));
             }
-            pushTriangle2(coors.at(0), coors.at(coors.size()-1), coors.at(1));
-            return allvcoors;
+            pushTriangle(vcoors, coors.at(0), coors.at(coors.size()-1), coors.at(1));
+            return vcoors;
         }
         /*
             Inserta los colores en las coordenadas de las posiciones con algo de estilo
@@ -316,14 +333,12 @@ class BG{
                 vertexs = setRegular(radius, vnum);
                 indexes = createIndexes(vnum);
                 //Memoria del objeto
-                //IDs.push_back(engine->createBuffer3D(vertexs, &indexes, false).VAO);
                 IDs.push_back(engine->createBuffer(vertexs, &indexes, 3, argspace));
             }else if (type==Type::CLASSIC){
                 vertexs = rawsetRegular(radius, vnum);
                 vertexs = addColors(vertexs.size()/3, timesto, colors);
                 vertexs = padCoors(vertexs.size()/6, allvcoors);
                 //Memoria del objeto
-                //IDs.push_back(engine->createBuffer3D(vertexs, NULL, true).VAO);
                 IDs.push_back(engine->createBuffer(vertexs, NULL, 9, argspace));
             }
             //Comentalo si quieres
@@ -394,11 +409,12 @@ class BG{
         */
         void prepareBGforDecrease(int sides){
             //Guardo nuevas coordenadas al buffer
-            allvcoors=setNewRegular(radius, sides);
-            engine->updateBufferCoorWeight(this->getID(0),allvcoors,2,argspace);
+            toallvcoors=setNewRegular(radius, sides);
+            engine->updateBufferCoorWeight(this->getID(0),toallvcoors,2,argspace);
             //Preparo vertexs para temas de consistencia
             vertexs=addColors(vertexs.size()/3, timesto, pcolors);
-            vertexs=padCoors(vertexs.size()/6, allvcoorscopy); //El error
+            vertexs=padCoors(vertexs.size()/6, allvcoors);
+            this->vnumber=sides;
             //Comentalo si quieres
             std::cout << "[ ";
             for (float val : vertexs) {
@@ -408,9 +424,9 @@ class BG{
         }
         void prepareBGforIncrease(int sides){
             //Preparo vertexs para temas de consistencia
-            allvcoors=setNewRegular(radius, sides);
+            toallvcoors=setNewRegular(radius, sides);
             vertexs=addColors(vertexs.size()/3, timesto, pcolors);
-            vertexs=padCoors(vertexs.size()/6, allvcoors);
+            vertexs=padCoors(vertexs.size()/6, toallvcoors);
             this->vnumber=sides;
             engine->updateBuffer(this->getID(0),vertexs, NULL);
             //Comentalo si quieres
