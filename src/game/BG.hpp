@@ -307,7 +307,7 @@ class BG{
             engine(engine)
         {
             std::cout<<"Oh me creooo, dice BG"<<std::endl;
-            engine->initializeCustom(radius);
+            engine->initializeCustom();
             this->radius=radius;
             pcolors = colors;
             vnumber = vnum;
@@ -425,7 +425,7 @@ class BG{
         */
         void softchangeSides(float step){
             std::cout<<"Esta cambiando"<<std::endl;
-            engine->polygonRadiusPolarMorph3D(radius, step);
+            engine->polygonRadiusPolarMorph3D(step);
         }
         /*
             Actualiza solo al terminar (morphing)

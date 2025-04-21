@@ -4,8 +4,6 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec3 toPos;
 
-//Aspecto
-//uniform float uAspect;
 //Vista
 uniform mat4 transProjection;
 //Camara
@@ -14,7 +12,6 @@ uniform mat4 transView;
 uniform mat4 transRotation;
 uniform mat4 transScale;
 //Polar Morphing
-uniform float radius;
 uniform float morphprogress;
 
 vec3 polarMorph(vec3 from, vec3 to, float t) {
@@ -45,6 +42,7 @@ vec3 polarMorph(vec3 from, vec3 to, float t) {
             aB += 6.28318; // +2π
     }
 
+    float radius = mix(rA, rB, t);
     float angle = mix(aA, aB, t);
     float z = mix(from.z, to.z, t);
 

@@ -13,7 +13,7 @@ class ExagonGameProcess {
     private:
         //Una prueba de valores como si los estuviera pasando desde otro programa
         //Escenario
-        unsigned int sides=5;
+        unsigned int sides=6;
         //Ratio
         float colorSwapRatio=1.5f;  //Cada cuantos segundos cambia de color
         //Cambio de color
@@ -82,7 +82,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setCamera(CameraX, CameraY, CameraZ);
     background.setScale(scale);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
-    a1=new Animation(4, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a1=new Animation(9, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;

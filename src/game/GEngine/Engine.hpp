@@ -126,7 +126,7 @@ class Engine {
         void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors,unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         void updateBufferCoorWeight(unsigned int VBO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         void initShaders();
-        void initializeCustom(float radius);
+        void initializeCustom();
         void clearBuffers();
         void clearShaders();
         //Graph Methods
@@ -142,7 +142,7 @@ class Engine {
         void rotate3D(float time, float RX, float RY, float RZ);
         void setupscale3D(float factor);
         void scale3D(float factor);
-        void polygonRadiusPolarMorph3D(float radius, float step);
+        void polygonRadiusPolarMorph3D(float step);
         void changeHue(float change, float hueFactor, float hueSpeed);
 };
 
@@ -458,8 +458,7 @@ void Engine::scale3D(float factor){
     sc = glm::scale(sc, glm::vec3(factor));
     BASIC->setMat4("transScale",sc);
 }
-void Engine::polygonRadiusPolarMorph3D(float radius, float step){
-    BASIC->setFloat("radius",radius);
+void Engine::polygonRadiusPolarMorph3D(float step){
     BASIC->setFloat("morphprogress",step);
 }
 //Cambia el HUE del escenario
@@ -478,9 +477,9 @@ void Engine::close(){
     clearShaders();
 }
 //Metodos fuera del scope
-void Engine::initializeCustom(float radius){
+//Son variables globales que deben ir siempre
+void Engine::initializeCustom(){
     BASIC->use();
-    BASIC->setFloat("radius",radius);
     BASIC->setFloat("morphprogress",0.0f);
 }
 
