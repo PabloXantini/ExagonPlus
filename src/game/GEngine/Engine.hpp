@@ -43,7 +43,6 @@ class Engine {
         std::unordered_map<int, bool> keyStates;    //Tokens de teclado
         GLFWwindow* window;                         //Ventana
         //Shaders usados
-        //Shader BASIC;
         Shader* BASIC;
         //Methods
         void setupShaders();
@@ -108,7 +107,6 @@ class Engine {
         void blockFPS(int FPSRate);
         bool isWindowOpen();
         void destroyWindow();
-        void init();
         void handle();
         void close();
         //Keyboard Methods

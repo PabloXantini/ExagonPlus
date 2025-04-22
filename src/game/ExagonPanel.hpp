@@ -30,6 +30,7 @@ void ExagonPanel::show(){
     //El orden de renderizado
     game.PlayLevel();
     game.getBG().show();
+    game.getCenter().show();
 }
 
 #endif

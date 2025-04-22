@@ -2,7 +2,12 @@
 #define CENTER_HPP
 
 #include "GEngine/Engine.hpp"
+#include "utils/Position.h"
+#include "utils/Color.h"
 #include "BG.hpp"
+
+#include <iostream>
+#include <vector>
 
 class Center : public BG {
     private:
@@ -13,15 +18,24 @@ class Center : public BG {
 
         std::vector<unsigned int> indexes={};       //Indices de generacion
         std::vector<float> vertexs={};              //Vertices brutos del objeto
+        std::vector<float> wvertexs={};              //Vertices brutos del objeto
 
-        std::vector<Coor3D> vcoors={};              //Coordenadas 3D POR VERTICE
-        std::vector<Coor3D> allvcoors={};           //Coordenadas 3D POR VERTICE
-        std::vector<Coor3D> allvcoorscopy={};       //Copia Coordenadas 3D POR VERTICE
+        //Borde
+        std::vector<Coor3D> wvcoors={};             //Coordenadas 3D POR VERTICE (Origen)
+        std::vector<Coor3D> wtovcoors={};           //Coordenadas 3D POR VERTICE (Destino)
+        //Relleno
+        std::vector<Coor3D> vcoors={};              //Coordenadas 3D POR VERTICE (Origen)
+        std::vector<Coor3D> tovcoors={};            //Coordenadas 3D POR VERTICE (Destino)
 
-        unsigned int vnumber = 3;
-        float radius=1.2f;
-        RGBColor pcolor;
-        
+        std::vector<RGBColor> vertexcolors={};      //Gama de colores POR VERTICE
+        std::vector<RGBColor> wvertexcolors={};     //Colores de pared POR VERTICE
+        //General
+        unsigned int vnumber = 3;                   //Lados del centro
+        unsigned int timesto = 6;                   //Veces en la que se reproducira el patron
+        float radius=1.2f;                          //Es para setear el largo del centro
+        float padding=0.1f;                         //Grosor del borde
+        std::vector<RGBColor> pcolors;              //Color principal (por vertice)
+        RGBColor wallcolor;                         //Color del contorno
         //Objetos de referencia
         Engine* engine;
         //Metodos de creacion
@@ -54,7 +68,7 @@ class Center : public BG {
         /*
             Añade un color a la mezcla de vertices, dependiendo del desplazamiento
         */
-        void insertColorAt(RGBColor color, int offset){
+        void insertColorAt(std::vector<float>&vertexs, RGBColor color, int offset){
             vertexs.insert(vertexs.begin()+offset, color.R);
             vertexs.insert(vertexs.begin()+offset+1, color.G);
             vertexs.insert(vertexs.begin()+offset+2, color.B);
@@ -77,7 +91,7 @@ class Center : public BG {
         /*
             Añade una coordenada 3D a la mezcla de vertices, dependiendo del desplazamiento
         */
-        void insertCoor3DAt(Coor3D coor, int offset){
+        void insertCoor3DAt(std::vector<float>&vertexs, Coor3D coor, int offset){
             vertexs.insert(vertexs.begin()+offset, coor.x);
             vertexs.insert(vertexs.begin()+offset+1, coor.y);
             vertexs.insert(vertexs.begin()+offset+2, coor.z);
@@ -93,7 +107,7 @@ class Center : public BG {
         /*
             Inserta un triangulo indicado por las coordenadas del triangulo
         */
-        void pushTriangle(Coor3D A, Coor3D B, Coor3D C){
+        void PushTriangle(Coor3D A, Coor3D B, Coor3D C){
             PushCoor3D(A);
             PushCoor3D(B);
             PushCoor3D(C);
@@ -101,19 +115,23 @@ class Center : public BG {
         /*
             Guarda datos escenciales para el trazado del escenario (traza un poligono regular), usando indices
         */
-        std::vector<float> setRegular(float radius, unsigned int vnumber){
+        std::vector<float> setRegular(std::vector<float>& vertexs, std::vector<Coor3D>& verts, float radius, unsigned int vnumber){
+            restartSpacing();
             vertexs.clear();
             Coor3D currentcoor;
             currentcoor.x=0.0f;
             currentcoor.y=0.0f;
             currentcoor.z=0.0f;
             float anglex = (float)(4*acos(0.0)/vnumber);
-            PushCoor3D(currentcoor);
+            pushCoor3D(vertexs, currentcoor);
+            verts.push_back(currentcoor);
             for (int i=0; i<vnumber; i++){
                 currentcoor.x=radius*cos(anglex*i);
                 currentcoor.y=radius*sin(anglex*i);
-                PushCoor3D(currentcoor); 
+                pushCoor3D(vertexs, currentcoor);
+                verts.push_back(currentcoor);
             }
+            reserveArgSpace();
             return vertexs;
         }
         /*
@@ -127,7 +145,207 @@ class Center : public BG {
             pushVTriangle(0, vnumber, 1);
             return indexes;
         }
+        std::vector<float> createTriangles(std::vector<Coor3D>coors){
+            for(int i=1; i<(coors.size()-1); i++){
+                PushTriangle(coors.at(0), coors.at(i), coors.at(i+1));
+            }
+            PushTriangle(coors.at(0), coors.at(coors.size()-1), coors.at(1));
+            return vertexs;
+        }
+        /*
+            Guarda datos escenciales para el trazado del escenario (traza un poligono regular), con vertices puros
+        */
+        std::vector<float> rawsetRegular(float radius, unsigned int vnumber){
+            vertexs.clear();
+            //std::vector<Coor3D> tempv={};
+            Coor3D currentcoor;
+            currentcoor.x=0.0f;
+            currentcoor.y=0.0f;
+            currentcoor.z=0.0f;
+            float anglex = (float)(4*acos(0.0)/vnumber);
+            vcoors.push_back(currentcoor);
+            for (int i=0; i<vnumber; i++){
+                currentcoor.x=radius*cos(anglex*i);
+                currentcoor.y=radius*sin(anglex*i);
+                vcoors.push_back(currentcoor);
+            }
+            vertexs=createTriangles(vcoors);
+            reserveArgSpace();
+            return vertexs;
+        }
+        /*
+            Guarda datos escenciales para el trazado del nuevo escenario (traza un poligono regular), con vertices puros
+        */
+        /*
+        std::vector<Coor3D> setNewRegular(float radius, unsigned int vnumber){
+            restartSpacing();
+            std::vector<Coor3D> cvcoors=vcoors;         //Guarda las coordenadas anteriores
+            //Reinicia las coordenadas
+            vcoors.clear();
+            tovcoors.clear();
+            //Logica sacada otra vez para formar el nuevo poligono
+            Coor3D currentcoor;
+            currentcoor.x=0.0f;
+            currentcoor.y=0.0f;
+            currentcoor.z=0.0f;
+            float anglex = (float)(4*acos(0.0)/vnumber);
+            vcoors.push_back(currentcoor);
+            tovcoors.push_back(currentcoor);
+            for (int i=0; i<vnumber; i++){
+                currentcoor.x=radius*cos(anglex*i);
+                currentcoor.y=radius*sin(anglex*i);
+                vcoors.push_back(currentcoor);
+                tovcoors.push_back(currentcoor);
+            }
+            //Evalua los casos en los que debe reducir el numero de poligonos
+            if(this->vnumber>=vnumber){                 //Decrease
+                for(int i=0; i<(this->vnumber-vnumber); i++){
+                    tovcoors.push_back(tovcoors.back());
+                }
+                //Prepara las coordenadas
+                vertexs.clear();
+                allvcoors.clear();
+                toallvcoors.clear();
+
+                allvcoors=BG::createTriangles(allvcoors, cvcoors);      //Pre Atrib 0
+                toallvcoors=BG::createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
+                vertexs=createTriangles(vcoors);                    //Pos Atrib 0              
+            }else{                                      //Increase
+                for(int i=0; i<(vnumber-this->vnumber); i++){
+                    cvcoors.push_back(cvcoors.back());
+                }
+                vertexs.clear();
+                allvcoors.clear();
+                toallvcoors.clear();
+
+                vertexs=createTriangles(cvcoors);                   //Pre Atrib 0
+                toallvcoors=BG::createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
+                allvcoors=BG::createTriangles(allvcoors, vcoors);       //Pos Atrib 2             
+            }
+            reserveArgSpace();
+            return toallvcoors;
+        }
+        */
+        /*
+            Crea los triangulos de manera bruta para la manera CLASSIC
+        */
+        std::vector<float> createTriangles(std::vector<float>&vertexs, std::vector<Coor3D>coors){
+            for(int i=1; i<(coors.size()-1); i++){
+                PushTriangle(coors.at(0), coors.at(i), coors.at(i+1));
+            }
+            PushTriangle(coors.at(0), coors.at(coors.size()-1), coors.at(1));
+            return vertexs;
+        }
+        /*
+            Inserta los colores en las coordenadas de las posiciones con algo de estilo
+        */
+        std::vector<float> addColors(std::vector<float>&vertexs, unsigned int vnum, unsigned int timesto, std::vector<RGBColor>&colors){
+            //std::cout << "Numero de vertices: " << vnum << std::endl;
+            vertexcolors.clear();           //Limpio primero que nada
+            int stride = calculateStride(); //Stride
+            int checkin = 0;
+            RGBColor newColor;
+            for(int i=0; i<vnum; i++){
+                //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
+                newColor = setColorPattern(checkin, timesto, colors);
+                insertColorAt(vertexs, newColor, argsused+i*stride);
+                pushColor(vertexcolors, newColor);
+                checkin++;
+            }
+            reserveArgSpace();          
+            return vertexs;
+        }
+        std::vector<float> addWallColor(std::vector<float>&vertexs, unsigned int vnum, RGBColor color){
+            //std::cout << "Numero de vertices: " << vnum << std::endl;
+            wvertexcolors.clear();           //Limpio primero que nada
+            int stride = calculateStride(); //Stride
+            for(int i=0; i<vnum; i++){
+                //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
+                insertColorAt(vertexs, color, argsused+i*stride);
+                pushColor(wvertexcolors, color);
+            }
+            reserveArgSpace();          
+            return vertexs;
+        }   
+        /*
+            Rellena las coordenadas para al iniciar el objeto
+        */
+        std::vector<float> padCoors(std::vector<float>&vertexs, unsigned int vnum, std::vector<Coor3D>&coors){
+            int stride = calculateStride();
+            for(int i=0; i<vnum; i++){
+                //std::cout << "Insertando en index: " << (3 + i* stride) << std::endl;
+                insertCoor3DAt(vertexs, coors.at(i), argsused+i*stride);
+            }
+            reserveArgSpace();
+            return vertexs;
+        }
+        /*
+            Establece el patron de los colores, 3 se usa para imprimir los triangulos de un solo color, mas o menos generan gradientes
+        */
+        RGBColor setColorPattern(int check, unsigned int timesto, std::vector<RGBColor>&colors){
+            if (colors.empty() || timesto == 0) return RGBColor{0.0f, 0.0f, 0.0f};
+            int index = (check / timesto) % colors.size();
+            RGBColor currentColor = colors.at(index);
+        return currentColor;
+    }
     public:
+        //Constructors
+        Center()=default;
+        Center(Engine* engine, float radius, float padding,unsigned int vnum, unsigned int patterntimesto, std::vector<RGBColor>&colors, RGBColor bordercolor):
+            engine(engine)
+        {
+            std::cout<<"Oh me creooo, dice Center"<<std::endl;
+            this->radius=radius;
+            this->padding=padding;
+            float cradius=radius-padding;
+            pcolors=colors;
+            wallcolor=bordercolor;
+            vnumber=vnum;
+            indexes=createIndexes(vnum);
+            //Contorno
+            wvertexs=setRegular(wvertexs,wvcoors,radius,vnum);
+            wvertexs=addWallColor(wvertexs,wvertexs.size()/3, bordercolor);
+            wvertexs=padCoors(wvertexs,wvertexs.size()/6,wvcoors);
+            //Relleno
+            vertexs=setRegular(vertexs,vcoors,cradius,vnum);
+            vertexs=addColors(vertexs,vertexs.size()/3, timesto, colors);
+            vertexs=padCoors(vertexs,vertexs.size()/6,vcoors);
+            //Memoria del objeto
+            IDs.push_back(engine->createBuffer(vertexs,&indexes,9,argspace));
+            IDs.push_back(engine->createBuffer(wvertexs,&indexes,9,argspace));
+            //Comentalo si quieres
+            std::cout << "[ ";
+            for (float val : vertexs) {
+                std::cout << val << " ";
+            }
+            std::cout << "]" << std::endl;
+            std::cout << "[ ";
+            for (float val : wvertexs) {
+                std::cout << val << " ";
+            }
+            std::cout << "]" << std::endl;
+        }
+        //Getters
+        unsigned int getID(unsigned int index) const {
+            return IDs.at(index);
+        }
+        const std::vector<float>&getVertexs() const {
+            return vertexs;
+        }
+        const std::vector<unsigned int>&getIndexes() const {
+            return indexes;
+        }
+        const unsigned int getVertexCount() const {
+            unsigned int vnum = vnumber+1;
+            return vnum;
+        }
+        const std::vector<RGBColor>&getColors() const {
+            return pcolors;
+        }
+        void show() {
+            engine->renderPolygon(this->getID(1), indexes.size());
+            engine->renderPolygon(this->getID(0), indexes.size());
+        }
 };
 
 #endif

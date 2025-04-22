@@ -2,7 +2,6 @@
 #define BG_HPP
 
 #include "GEngine/Engine.hpp"
-#include "GEngine/Shaders.hpp"
 #include "utils/Color.h"
 #include "utils/Position.h"
 
@@ -272,8 +271,14 @@ class BG{
             return vertexs;
         }
         /*
-            Actualiza un atributo
+            Establece el patron de los colores, 3 se usa para imprimir los triangulos de un solo color, mas o menos generan gradientes
         */
+        RGBColor setColorPattern(int check, unsigned int timesto, std::vector<RGBColor>&colors){
+            if (colors.empty() || timesto == 0) return RGBColor{0.0f, 0.0f, 0.0f};
+            int index = (check / timesto) % (colors.size()-1);
+            RGBColor currentColor = colors.at(index);
+            return currentColor;
+        }
     protected:
         /*
             Crea los triangulos de manera bruta para la manera CLASSIC usando coordenadas
@@ -284,15 +289,6 @@ class BG{
             }
             pushTriangle(vcoors, coors.at(0), coors.at(coors.size()-1), coors.at(1));
             return vcoors;
-        }
-        /*
-            Establece el patron de los colores, 3 se usa para imprimir los triangulos de un solo color, mas o menos generan gradientes
-        */
-        RGBColor setColorPattern(int check, unsigned int timesto, std::vector<RGBColor>&colors){
-            if (colors.empty() || timesto == 0) return RGBColor{0.0f, 0.0f, 0.0f};
-            int index = (check / timesto) % (colors.size()-1);
-            RGBColor currentColor = colors.at(index);
-            return currentColor;
         }
     public:
         //Constructors

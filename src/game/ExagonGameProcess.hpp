@@ -5,6 +5,7 @@
 #include "Time.hpp"
 #include "AnimationMaker.hpp"
 #include "BG.hpp"
+#include "Center.hpp"
 
 #include <iostream>
 #include <functional>
@@ -29,8 +30,8 @@ class ExagonGameProcess {
         float CameraZ = 2.0f;
         //Transformaciones
         float scale = 1.0f;
-        float deltaRotX=0.0f;
-        float deltaRotY=0.0f;
+        float deltaRotX=1.0f;
+        float deltaRotY=1.0f;
         float deltaRotZ=-180.0f;    //El que mas nos interesa
         //Timers                
         float timer1 = 0.0f;        //ColorSwap
@@ -39,7 +40,10 @@ class ExagonGameProcess {
         std::vector<RGBColor> wallcolors={
             {0.255f, 0.863f, 1.0f},//ColC - Color principal del centro y la pared
             {0.2, 0.749, 0.871}//Col2
-        };      
+        }; 
+        std::vector<RGBColor> ccolors={
+            {0.196f, 0.576f, 0.922f}
+        };     
         std::vector<RGBColor> pcolors={
             {0.196f, 0.576f, 0.922f},//Col1
             {0.102f, 0.376f, 0.86f},//Col2
@@ -53,6 +57,7 @@ class ExagonGameProcess {
         //Aqui nacen los objetos que quiera usar en el juego
         Timer gameTime;
         BG background;
+        Center center;
         //Punteros de animaciones
         std::vector<Animation*> animations={};
         Animation* a1;
@@ -68,6 +73,9 @@ class ExagonGameProcess {
         BG& getBG() {
             return background;
         }
+        Center& getCenter() {
+            return center;
+        }
         //Methods
         void PlayLevel();
 };
@@ -75,7 +83,8 @@ class ExagonGameProcess {
 ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
     gameTime(),
-    background(EnginePlaceHolder, 0.9f,sides,3,pcolors,Type::CLASSIC)
+    background(EnginePlaceHolder, 0.9f,sides,3,pcolors,Type::CLASSIC),
+    center(EnginePlaceHolder,0.18f,0.018f,sides,6,ccolors,wallcolors.at(0))
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
