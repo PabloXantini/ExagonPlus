@@ -79,9 +79,9 @@ class Engine {
             }
             return EBOs;
         }
-        Buffer* findBufferByVBO(unsigned int VBO) {
+        Buffer* findBufferByVAO(unsigned int VAO) {
             for (Buffer& buffer : Buffers) {
-                if (buffer.getVBO() == VBO) {
+                if (buffer.getVAO() == VAO) {
                     return &buffer;
                 }
             }
@@ -117,7 +117,7 @@ class Engine {
         ObjectBuffer createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor);
         void updateBuffer(unsigned int VBO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes);
         void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors,unsigned int atribindex, const std::vector<unsigned int>& argsspace);
-        void updateBufferCoorWeight(unsigned int VBO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace);
+        void updateBufferCoorWeight(unsigned int VAO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         void initShaders();
         void initializeCustom();
         void clearBuffers();
@@ -319,13 +319,14 @@ unsigned int Engine::createBuffer(const std::vector<float>& verts, const std::ve
     return newBuffer.getVAO();
 }
 //Actualiza todo el contenido del buffer
-void Engine::updateBuffer(unsigned int VBO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes){
-    Buffer* buffer = findBufferByVBO(VBO);
+void Engine::updateBuffer(unsigned int VAO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes){
+    Buffer* buffer = findBufferByVAO(VAO);
     buffer->updateAll(verts, indexes);
 };
 //Actualiza el peso de colores
-void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& colors, unsigned int atribindex, const std::vector<unsigned int>& argsspace){
-    Buffer* buffer = findBufferByVBO(VBO);
+void Engine::updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors, unsigned int atribindex, const std::vector<unsigned int>& argsspace){
+    Buffer* buffer = findBufferByVAO(VAO);
+    unsigned int VBO = buffer->getVBO();
     int start=0;
     for(int i=0;i<atribindex;i++){
         start+=argsspace.at(i);
@@ -345,8 +346,9 @@ void Engine::updateBufferColorWeight(unsigned int VBO, std::vector<RGBColor>& co
     //Desvincula en buffer
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
-void Engine::updateBufferCoorWeight(unsigned int VBO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace){
-    Buffer* buffer = findBufferByVBO(VBO);
+void Engine::updateBufferCoorWeight(unsigned int VAO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace){
+    Buffer* buffer = findBufferByVAO(VAO);
+    unsigned int VBO = buffer->getVBO();
     int start=0;
     for(int i=0;i<atribindex;i++){
         start+=argsspace.at(i);

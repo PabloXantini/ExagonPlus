@@ -42,11 +42,11 @@ class ExagonGameProcess {
             {0.2, 0.749, 0.871}//Col2
         }; 
         std::vector<RGBColor> ccolors={
-            {0.196f, 0.576f, 0.922f}
+            {0.102f, 0.376f, 0.86f}
         };     
         std::vector<RGBColor> pcolors={
-            {0.196f, 0.576f, 0.922f},//Col1
-            {0.102f, 0.376f, 0.86f},//Col2
+            {0.102f, 0.376f, 0.86f},//Col1
+            {0.196f, 0.576f, 0.922f},//Col2
             {0.071f, 0.267f, 0.612f}//,//ColO - El ultimo solo se renderiza cuando es impar
         };
         //Variables propias de la clase
@@ -84,7 +84,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
     gameTime(),
     background(EnginePlaceHolder, 0.9f,sides,3,pcolors,Type::CLASSIC),
-    center(EnginePlaceHolder,0.18f,0.018f,sides,6,ccolors,wallcolors.at(0))
+    center(EnginePlaceHolder,0.18f,0.018f,sides,7,pcolors,wallcolors.at(0))
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
@@ -110,6 +110,7 @@ void ExagonGameProcess::PlayLevel(){
     if((time-timer1)>=colorSwapRatio){
         timer1=time;
         background.swapColors();
+        center.swapColors();
         //std::cout<<"Cambio de color"<<std::endl;
     }
     //Test Timeline
@@ -126,14 +127,17 @@ void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int
     if(anim->Inited()){
         if(this->sides>sides){
             background.prepareBGforDecrease(sides);
+            center.prepareCenterforDecrease(sides);
         }else{
             background.prepareBGforIncrease(sides);
+            center.prepareCenterforIncrease(sides);
             this->sides=sides;
         }
     }
     background.softchangeSides(deltamov);
     if(this->sides>sides&&deltamov==1.0f){
         background.endUpdate(sides);
+        center.endUpdate(sides);
         this->sides=sides;
     }
 }
