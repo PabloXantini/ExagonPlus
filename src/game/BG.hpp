@@ -180,6 +180,7 @@ class BG{
                 currentcoor.y=radius*sin(anglex*i);
                 vcoors.push_back(currentcoor);
             }
+            tovcoors=vcoors;                       //Guardo para despues
             vertexs=createTriangles(vcoors);
             allvcoors=createTriangles(allvcoors, vcoors);
             reserveArgSpace();
@@ -190,7 +191,7 @@ class BG{
         */
         std::vector<Coor3D> setNewRegular(float radius, unsigned int vnumber){
             restartSpacing();
-            std::vector<Coor3D> cvcoors=vcoors;//Guarda las coordenadas anteriores
+            std::vector<Coor3D> cvcoors=vcoors;         //Guarda las coordenadas anteriores
             //Reinicia las coordenadas
             vcoors.clear();
             tovcoors.clear();
@@ -218,9 +219,9 @@ class BG{
                 allvcoors.clear();
                 toallvcoors.clear();
 
+                allvcoors=createTriangles(allvcoors, cvcoors);      //Pre Atrib 0
                 toallvcoors=createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
                 vertexs=createTriangles(vcoors);                    //Pos Atrib 0              
-                allvcoors=createTriangles(allvcoors, vcoors);       //Pos Atrib 2
             }else{                                      //Increase
                 for(int i=0; i<(vnumber-this->vnumber); i++){
                     cvcoors.push_back(cvcoors.back());
@@ -229,9 +230,9 @@ class BG{
                 allvcoors.clear();
                 toallvcoors.clear();
 
-                vertexs=createTriangles(cvcoors);         //Pre Atrib 0
-                allvcoors=createTriangles(allvcoors, vcoors);       //No lo uso pero se actualiza de la clase             
-                toallvcoors=createTriangles(toallvcoors, tovcoors);   //Pre Atrib 2
+                vertexs=createTriangles(cvcoors);                   //Pre Atrib 0
+                toallvcoors=createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
+                allvcoors=createTriangles(allvcoors, vcoors);       //Pos Atrib 2             
             }
             reserveArgSpace();
             return toallvcoors;
@@ -410,11 +411,13 @@ class BG{
         void prepareBGforDecrease(int sides){
             //Guardo nuevas coordenadas al buffer
             toallvcoors=setNewRegular(radius, sides);
+            engine->updateBufferCoorWeight(this->getID(0),allvcoors,0,argspace);
             engine->updateBufferCoorWeight(this->getID(0),toallvcoors,2,argspace);
             //Preparo vertexs para temas de consistencia
+            allvcoors.clear();
+            allvcoors=createTriangles(allvcoors, vcoors);
             vertexs=addColors(vertexs.size()/3, timesto, pcolors);
             vertexs=padCoors(vertexs.size()/6, allvcoors);
-            this->vnumber=sides;
             //Comentalo si quieres
             std::cout << "[ ";
             for (float val : vertexs) {
@@ -446,8 +449,9 @@ class BG{
         /*
             Actualiza solo al terminar (morphing)
         */
-        void endUpdate(float step){
-            if(step==1.0f) engine->updateBuffer(this->getID(0),vertexs, NULL);
+        void endUpdate(int sides){
+            this->vnumber=sides;
+            engine->updateBuffer(this->getID(0),vertexs, NULL);
             std::cout<<"Cambio"<<std::endl;
         }
         /*

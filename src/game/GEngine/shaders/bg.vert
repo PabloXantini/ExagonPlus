@@ -21,9 +21,7 @@ vec3 polarMorph(vec3 from, vec3 to, float t) {
     float rA = length(from.xy);
     float rB = length(to.xy);
 
-    float aA = atan(pA.y, pA.x);
-    float aB = atan(pB.y, pB.x);
-
+    //Evaluar si alguno de los radios es muy pequenio
     if (rA < 0.001 && rB < 0.001)
         return vec3(0.0, 0.0, mix(from.z, to.z, t)); // ambos centros
 
@@ -33,7 +31,11 @@ vec3 polarMorph(vec3 from, vec3 to, float t) {
     if (rB < 0.001)
         return mix(from, to, t); // o directamente return from;
 
+    float aA = atan(pA.y, pA.x);
+    float aB = atan(pB.y, pB.x);
+
     // Corrección para que el ángulo interpolado tome el camino más corto
+    
     float delta = aB - aA;
     if (abs(delta) > 3.14159) {
         if (delta > 0.0)
@@ -41,7 +43,7 @@ vec3 polarMorph(vec3 from, vec3 to, float t) {
         else
             aB += 6.28318; // +2π
     }
-
+    
     float radius = mix(rA, rB, t);
     float angle = mix(aA, aB, t);
     float z = mix(from.z, to.z, t);

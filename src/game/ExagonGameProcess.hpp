@@ -83,8 +83,8 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setCamera(CameraX, CameraY, CameraZ);
     background.setScale(scale);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
-    a1=new Animation(3, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
-    a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a1=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a2=new Animation(7, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;
@@ -124,7 +124,7 @@ void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int
     }
     background.softchangeSides(deltamov);
     if(this->sides>sides&&deltamov==1.0f){
-        background.endUpdate(deltamov);
+        background.endUpdate(sides);
         this->sides=sides;
     }
 }
