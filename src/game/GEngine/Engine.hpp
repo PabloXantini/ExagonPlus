@@ -13,18 +13,13 @@
 #include "Shaders.hpp"
 #include "../../resource.h"
 #include "../../ImageProcessor.cpp"
-#include "../Color.h"
+#include "../utils/Color.h"
+#include "../utils/Position.h"
 
 #include <iostream>
 #include <unordered_map>
 #include <vector>
 #include <map>
-
-struct Coor3D {
-    float x;
-    float y;
-    float z;
-};
 
 struct ObjectBuffer {
     unsigned int VAO; //Vertex Array Object: Define el objecto de vertices

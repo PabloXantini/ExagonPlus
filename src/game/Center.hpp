@@ -46,7 +46,7 @@ class Center : public BG {
         /*
             Añade un color a la mezcla de vertices
         */
-        void pushColorRaw(RGBColor color){
+        void PushColor(RGBColor color){
             vertexs.push_back(color.R);
             vertexs.push_back(color.G);
             vertexs.push_back(color.B);
@@ -62,28 +62,17 @@ class Center : public BG {
         /*
             Añade una coordenada 3D
         */
-        void pushCoor3D(Coor3D coors){
+        void PushCoor3D(Coor3D coors){
             vertexs.push_back(coors.x);
             vertexs.push_back(coors.y);
             vertexs.push_back(coors.z);
         }
         /*
-            Añade una coordenada 3D, en base a un vector determinado
+            Añade una coordenada 3D y un color a la vez al conjunto de vértices
         */
-        void pushCoor3D(std::vector<float>&vertexs, Coor3D coors){
-            vertexs.push_back(coors.x);
-            vertexs.push_back(coors.y);
-            vertexs.push_back(coors.z);
-        }
-        /*
-            Añade una coordenada 3D, en base a un vector de coordenadas determinado
-        */
-        void pushCoor3D(std::vector<Coor3D>&coors, Coor3D coor){
-            coors.push_back(coor);
-        }
         void pushCoor3DWRGB(Coor3D coor, RGBColor color){
-            pushCoor3D(coor);
-            pushColorRaw(color);
+            PushCoor3D(coor);
+            PushColor(color);
         }
         /*
             Añade una coordenada 3D a la mezcla de vertices, dependiendo del desplazamiento
@@ -105,14 +94,38 @@ class Center : public BG {
             Inserta un triangulo indicado por las coordenadas del triangulo
         */
         void pushTriangle(Coor3D A, Coor3D B, Coor3D C){
-            pushCoor3D(A);
-            pushCoor3D(B);
-            pushCoor3D(C);
+            PushCoor3D(A);
+            PushCoor3D(B);
+            PushCoor3D(C);
         }
-        void pushTriangle2(Coor3D A, Coor3D B, Coor3D C){
-            pushCoor3D(allvcoors, A);
-            pushCoor3D(allvcoors, B);
-            pushCoor3D(allvcoors, C);
+        /*
+            Guarda datos escenciales para el trazado del escenario (traza un poligono regular), usando indices
+        */
+        std::vector<float> setRegular(float radius, unsigned int vnumber){
+            vertexs.clear();
+            Coor3D currentcoor;
+            currentcoor.x=0.0f;
+            currentcoor.y=0.0f;
+            currentcoor.z=0.0f;
+            float anglex = (float)(4*acos(0.0)/vnumber);
+            PushCoor3D(currentcoor);
+            for (int i=0; i<vnumber; i++){
+                currentcoor.x=radius*cos(anglex*i);
+                currentcoor.y=radius*sin(anglex*i);
+                PushCoor3D(currentcoor); 
+            }
+            return vertexs;
+        }
+        /*
+            Crea los indices, con lo que se va trazar cada triangulo de manera INDEXED
+        */
+        std::vector<unsigned int> createIndexes(unsigned int vnumber){
+            indexes.clear();
+            for(int i=1; i<vnumber; i++){
+                pushVTriangle(0, i, i+1);
+            }
+            pushVTriangle(0, vnumber, 1);
+            return indexes;
         }
     public:
 };

@@ -1,7 +1,7 @@
 #ifndef EXAGON_GAME_PROCESS_HPP
 #define EXAGON_GAME_PROCESS_HPP
 
-#include "Color.h"
+#include "utils/Color.h"
 #include "Time.hpp"
 #include "AnimationMaker.hpp"
 #include "BG.hpp"
