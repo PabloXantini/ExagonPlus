@@ -2,6 +2,8 @@
 #define CENTER_HPP
 
 #include "GEngine/Engine.hpp"
+#include "GEngine/Shader.hpp"
+#include "../resource.h"
 #include "utils/Position.h"
 #include "utils/Color.h"
 #include "BG.hpp"
@@ -38,7 +40,12 @@ class Center : public BG {
         RGBColor wallcolor;                         //Color del contorno
         //Objetos de referencia
         Engine* engine;
+        Shader* ShaderCenter;
+        //Objetos usados
         //Metodos de creacion
+        void initShaders(){
+            ShaderCenter = ShaderBG;
+        }
         /*
             Reserva el siguiente espacio de atributos, como recomendacion se llama al final de cada insercion de valores
         */
@@ -299,6 +306,7 @@ class Center : public BG {
             engine(engine)
         {
             std::cout<<"Oh me creooo, dice Center"<<std::endl;
+            initShaders();
             this->radius=radius;
             this->padding=padding;
             float cradius=radius-padding;
@@ -330,6 +338,7 @@ class Center : public BG {
             }
             std::cout << "]" << std::endl;
         }
+        
         //Getters
         unsigned int getID(unsigned int index) const {
             return IDs.at(index);
@@ -351,8 +360,8 @@ class Center : public BG {
             Renderizar/Mostrar
         */
         void show() {
-            engine->renderPolygon(this->getID(0), indexes.size());
-            engine->renderPolygon(this->getID(1), indexes.size());
+            engine->renderPolygon(ShaderBG, this->getID(0), indexes.size());
+            engine->renderPolygon(ShaderBG, this->getID(1), indexes.size());
         }
         /*
             Intercambia los colores de Center con los de su vecino

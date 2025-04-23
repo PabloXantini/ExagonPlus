@@ -27,7 +27,7 @@ int main() {
     engine.setWindowsIcons(iconsref);
     engine.initWindowResizing();
     if(!engine.linkGLAD()) return -1;
-    engine.initShaders();
+    //engine.initShaders();
     engine.blockFPS(60);
 
     //Llamo a los objetos necesarios

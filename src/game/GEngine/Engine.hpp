@@ -10,8 +10,7 @@
 
 #include "Buffer.hpp"
 #include "Shader.hpp"
-#include "Shaders.hpp"
-#include "../../resource.h"
+//#include "../../resource.h"
 #include "../../ImageProcessor.cpp"
 #include "../utils/Color.h"
 #include "../utils/Position.h"
@@ -19,13 +18,6 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
-#include <map>
-
-struct ObjectBuffer {
-    unsigned int VAO; //Vertex Array Object: Define el objecto de vertices
-    unsigned int VBO; //Vertex Buffer Object: Define en donde se van a guardar los vertices
-    unsigned int EBO=0; //Element Buffer Object: Define como se van a dibujar los vertices
-};
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -37,13 +29,12 @@ class Engine {
         float GnearD=0.1f;                          //Valor por defecto del nearD
         float GfarD=100.f;                          //Valor por defecto del farD
         float GFOV=45.0f;                           //Valor por defecto del FOV
-        std::vector<ObjectBuffer> buffers={};       //Buffers generados
-        std::vector<Buffer> Buffers={};             //Buffers de verdad generados
-        std::map<ShaderName, unsigned int> shaders; //Posibility to deprecate
+        std::vector<Buffer> Buffers={};             //Buffers por VAO generados
+        std::vector<Shader*> Shaders={};            //Shaders generados
         std::unordered_map<int, bool> keyStates;    //Tokens de teclado
         GLFWwindow* window;                         //Ventana
         //Shaders usados
-        Shader* BASIC;
+        //Shader* BASIC;
         //Methods
         void setupShaders();
         GLFWimage load_icon(int resID);
@@ -52,9 +43,6 @@ class Engine {
         Engine();
         ~Engine();
         //Getters
-        unsigned int getShaderProgram(ShaderName label){
-            return shaders[label];
-        }
         std::vector<unsigned int> getAllVAOs(const std::vector<Buffer>& buffers) {
             std::vector<unsigned int> VAOs;
             VAOs.reserve(buffers.size());
@@ -113,30 +101,30 @@ class Engine {
         void pollInput();
         bool isKeyPressed(int key);
         //Memory Methods
+        //Buffers
         unsigned int createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
-        ObjectBuffer createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor);
         void updateBuffer(unsigned int VBO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes);
         void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors,unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         void updateBufferCoorWeight(unsigned int VAO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace);
-        void initShaders();
-        void initializeCustom();
+        //Shaders
+        void registerShader(Shader* shader);
+        //void initShaders();
+        //void initializeCustom();
         void clearBuffers();
         void clearShaders();
-        //Graph Methods
-        void fixScreenProportion(GLFWwindow* window);
-        void setPerspective(float FOV, float aspect, float nearD, float farD);
-        //void setupPerspective(float FOV, float aspect, float nearD, float farD);
+        //Graph Global Methods
+        void setProjectionAll(float FOV, float aspect, float nearD, float farD);        
         void modifyPerspective(float FOV, float nearD, float farD);
-        void setupView(float x, float y, float z);
-        void translateView(float x, float y, float z);
+        void setViewAll(float x, float y, float z);
+        //void translateView(float x, float y, float z);
         void rendWindowBackground();
-        void renderPolygon(unsigned int rVAO, unsigned int sides);
-        void renderPolygon2(unsigned int rVAO, unsigned int vertexcount);
-        void rotate3D(float time, float RX, float RY, float RZ);
-        void setupscale3D(float factor);
-        void scale3D(float factor);
-        void polygonRadiusPolarMorph3D(float step);
-        void changeHue(float change, float hueFactor, float hueSpeed);
+        void renderPolygon(Shader* shader, unsigned int rVAO, unsigned int sides);
+        void renderPolygon2(Shader* shader, unsigned int rVAO, unsigned int vertexcount);
+        //void rotate3D(float time, float RX, float RY, float RZ);
+        //void setupscale3D(float factor);
+        //void scale3D(float factor);
+        //void polygonRadiusPolarMorph3D(float step);
+        //void changeHue(float change, float hueFactor, float hueSpeed);
 };
 
 //Callback
@@ -155,17 +143,14 @@ Engine::Engine(){
     std::cout<<"Oh me creooo, dice Engine o Motor"<<std::endl;
 }
 Engine::~Engine(){
-    delete BASIC;
+    //delete BASIC;
 }
-//Posibilly to deprecate
-void Engine::setupShaders(){
-    //Aqui se supone que cargo dinamicamente los shaders
-    //Si se me complica manejar los shader aca, lo borro
-}
+/*
 void Engine::initShaders(){
     BASIC = new Shader(IDR_VSHADER2,IDR_FSHADER2);
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
+*/
 //Private methods
 GLFWimage Engine::load_icon(int resID) {
     GLFWimage image;
@@ -227,7 +212,7 @@ void Engine::resize(int width, int height){
     Rwidth=width;
     Rheight=height;
     float aspect = (float)width / (float)height;
-    setPerspective(GFOV, aspect, GnearD, GfarD);
+    setProjectionAll(GFOV, aspect, GnearD, GfarD);
 }
 //Bloquea los FPS
 void Engine::blockFPS(int FPSRate){
@@ -267,48 +252,10 @@ bool Engine::isKeyPressed(int key) {
     return keyStates[key];
 }
 //Memory Methods
-//Crea un buffer para un objeto - Posibililly to deprecate
-ObjectBuffer Engine::createBuffer3D(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, bool hasColor){
-    struct ObjectBuffer newBuffer;
-
-    //Asigno IDs para VAO, VBO, EBO
-    glGenVertexArrays(1, &newBuffer.VAO);
-    glGenBuffers(1, &newBuffer.VBO);
-    //Opcional
-    if(indexes) glGenBuffers(1, &newBuffer.EBO);
-
-    //Asignacion de memoria para VAO
-    glBindVertexArray(newBuffer.VAO);
-    //Asignacion de memoria para VBO
-    glBindBuffer(GL_ARRAY_BUFFER, newBuffer.VBO);
-    glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_STATIC_DRAW);
-    //Opcional: Asignacion de memoria para EBO
-    if(indexes){
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, newBuffer.EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes->size() * sizeof(unsigned int), indexes->data(), GL_STATIC_DRAW);
-    }
-    //Setup de argumentos para el buffer
-    if(hasColor){
-        //Position
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        //Color
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
-        glEnableVertexAttribArray(1);
-    }else{
-        //Color
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-    }
-    //Desvincular
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    //Faltaria que se guarden esos datos en un variable de objetos
-    buffers.push_back(newBuffer);
-
-    return newBuffer;
-}
+//Registra un shader para que lo reconozca la clase
+void Engine::registerShader(Shader* shader){
+    Shaders.push_back(shader);
+};
 //Crea un buffer para un objeto dado argumentos
 unsigned int Engine::createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace){
     Buffer newBuffer(verts, indexes, numargs);
@@ -386,51 +333,53 @@ void Engine::rendWindowBackground(){
     glClear(GL_COLOR_BUFFER_BIT);
 }
 //Renderiza un poligono con indices
-void Engine::renderPolygon(unsigned int rVAO, unsigned int nindexes) {
-    BASIC->use();
+void Engine::renderPolygon(Shader* shader, unsigned int rVAO, unsigned int nindexes) {
+    shader->use();
     glBindVertexArray(rVAO);
     glDrawElements(GL_TRIANGLES, nindexes, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 }
 //Renderiza un poligono con vertices
-void Engine::renderPolygon2(unsigned int rVAO, unsigned int vertexcount){
-    BASIC->use();
+void Engine::renderPolygon2(Shader* shader, unsigned int rVAO, unsigned int vertexcount){
+    shader->use();
     glBindVertexArray(rVAO);
     glDrawArrays(GL_TRIANGLES, 0, vertexcount);
     glBindVertexArray(0);
 }
-//Arregla la resolucion de pantalla
-void Engine::fixScreenProportion(GLFWwindow* window){
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    float aspect = (float)width / (float)height;
-    setPerspective(45.0f, aspect, 0.1f, 100.0f);
-}
 //Transformaciones Perpespectiva
 //Establecer perspectiva con las proporciones de la pantalla
-void Engine::setPerspective(float FOV, float aspect, float nearD, float farD){
-    BASIC->use();
-    glm::mat4 projection = glm::mat4(1.0);
-    projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
-    BASIC->setMat4("transProjection",projection);
+void Engine::setProjectionAll(float FOV, float aspect, float nearD, float farD){
+    for(Shader* shader : Shaders){
+        shader->use();
+        glm::mat4 projection = glm::mat4(1.0);
+        projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
+        shader->setMat4("Projection",projection);
+    }
+    //BASIC->use();   
 }
+//Modificar la perspectiva globalmente
 void Engine::modifyPerspective(float FOV, float nearD, float farD){
     float aspect = (float)Rwidth/(float)Rheight;
-    setPerspective(FOV, aspect, nearD, farD);
+    setProjectionAll(FOV, aspect, nearD, farD);
 }
 //Transformaciones Vista
 //Mover camara
-void Engine::setupView(float x, float y, float z){
-    BASIC->use();
-    glm::mat4 view = glm::mat4(1.0);
-    view = glm::lookAt(glm::vec3(x, y, z), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    BASIC->setMat4("transView",view);
+void Engine::setViewAll(float x, float y, float z){
+    for(Shader* shader : Shaders){
+        shader->use();
+        glm::mat4 view = glm::mat4(1.0);
+        view = glm::lookAt(glm::vec3(x, y, z), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        shader->setMat4("View",view);
+    }
+    //BASIC->use();   
 }
+/*
 void Engine::translateView(float x, float y, float z){
     glm::mat4 view = glm::mat4(1.0);
     view = glm::translate(view, glm::vec3(x, y, z));
     BASIC->setMat4("transView",view);
 }
+
 //Transformaciones Modelo
 //Rotacion en 3 dimensiones
 void Engine::rotate3D(float time, float RX, float RY, float RZ){
@@ -438,20 +387,20 @@ void Engine::rotate3D(float time, float RX, float RY, float RZ){
     rot = glm::rotate(rot, glm::radians(time*RX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
     rot = glm::rotate(rot, glm::radians(time*RY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
     rot = glm::rotate(rot, glm::radians(time*RZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
-    BASIC->setMat4("transRotation",rot);
+    BASIC->setMat4("Rotation",rot);
 }
 //Escalado
 void Engine::setupscale3D(float factor){
     BASIC->use();
     glm::mat4 sc = glm::mat4(1.0);
     sc = glm::scale(sc, glm::vec3(factor));
-    BASIC->setMat4("transScale",sc);
+    BASIC->setMat4("Scale",sc);
 }
 //Escalado
 void Engine::scale3D(float factor){
     glm::mat4 sc = glm::mat4(1.0);
     sc = glm::scale(sc, glm::vec3(factor));
-    BASIC->setMat4("transScale",sc);
+    BASIC->setMat4("Scale",sc);
 }
 void Engine::polygonRadiusPolarMorph3D(float step){
     BASIC->setFloat("morphprogress",step);
@@ -462,9 +411,17 @@ void Engine::changeHue(float time, float hueFactor, float hueSpeed){
     BASIC->setFloat("HueFactor",hueFactor);
     BASIC->setFloat("HueSpeed",hueSpeed);
 }
+*/
 //Eliminar shaders
 void Engine::clearShaders(){
-    BASIC->kill();
+    for(Shader* shader : Shaders){
+        if(shader){
+            shader->kill();
+            delete shader;
+        }
+    }
+    Shaders.clear();
+    //BASIC->kill();
 }
 //Cierra el motor
 void Engine::close(){
@@ -473,9 +430,11 @@ void Engine::close(){
 }
 //Metodos fuera del scope
 //Son variables globales que deben ir siempre
+/*
 void Engine::initializeCustom(){
     BASIC->use();
     BASIC->setFloat("morphprogress",0.0f);
 }
+*/
 
 #endif

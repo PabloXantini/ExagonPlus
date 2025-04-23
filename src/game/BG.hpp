@@ -2,6 +2,8 @@
 #define BG_HPP
 
 #include "GEngine/Engine.hpp"
+#include "GEngine/Shader.hpp"
+#include "../resource.h"
 #include "utils/Color.h"
 #include "utils/Position.h"
 
@@ -42,6 +44,16 @@ class BG{
         //Objectos de referencia
         Engine* engine;
         //Metodos de creacion
+        /*
+            Inicializacion de Shader
+        */
+        void initShaders(){
+            ShaderBG = new Shader(IDR_VSHADER2,IDR_FSHADER2);
+            //Registro
+            engine->registerShader(ShaderBG);
+            //Inicializacion
+            ShaderBG->setFloat("morphprogress",0.0f);
+        }
         /*
             Reserva el siguiente espacio de atributos, como recomendacion se llama al final de cada insercion de valores
         */
@@ -280,6 +292,9 @@ class BG{
             return currentColor;
         }
     protected:
+        //Variables compartidas
+        Shader* ShaderBG;
+        //Metodos compartidos
         /*
             Crea los triangulos de manera bruta para la manera CLASSIC usando coordenadas
         */
@@ -297,7 +312,8 @@ class BG{
             engine(engine)
         {
             std::cout<<"Oh me creooo, dice BG"<<std::endl;
-            engine->initializeCustom();
+            //engine->initializeCustom();
+            initShaders();
             this->radius=radius;
             pcolors = colors;
             vnumber = vnum;
@@ -321,7 +337,6 @@ class BG{
             }
             std::cout << "]" << std::endl;
         }
-
         //Getters
         unsigned int getID(unsigned int index) const {
             return IDs.at(index);
@@ -356,19 +371,22 @@ class BG{
             Vista
         */
         void setCamera(float x, float y, float z){
-            engine->setupView(x, y, z);
+            engine->setViewAll(x, y, z);
         }
         /*
             Escala
         */
         void setScale(float factor){
-            engine->setupscale3D(factor);
+            ShaderBG->use();
+            glm::mat4 sc = glm::mat4(1.0);
+            sc = glm::scale(sc, glm::vec3(factor));
+            ShaderBG->setMat4("Scale",sc);
         }
         /*
             Renderizar/Mostrar
         */
         void show() {
-            engine->renderPolygon2(this->getID(0), getVertexs().size());
+            engine->renderPolygon2(ShaderBG, this->getID(0), getVertexs().size());
         }
         /*
             Intercambia los colores de BG con los de su vecino
@@ -391,11 +409,13 @@ class BG{
             vertexs=addColors(vertexs.size()/3, timesto, pcolors);
             vertexs=padCoors(vertexs.size()/6, allvcoors);
             //Comentalo si quieres
+            /*
             std::cout << "[ ";
             for (float val : vertexs) {
                 std::cout << val << " ";
             }
             std::cout << "]" << std::endl;
+            */
         }
         void prepareBGforIncrease(int sides){
             //Preparo vertexs para temas de consistencia
@@ -405,18 +425,21 @@ class BG{
             this->vnumber=sides;
             engine->updateBuffer(this->getID(0),vertexs, NULL);
             //Comentalo si quieres
+            /*
             std::cout << "[ ";
             for (float val : vertexs) {
                 std::cout << val << " ";
             }
             std::cout << "]" << std::endl;
+            */
         }
         /*
             Cambia los lados de todo el escenario de manera cinematica (morphing)
         */
         void softchangeSides(float step){
             std::cout<<"Esta cambiando"<<std::endl;
-            engine->polygonRadiusPolarMorph3D(step);
+            //engine->polygonRadiusPolarMorph3D(step);
+            ShaderBG->setFloat("morphprogress",step);
         }
         /*
             Actualiza solo al terminar (morphing)
@@ -430,19 +453,30 @@ class BG{
             Cambia el HUE del escenario
         */
         void changeBGHue(float time, float BGHueFactor, float BGHueSpeed){
-            engine->changeHue(time, BGHueFactor, BGHueSpeed);
+            //engine->changeHue(time, BGHueFactor, BGHueSpeed);
+            ShaderBG->setFloat("uTime",time);
+            ShaderBG->setFloat("HueFactor",BGHueFactor);
+            ShaderBG->setFloat("HueSpeed",BGHueSpeed);
         }
         /*
             Rota el escenario
         */
         void rotateBG(float time, float RX, float RY, float RZ){
-            engine->rotate3D(time, RX, RY, RZ);
+            //engine->rotate3D(time, RX, RY, RZ);
+            glm::mat4 rot = glm::mat4(1.0);
+            rot = glm::rotate(rot, glm::radians(time*RX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
+            rot = glm::rotate(rot, glm::radians(time*RY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
+            rot = glm::rotate(rot, glm::radians(time*RZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
+            ShaderBG->setMat4("Rotation",rot);
         }
         /*
             Escala el escenario
         */
         void scaleBG(float factor){
-            engine->scale3D(factor);
+            //engine->scale3D(factor);
+            glm::mat4 sc = glm::mat4(1.0);
+            sc = glm::scale(sc, glm::vec3(factor));
+            ShaderBG->setMat4("Scale",sc);
         }
 };
 
