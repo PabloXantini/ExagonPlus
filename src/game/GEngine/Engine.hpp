@@ -108,23 +108,15 @@ class Engine {
         void updateBufferCoorWeight(unsigned int VAO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         //Shaders
         void registerShader(Shader* shader);
-        //void initShaders();
-        //void initializeCustom();
         void clearBuffers();
         void clearShaders();
         //Graph Global Methods
         void setProjectionAll(float FOV, float aspect, float nearD, float farD);        
         void modifyPerspective(float FOV, float nearD, float farD);
         void setViewAll(float x, float y, float z);
-        //void translateView(float x, float y, float z);
         void rendWindowBackground();
         void renderPolygon(Shader* shader, unsigned int rVAO, unsigned int sides);
         void renderPolygon2(Shader* shader, unsigned int rVAO, unsigned int vertexcount);
-        //void rotate3D(float time, float RX, float RY, float RZ);
-        //void setupscale3D(float factor);
-        //void scale3D(float factor);
-        //void polygonRadiusPolarMorph3D(float step);
-        //void changeHue(float change, float hueFactor, float hueSpeed);
 };
 
 //Callback
@@ -142,15 +134,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 Engine::Engine(){
     std::cout<<"Oh me creooo, dice Engine o Motor"<<std::endl;
 }
-Engine::~Engine(){
-    //delete BASIC;
-}
-/*
-void Engine::initShaders(){
-    BASIC = new Shader(IDR_VSHADER2,IDR_FSHADER2);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-}
-*/
 //Private methods
 GLFWimage Engine::load_icon(int resID) {
     GLFWimage image;
@@ -354,8 +337,7 @@ void Engine::setProjectionAll(float FOV, float aspect, float nearD, float farD){
         glm::mat4 projection = glm::mat4(1.0);
         projection = glm::perspective(glm::radians(FOV), aspect, nearD, farD);
         shader->setMat4("Projection",projection);
-    }
-    //BASIC->use();   
+    }  
 }
 //Modificar la perspectiva globalmente
 void Engine::modifyPerspective(float FOV, float nearD, float farD){
@@ -370,48 +352,9 @@ void Engine::setViewAll(float x, float y, float z){
         glm::mat4 view = glm::mat4(1.0);
         view = glm::lookAt(glm::vec3(x, y, z), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         shader->setMat4("View",view);
-    }
-    //BASIC->use();   
-}
-/*
-void Engine::translateView(float x, float y, float z){
-    glm::mat4 view = glm::mat4(1.0);
-    view = glm::translate(view, glm::vec3(x, y, z));
-    BASIC->setMat4("transView",view);
+    }  
 }
 
-//Transformaciones Modelo
-//Rotacion en 3 dimensiones
-void Engine::rotate3D(float time, float RX, float RY, float RZ){
-    glm::mat4 rot = glm::mat4(1.0);
-    rot = glm::rotate(rot, glm::radians(time*RX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
-    rot = glm::rotate(rot, glm::radians(time*RY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
-    rot = glm::rotate(rot, glm::radians(time*RZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
-    BASIC->setMat4("Rotation",rot);
-}
-//Escalado
-void Engine::setupscale3D(float factor){
-    BASIC->use();
-    glm::mat4 sc = glm::mat4(1.0);
-    sc = glm::scale(sc, glm::vec3(factor));
-    BASIC->setMat4("Scale",sc);
-}
-//Escalado
-void Engine::scale3D(float factor){
-    glm::mat4 sc = glm::mat4(1.0);
-    sc = glm::scale(sc, glm::vec3(factor));
-    BASIC->setMat4("Scale",sc);
-}
-void Engine::polygonRadiusPolarMorph3D(float step){
-    BASIC->setFloat("morphprogress",step);
-}
-//Cambia el HUE del escenario
-void Engine::changeHue(float time, float hueFactor, float hueSpeed){
-    BASIC->setFloat("uTime",time);
-    BASIC->setFloat("HueFactor",hueFactor);
-    BASIC->setFloat("HueSpeed",hueSpeed);
-}
-*/
 //Eliminar shaders
 void Engine::clearShaders(){
     for(Shader* shader : Shaders){
@@ -428,13 +371,5 @@ void Engine::close(){
     clearBuffers();
     clearShaders();
 }
-//Metodos fuera del scope
-//Son variables globales que deben ir siempre
-/*
-void Engine::initializeCustom(){
-    BASIC->use();
-    BASIC->setFloat("morphprogress",0.0f);
-}
-*/
 
 #endif
