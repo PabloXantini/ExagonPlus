@@ -38,6 +38,8 @@ class Center : public BG {
         float padding=0.1f;                         //Grosor del borde
         std::vector<RGBColor> pcolors;              //Color principal (por vertice)
         RGBColor wallcolor;                         //Color del contorno
+        //Transformaciones
+        glm::mat4 model = glm::mat4(1.0f);
         //Objetos de referencia
         Engine* engine;
         Shader* ShaderCenter;
@@ -360,6 +362,7 @@ class Center : public BG {
             Renderizar/Mostrar
         */
         void show() {
+            ShaderBG->setMat4("Model", model);
             engine->renderPolygon(ShaderBG, this->getID(0), indexes.size());
             engine->renderPolygon(ShaderBG, this->getID(1), indexes.size());
         }

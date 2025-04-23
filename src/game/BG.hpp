@@ -41,6 +41,8 @@ class BG{
         unsigned int vnumber = 3;                   //Lados del escenario               
         float radius=1.2f;                          //Es para setear el largo del escenario
         std::vector<RGBColor> pcolors={};           //Gama de colores
+        //Transformaciones
+        glm::mat4 model = glm::mat4(1.0f);
         //Objectos de referencia
         Engine* engine;
         //Metodos de creacion
@@ -376,16 +378,19 @@ class BG{
         /*
             Escala
         */
+        /*
         void setScale(float factor){
             ShaderBG->use();
             glm::mat4 sc = glm::mat4(1.0);
             sc = glm::scale(sc, glm::vec3(factor));
             ShaderBG->setMat4("Scale",sc);
         }
+        */
         /*
             Renderizar/Mostrar
         */
         void show() {
+            ShaderBG->setMat4("Model", model);
             engine->renderPolygon2(ShaderBG, this->getID(0), getVertexs().size());
         }
         /*
@@ -472,12 +477,14 @@ class BG{
         /*
             Escala el escenario
         */
+        /*
         void scaleBG(float factor){
             //engine->scale3D(factor);
             glm::mat4 sc = glm::mat4(1.0);
             sc = glm::scale(sc, glm::vec3(factor));
             ShaderBG->setMat4("Scale",sc);
         }
+        */
 };
 
 #endif

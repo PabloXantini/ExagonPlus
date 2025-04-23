@@ -41,7 +41,6 @@ class Engine {
     public:
         //Constructor
         Engine();
-        ~Engine();
         //Getters
         std::vector<unsigned int> getAllVAOs(const std::vector<Buffer>& buffers) {
             std::vector<unsigned int> VAOs;

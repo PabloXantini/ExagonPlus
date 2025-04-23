@@ -3,16 +3,20 @@
 
 #include "utils/Color.h"
 #include "Time.hpp"
+#include "Songplayer.hpp"
 #include "AnimationMaker.hpp"
 #include "BG.hpp"
 #include "Center.hpp"
 
 #include <iostream>
 #include <functional>
+#include <string>
 
 class ExagonGameProcess {
     private:
         //Una prueba de valores como si los estuviera pasando desde otro programa
+        //Cancion
+        std::string song="levels/songs/Focus.mp3"; 
         //Escenario
         unsigned int sides=6;
         //Ratio
@@ -56,6 +60,7 @@ class ExagonGameProcess {
         Engine* EnginePlaceHolder;
         //Aqui nacen los objetos que quiera usar en el juego
         Timer gameTime;
+        SongPlayer songPlayer;
         BG background;
         Center center;
         //Punteros de animaciones
@@ -64,6 +69,7 @@ class ExagonGameProcess {
         Animation* a2;
 
         //Methods
+        void handleEvents();
         void changeDynamicSideBG(Animation* anim, float deltamov, int sides);
     public:
         //Constructor
@@ -83,6 +89,7 @@ class ExagonGameProcess {
 ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
     gameTime(),
+    songPlayer(),
     background(EnginePlaceHolder, 0.9f,sides,3,pcolors,Type::CLASSIC),
     center(EnginePlaceHolder,0.18f,0.018f,sides,7,pcolors,wallcolors.at(0))
 {
@@ -90,7 +97,6 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     //Inicializacion del nivel
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
-    background.setScale(scale);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
     a1=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a2=new Animation(7, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
@@ -100,6 +106,7 @@ ExagonGameProcess::~ExagonGameProcess(){
     delete a2;
 }
 void ExagonGameProcess::PlayLevel(){
+    //songPlayer.playSong(song);
     float time = gameTime.getTime(); //Tiempo en general
     float dtime = gameTime.getDeltaTime();
     timer2 = time;
@@ -120,6 +127,10 @@ void ExagonGameProcess::PlayLevel(){
     if(time>=16.0f){
         a2->execute(dtime);
     }     
+}
+//Event handler - A decidir como va a quedar
+void ExagonGameProcess::handleEvents(){
+    
 }
 //Cambia los lados de manera dinamica con morphing
 void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int sides){

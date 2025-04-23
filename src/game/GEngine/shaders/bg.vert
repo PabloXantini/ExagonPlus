@@ -4,13 +4,13 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec3 toPos;
 
-//Vista
+//Vista y Camara
 uniform mat4 Projection;
-//Camara
 uniform mat4 View;
-//Transformaciones del Modelo
+//Global
 uniform mat4 Rotation;
-uniform mat4 Scale;
+//Transformaciones del Modelo
+uniform mat4 Model;
 //Polar Morphing
 uniform float morphprogress;
 
@@ -60,6 +60,6 @@ void main() {
     //Morphing polar
     vec3 mphPos = polarMorph(aPos, toPos, morphprogress);
     //Posicion
-    vec4 result = Projection * View * Rotation * Scale * vec4(mphPos, 1.0); 
+    vec4 result = Projection * View * Rotation * Model * vec4(mphPos, 1.0); 
     gl_Position = vec4(result);
 };
