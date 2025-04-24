@@ -95,7 +95,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
     gameTime(),
     songPlayer(),
-    background(EnginePlaceHolder, 0.9f,sides,3,pcolors,Type::CLASSIC),
+    background(EnginePlaceHolder, 0.9f,sides,3,pcolors),
     center(EnginePlaceHolder,0.18f,0.018f,sides,7,pcolors,wallcolors.at(0))//,
     //player(EnginePlaceHolder,1.0f,0.2f,90.0f,wallcolors.at(0))
 {

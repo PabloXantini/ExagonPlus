@@ -12,11 +12,6 @@
 #include <cmath>
 #include <iostream>
 
-enum class Type {
-    CLASSIC,
-    INDEXED
-};
-
 class BG{
     private:
         //Variables propias de la clase
@@ -107,24 +102,6 @@ class BG{
             PushCoor3D(C);
         }
         /*
-            Guarda datos escenciales para el trazado del escenario (traza un poligono regular), usando indices
-        */
-        std::vector<float> setRegular(float radius, unsigned int vnumber){
-            vertexs.clear();
-            Coor3D currentcoor;
-            currentcoor.x=0.0f;
-            currentcoor.y=0.0f;
-            currentcoor.z=0.0f;
-            float anglex = (float)(4*acos(0.0)/vnumber);
-            PushCoor3D(currentcoor);
-            for (int i=0; i<vnumber; i++){
-                currentcoor.x=radius*cos(anglex*i);
-                currentcoor.y=radius*sin(anglex*i);
-                PushCoor3D(currentcoor); 
-            }
-            return vertexs;
-        }
-        /*
             Crea los indices, con lo que se va trazar cada triangulo de manera INDEXED
         */
         std::vector<unsigned int> createIndexes(unsigned int vnumber){
@@ -138,7 +115,7 @@ class BG{
         /*
             Guarda datos escenciales para el trazado del escenario (traza un poligono regular), con vertices puros
         */
-        std::vector<float> rawsetRegular(float radius, unsigned int vnumber){
+        std::vector<float> setRegular(float radius, unsigned int vnumber){
             vertexs.clear();
             //std::vector<Coor3D> tempv={};
             Coor3D currentcoor;
@@ -294,34 +271,29 @@ class BG{
     public:
         //Constructors
         BG()=default;
-        BG(Engine* engine, float radius, unsigned int vnum, unsigned int patterntimesto, std::vector<RGBColor>&colors, Type type):
+        BG(Engine* engine, float radius, unsigned int vnum, unsigned int patterntimesto, std::vector<RGBColor>&colors):
             engine(engine)
         {
             std::cout<<"Oh me creooo, dice BG"<<std::endl;
-            //engine->initializeCustom();
             initShaders();
             this->radius=radius;
             pcolors = colors;
             vnumber = vnum;
             timesto = patterntimesto;
-            if(type==Type::INDEXED){
-                vertexs = setRegular(radius, vnum);
-                indexes = createIndexes(vnum);
-                //Memoria del objeto
-                IDs.push_back(engine->createBuffer(vertexs, &indexes, 3, argspace));
-            }else if (type==Type::CLASSIC){
-                vertexs = rawsetRegular(radius, vnum);
-                vertexs = addColors(vertexs.size()/3, timesto, colors);
-                vertexs = padCoors(vertexs.size()/6, allvcoors);
-                //Memoria del objeto
-                IDs.push_back(engine->createBuffer(vertexs, NULL, 9, argspace));
-            }
+            //Background
+            vertexs = setRegular(radius, vnum);
+            vertexs = addColors(vertexs.size()/3, timesto, colors);
+            vertexs = padCoors(vertexs.size()/6, allvcoors);
+            //Memoria del objeto
+            IDs.push_back(engine->createBuffer(vertexs, NULL, 9, argspace));
             //Comentalo si quieres
+            /*
             std::cout << "[ ";
             for (float val : vertexs) {
                 std::cout << val << " ";
             }
             std::cout << "]" << std::endl;
+            */
         }
         //Getters
         unsigned int getID(unsigned int index) const {
@@ -386,14 +358,6 @@ class BG{
             allvcoors=createTriangles(allvcoors, vcoors);
             vertexs=addColors(vertexs.size()/3, timesto, pcolors);
             vertexs=padCoors(vertexs.size()/6, allvcoors);
-            //Comentalo si quieres
-            /*
-            std::cout << "[ ";
-            for (float val : vertexs) {
-                std::cout << val << " ";
-            }
-            std::cout << "]" << std::endl;
-            */
         }
         void prepareBGforIncrease(int sides){
             //Preparo vertexs para temas de consistencia
@@ -402,14 +366,6 @@ class BG{
             vertexs=padCoors(vertexs.size()/6, toallvcoors);
             this->vnumber=sides;
             engine->updateBuffer(this->getID(0),vertexs, NULL);
-            //Comentalo si quieres
-            /*
-            std::cout << "[ ";
-            for (float val : vertexs) {
-                std::cout << val << " ";
-            }
-            std::cout << "]" << std::endl;
-            */
         }
         /*
             Cambia los lados de todo el escenario de manera cinematica (morphing)
