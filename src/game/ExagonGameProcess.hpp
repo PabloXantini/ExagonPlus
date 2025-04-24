@@ -7,6 +7,7 @@
 #include "AnimationMaker.hpp"
 #include "BG.hpp"
 #include "Center.hpp"
+#include "Player.hpp"
 
 #include <iostream>
 #include <functional>
@@ -63,6 +64,7 @@ class ExagonGameProcess {
         SongPlayer songPlayer;
         BG background;
         Center center;
+        //Player player;
         //Punteros de animaciones
         std::vector<Animation*> animations={};
         Animation* a1;
@@ -82,6 +84,9 @@ class ExagonGameProcess {
         Center& getCenter() {
             return center;
         }
+        //Player& getPlayer() {
+        //    return player;
+        //}
         //Methods
         void PlayLevel();
 };
@@ -91,7 +96,8 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     gameTime(),
     songPlayer(),
     background(EnginePlaceHolder, 0.9f,sides,3,pcolors,Type::CLASSIC),
-    center(EnginePlaceHolder,0.18f,0.018f,sides,7,pcolors,wallcolors.at(0))
+    center(EnginePlaceHolder,0.18f,0.018f,sides,7,pcolors,wallcolors.at(0))//,
+    //player(EnginePlaceHolder,1.0f,0.2f,90.0f,wallcolors.at(0))
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
@@ -134,7 +140,7 @@ void ExagonGameProcess::handleEvents(){
 }
 //Cambia los lados de manera dinamica con morphing
 void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int sides){
-    std::cout<<deltamov<<std::endl;
+    //std::cout<<deltamov<<std::endl;
     if(anim->Inited()){
         if(this->sides>sides){
             background.prepareBGforDecrease(sides);
@@ -153,7 +159,5 @@ void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int
     }
 }
 //Cambia los lados de manera brusca
-
-//Para es escalado y movimiento
 
 #endif

@@ -21,7 +21,6 @@ class Center : public BG {
         std::vector<unsigned int> indexes={};       //Indices de generacion
         std::vector<float> vertexs={};              //Vertices brutos del objeto
         std::vector<float> wvertexs={};              //Vertices brutos del objeto
-
         //Borde
         std::vector<Coor3D> wvcoors={};             //Coordenadas 3D POR VERTICE (Origen)
         std::vector<Coor3D> wtovcoors={};           //Coordenadas 3D POR VERTICE (Destino)
@@ -75,14 +74,6 @@ class Center : public BG {
             vertexs.push_back(color.B);
         }
         /*
-            Añade un color a la mezcla de vertices, dependiendo del desplazamiento
-        */
-        void insertColorAt(std::vector<float>&vertexs, RGBColor color, int offset){
-            vertexs.insert(vertexs.begin()+offset, color.R);
-            vertexs.insert(vertexs.begin()+offset+1, color.G);
-            vertexs.insert(vertexs.begin()+offset+2, color.B);
-        }
-        /*
             Añade una coordenada 3D
         */
         void PushCoor3D(Coor3D coors){
@@ -98,17 +89,9 @@ class Center : public BG {
             PushColor(color);
         }
         /*
-            Añade una coordenada 3D a la mezcla de vertices, dependiendo del desplazamiento
-        */
-        void insertCoor3DAt(std::vector<float>&vertexs, Coor3D coor, int offset){
-            vertexs.insert(vertexs.begin()+offset, coor.x);
-            vertexs.insert(vertexs.begin()+offset+1, coor.y);
-            vertexs.insert(vertexs.begin()+offset+2, coor.z);
-        }
-        /*
             Inserta un triangulo al conjunto de indices
         */
-        void pushVTriangle(float a, float b, float c){
+        void pushVTriangle(unsigned int a, unsigned int b, unsigned int c){
             indexes.push_back(a);
             indexes.push_back(b);
             indexes.push_back(c);
@@ -214,13 +197,7 @@ class Center : public BG {
                 vertexs.clear();
                 for(auto& coor : verts){
                     pushCoor3D(vertexs, coor);
-                }
-                //allvcoors.clear();
-                //toallvcoors.clear();
-
-                //allvcoors=BG::createTriangles(allvcoors, cvcoors);      //Pre Atrib 0
-                //toallvcoors=BG::createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
-                //vertexs=createTriangles(vcoors);                        //Pos Atrib 0              
+                }             
             }else{                                      //Increase
                 for(int i=0; i<(vnumber-this->vnumber); i++){
                     cvcoors.push_back(cvcoors.back());
@@ -228,13 +205,7 @@ class Center : public BG {
                 vertexs.clear();
                 for(auto& coor : cvcoors){
                     pushCoor3D(vertexs, coor);
-                }
-                //allvcoors.clear();
-                //toallvcoors.clear();
-
-                //vertexs=createTriangles(cvcoors);                       //Pre Atrib 0
-                //toallvcoors=BG::createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
-                //allvcoors=BG::createTriangles(allvcoors, vcoors);       //Pos Atrib 2             
+                }             
             }
             reserveArgSpace();
             return toverts;
@@ -329,6 +300,7 @@ class Center : public BG {
             IDs.push_back(engine->createBuffer(wvertexs,&indexes,9,argspace));
             IDs.push_back(engine->createBuffer(vertexs,&indexes,9,argspace));
             //Comentalo si quieres
+            /*
             std::cout << "[ ";
             for (float val : vertexs) {
                 std::cout << val << " ";
@@ -339,6 +311,7 @@ class Center : public BG {
                 std::cout << val << " ";
             }
             std::cout << "]" << std::endl;
+            */
         }
         
         //Getters
@@ -362,9 +335,9 @@ class Center : public BG {
             Renderizar/Mostrar
         */
         void show() {
-            ShaderBG->setMat4("Model", model);
-            engine->renderPolygon(ShaderBG, this->getID(0), indexes.size());
-            engine->renderPolygon(ShaderBG, this->getID(1), indexes.size());
+            ShaderCenter->setMat4("Model", model);
+            engine->renderPolygon(ShaderCenter, this->getID(0), indexes.size());
+            engine->renderPolygon(ShaderCenter, this->getID(1), indexes.size());
         }
         /*
             Intercambia los colores de Center con los de su vecino

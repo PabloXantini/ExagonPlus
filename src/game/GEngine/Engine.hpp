@@ -223,6 +223,7 @@ void Engine::handle(){
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
+///
 //Keyboard Methods
 //Seteo de Teclas
 void Engine::pollInput() {
@@ -233,6 +234,7 @@ void Engine::pollInput() {
 bool Engine::isKeyPressed(int key) {
     return keyStates[key];
 }
+///
 //Memory Methods
 //Registra un shader para que lo reconozca la clase
 void Engine::registerShader(Shader* shader){

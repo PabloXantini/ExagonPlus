@@ -23,5 +23,13 @@ void pushColor(std::vector<float>&vertexs, RGBColor color){
 void pushColor(std::vector<RGBColor>&colors, RGBColor color){
     colors.push_back(color);
 }
+/*
+    Añade un color a la mezcla de vertices, dependiendo del desplazamiento
+*/
+void insertColorAt(std::vector<float>&vertexs, RGBColor color, int offset){
+    vertexs.insert(vertexs.begin()+offset, color.R);
+    vertexs.insert(vertexs.begin()+offset+1, color.G);
+    vertexs.insert(vertexs.begin()+offset+2, color.B);
+}
 
 #endif

@@ -83,28 +83,12 @@ class BG{
             vertexs.push_back(color.B);
         }
         /*
-            Añade un color a la mezcla de vertices, dependiendo del desplazamiento
-        */
-        void insertColorAt(RGBColor color, int offset){
-            vertexs.insert(vertexs.begin()+offset, color.R);
-            vertexs.insert(vertexs.begin()+offset+1, color.G);
-            vertexs.insert(vertexs.begin()+offset+2, color.B);
-        }
-        /*
             Añade una coordenada 3D
         */
         void PushCoor3D(Coor3D coors){
             vertexs.push_back(coors.x);
             vertexs.push_back(coors.y);
             vertexs.push_back(coors.z);
-        }
-        /*
-            Añade una coordenada 3D a la mezcla de vertices, dependiendo del desplazamiento
-        */
-        void insertCoor3DAt(Coor3D coor, int offset){
-            vertexs.insert(vertexs.begin()+offset, coor.x);
-            vertexs.insert(vertexs.begin()+offset+1, coor.y);
-            vertexs.insert(vertexs.begin()+offset+2, coor.z);
         }
         /*
             Inserta un triangulo al conjunto de indices
@@ -247,7 +231,7 @@ class BG{
             for(int i=0; i<vnum-timesto; i++){
                 //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
                 newColor = setColorPattern(checkin, timesto, colors);
-                insertColorAt(newColor, argsused+i*stride);
+                insertColorAt(vertexs, newColor, argsused+i*stride);
                 pushColor(vertexcolors, newColor);
                 checkin++;
             }
@@ -256,7 +240,7 @@ class BG{
                 for(int i=0;i<timesto;i++){
                     //std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
                     newColor = setColorPattern(checkin, timesto, colors);
-                    insertColorAt(newColor, argsused+(vnum-timesto+i)*stride);
+                    insertColorAt(vertexs, newColor, argsused+(vnum-timesto+i)*stride);
                     pushColor(vertexcolors, newColor);
                     checkin++;
                 }
@@ -265,7 +249,7 @@ class BG{
                 for(int i=0;i<timesto;i++){
                     //std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
                     newColor = colors.back();
-                    insertColorAt(newColor, argsused+(vnum-timesto+i)*stride);
+                    insertColorAt(vertexs, newColor, argsused+(vnum-timesto+i)*stride);
                     pushColor(vertexcolors, newColor);
                 }
             }
@@ -279,7 +263,7 @@ class BG{
             int stride = calculateStride();
             for(int i=0; i<vnum; i++){
                 //std::cout << "Insertando en index: " << (3 + i* stride) << std::endl;
-                insertCoor3DAt(coors.at(i), argsused+i*stride);
+                insertCoor3DAt(vertexs, coors.at(i), argsused+i*stride);
             }
             reserveArgSpace();
             return vertexs;
@@ -376,17 +360,6 @@ class BG{
             engine->setViewAll(x, y, z);
         }
         /*
-            Escala
-        */
-        /*
-        void setScale(float factor){
-            ShaderBG->use();
-            glm::mat4 sc = glm::mat4(1.0);
-            sc = glm::scale(sc, glm::vec3(factor));
-            ShaderBG->setMat4("Scale",sc);
-        }
-        */
-        /*
             Renderizar/Mostrar
         */
         void show() {
@@ -442,8 +415,7 @@ class BG{
             Cambia los lados de todo el escenario de manera cinematica (morphing)
         */
         void softchangeSides(float step){
-            std::cout<<"Esta cambiando"<<std::endl;
-            //engine->polygonRadiusPolarMorph3D(step);
+            //std::cout<<"Esta cambiando"<<std::endl;
             ShaderBG->setFloat("morphprogress",step);
         }
         /*
@@ -452,13 +424,12 @@ class BG{
         void endUpdate(int sides){
             this->vnumber=sides;
             engine->updateBuffer(this->getID(0),vertexs, NULL);
-            std::cout<<"Cambio"<<std::endl;
+            //std::cout<<"Cambio"<<std::endl;
         }
         /*
             Cambia el HUE del escenario
         */
         void changeBGHue(float time, float BGHueFactor, float BGHueSpeed){
-            //engine->changeHue(time, BGHueFactor, BGHueSpeed);
             ShaderBG->setFloat("uTime",time);
             ShaderBG->setFloat("HueFactor",BGHueFactor);
             ShaderBG->setFloat("HueSpeed",BGHueSpeed);
@@ -467,24 +438,12 @@ class BG{
             Rota el escenario
         */
         void rotateBG(float time, float RX, float RY, float RZ){
-            //engine->rotate3D(time, RX, RY, RZ);
             glm::mat4 rot = glm::mat4(1.0);
             rot = glm::rotate(rot, glm::radians(time*RX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
             rot = glm::rotate(rot, glm::radians(time*RY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
             rot = glm::rotate(rot, glm::radians(time*RZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
             ShaderBG->setMat4("Rotation",rot);
         }
-        /*
-            Escala el escenario
-        */
-        /*
-        void scaleBG(float factor){
-            //engine->scale3D(factor);
-            glm::mat4 sc = glm::mat4(1.0);
-            sc = glm::scale(sc, glm::vec3(factor));
-            ShaderBG->setMat4("Scale",sc);
-        }
-        */
 };
 
 #endif
