@@ -3,7 +3,6 @@
 
 #include "GEngine/Engine.hpp"
 #include "GEngine/Shader.hpp"
-#include "../resource.h"
 #include "utils/Position.h"
 #include "utils/Color.h"
 #include "BG.hpp"
@@ -41,7 +40,9 @@ class Player : public BG {
         Shader* ShaderPlayer;
         //Metodos de creacion
         void initShaders(){
-            ShaderPlayer = ShaderBG;
+            //ShaderPlayer = ShaderBG;
+            //std::cout << "ShaderPlayer ptr: " << ShaderPlayer << std::endl;
+            //engine->registerShader(ShaderPlayer);
         }
         /*
             Reserva el siguiente espacio de atributos, como recomendacion se llama al final de cada insercion de valores
@@ -92,8 +93,9 @@ class Player : public BG {
         }
     public:
         Player()=default;
-        Player(Engine* engine, float size, float radiusPos, float rotation, RGBColor playerColor):
-            engine(engine)
+        Player(Engine* engine, Shader* shader, float size, float radiusPos, float rotation, RGBColor playerColor):
+            engine(engine),
+            ShaderPlayer(shader)
         {
             std::cout<<"Oh me creooo, dice Player"<<std::endl;
             initShaders();
@@ -108,9 +110,10 @@ class Player : public BG {
             //Memoria del objeto
             IDs.push_back(engine->createBuffer(vertexs,&indexes,9,argspace));
             //Transformar
-            model = glm::scale(model, glm::vec3(size));
-            model = glm::translate(model, glm::vec3(radiusPos,0.0,0.0));
             model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0,0.0,1.0));
+            model = glm::translate(model, glm::vec3(radiusPos,0.0,0.0));
+            model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
+            model = glm::scale(model, glm::vec3(size));
         }
         //Getters
         unsigned int getID(unsigned int index) const {

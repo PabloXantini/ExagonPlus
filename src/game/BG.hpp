@@ -3,7 +3,6 @@
 
 #include "GEngine/Engine.hpp"
 #include "GEngine/Shader.hpp"
-#include "../resource.h"
 #include "utils/Color.h"
 #include "utils/Position.h"
 
@@ -45,7 +44,8 @@ class BG{
             Inicializacion de Shader
         */
         void initShaders(){
-            ShaderBG = new Shader(IDR_VSHADER2,IDR_FSHADER2);
+            //ShaderBG = new Shader(IDR_VSHADER2,IDR_FSHADER2);
+            //std::cout << "ShaderBG ptr: " << ShaderBG << std::endl;
             //Registro
             engine->registerShader(ShaderBG);
             //Inicializacion
@@ -271,8 +271,9 @@ class BG{
     public:
         //Constructors
         BG()=default;
-        BG(Engine* engine, float radius, unsigned int vnum, unsigned int patterntimesto, std::vector<RGBColor>&colors):
-            engine(engine)
+        BG(Engine* engine, Shader* shader, float radius, unsigned int vnum, unsigned int patterntimesto, std::vector<RGBColor>&colors):
+            engine(engine),
+            ShaderBG(shader)
         {
             std::cout<<"Oh me creooo, dice BG"<<std::endl;
             initShaders();

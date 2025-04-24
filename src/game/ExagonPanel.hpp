@@ -31,7 +31,7 @@ void ExagonPanel::show(){
     game.PlayLevel();
     game.getBG().show();
     game.getCenter().show();
-    //game.getPlayer().show();
+    game.getPlayer().show();
 }
 
 #endif

@@ -1,6 +1,7 @@
 #ifndef EXAGON_GAME_PROCESS_HPP
 #define EXAGON_GAME_PROCESS_HPP
 
+#include "../resource.h"
 #include "utils/Color.h"
 #include "Time.hpp"
 #include "Songplayer.hpp"
@@ -35,8 +36,8 @@ class ExagonGameProcess {
         float CameraZ = 2.0f;
         //Transformaciones
         float scale = 1.0f;
-        float deltaRotX=1.0f;
-        float deltaRotY=1.0f;
+        float deltaRotX=0.0f;
+        float deltaRotY=0.0f;
         float deltaRotZ=-180.0f;    //El que mas nos interesa
         //Timers                
         float timer1 = 0.0f;        //ColorSwap
@@ -59,12 +60,13 @@ class ExagonGameProcess {
         std::function<void(Animation*, float, int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         //Objetos de referencia
         Engine* EnginePlaceHolder;
+        Shader Shader1;
         //Aqui nacen los objetos que quiera usar en el juego
         Timer gameTime;
         SongPlayer songPlayer;
         BG background;
         Center center;
-        //Player player;
+        Player player;
         //Punteros de animaciones
         std::vector<Animation*> animations={};
         Animation* a1;
@@ -84,20 +86,21 @@ class ExagonGameProcess {
         Center& getCenter() {
             return center;
         }
-        //Player& getPlayer() {
-        //    return player;
-        //}
+        Player& getPlayer() {
+            return player;
+        }
         //Methods
         void PlayLevel();
 };
 
 ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
+    Shader1(IDR_VSHADER2,IDR_FSHADER2),
     gameTime(),
     songPlayer(),
-    background(EnginePlaceHolder, 0.9f,sides,3,pcolors),
-    center(EnginePlaceHolder,0.18f,0.018f,sides,7,pcolors,wallcolors.at(0))//,
-    //player(EnginePlaceHolder,1.0f,0.2f,90.0f,wallcolors.at(0))
+    background(EnginePlaceHolder, &Shader1, 0.9f,sides,3,pcolors),
+    center(EnginePlaceHolder, &Shader1, 0.18f,0.018f,sides,7,pcolors,wallcolors.at(0)),
+    player(EnginePlaceHolder, &Shader1, 2.0f,0.21f,60.0f,wallcolors.at(0))
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel

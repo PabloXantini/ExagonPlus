@@ -3,7 +3,6 @@
 
 #include "GEngine/Engine.hpp"
 #include "GEngine/Shader.hpp"
-#include "../resource.h"
 #include "utils/Position.h"
 #include "utils/Color.h"
 #include "BG.hpp"
@@ -45,7 +44,9 @@ class Center : public BG {
         //Objetos usados
         //Metodos de creacion
         void initShaders(){
-            ShaderCenter = ShaderBG;
+            //ShaderCenter = ShaderBG;
+            //std::cout << "ShaderCenter ptr: " << ShaderCenter << std::endl;
+            //engine->registerShader(ShaderCenter);
         }
         /*
             Reserva el siguiente espacio de atributos, como recomendacion se llama al final de cada insercion de valores
@@ -275,8 +276,9 @@ class Center : public BG {
     public:
         //Constructors
         Center()=default;
-        Center(Engine* engine, float radius, float padding,unsigned int vnum, unsigned int patterntimesto, std::vector<RGBColor>&colors, RGBColor bordercolor):
-            engine(engine)
+        Center(Engine* engine, Shader* shader, float radius, float padding,unsigned int vnum, unsigned int patterntimesto, std::vector<RGBColor>&colors, RGBColor bordercolor):
+            engine(engine),
+            ShaderCenter(shader)
         {
             std::cout<<"Oh me creooo, dice Center"<<std::endl;
             initShaders();
