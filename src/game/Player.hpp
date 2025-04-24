@@ -61,16 +61,6 @@ class Player : public BG {
             argsused=0;
             argpointer=0;
         }
-        void insertColorAt(std::vector<float>&vertexs, RGBColor color, int offset){
-            vertexs.insert(vertexs.begin()+offset, color.R);
-            vertexs.insert(vertexs.begin()+offset+1, color.G);
-            vertexs.insert(vertexs.begin()+offset+2, color.B);
-        }
-        void insertCoor3DAt(std::vector<float>&vertexs, Coor3D coor, int offset){
-            vertexs.insert(vertexs.begin()+offset, coor.x);
-            vertexs.insert(vertexs.begin()+offset+1, coor.y);
-            vertexs.insert(vertexs.begin()+offset+2, coor.z);
-        }
         std::vector<float> rawsetup(std::vector<Coor3D> coors){
             vertexs.clear();
             for (auto& coor : coors){
