@@ -38,7 +38,7 @@ class ExagonGameProcess {
         float scale = 1.0f;
         float deltaRotX=0.0f;
         float deltaRotY=0.0f;
-        float deltaRotZ=-180.0f;    //El que mas nos interesa
+        float deltaRotZ=-0.0f;    //El que mas nos interesa
         //Timers                
         float timer1 = 0.0f;        //ColorSwap
         float timer2 = 0.0f;
@@ -73,6 +73,8 @@ class ExagonGameProcess {
         std::vector<Animation*> animations={};
         Animation* a1;
         Animation* a2;
+        Animation* a3;
+        Animation* a4;
 
         //Methods
         void handleEvents(float deltaTime);
@@ -109,12 +111,16 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
-    a1=new Animation(7, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
-    a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a1=new Animation(9, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a2=new Animation(4, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a3=new Animation(7, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a4=new Animation(11, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;
     delete a2;
+    delete a3;
+    delete a4;
 }
 void ExagonGameProcess::PlayLevel(){
     //songPlayer.playSong(song);
@@ -133,12 +139,18 @@ void ExagonGameProcess::PlayLevel(){
         //std::cout<<"Cambio de color"<<std::endl;
     }
     //Test Timeline
-    if(time>=11.0f){
+    if(time>=8.0f){
         a1->execute(dtime); 
     }
-    if(time>=16.0f){
+    if(time>=11.0f){
         a2->execute(dtime);
-    }     
+    }
+    if(time>=14.0f){
+        a3->execute(dtime);
+    }
+    if(time>=17.0f){
+        a4->execute(dtime);
+    }    
 }
 //Event handler - A decidir como va a quedar
 void ExagonGameProcess::handleEvents(float deltaTime){
@@ -160,17 +172,17 @@ void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int
     if(anim->Inited()){
         if(this->sides>sides){
             background.prepareBGforDecrease(sides);
-            //center.prepareCenterforDecrease(sides);
+            center.prepareCenterforDecrease(sides);
         }else{
             background.prepareBGforIncrease(sides);
-            //center.prepareCenterforIncrease(sides);
+            center.prepareCenterforIncrease(sides);
             this->sides=sides;
         }
     }
     background.softchangeSides(deltamov);
     if(this->sides>sides&&deltamov==1.0f){
         background.endUpdate(sides);
-        //center.endUpdate(sides);
+        center.endUpdate(sides);
         this->sides=sides;
     }
 }

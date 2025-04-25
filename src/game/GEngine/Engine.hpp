@@ -100,8 +100,6 @@ class Engine {
         void close();
         //Keyboard Methods
         void initKeyboardListening();
-        void pollInput();
-        bool isKeyPressed(int key);
         //Memory Methods
         //Buffers
         unsigned int createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);

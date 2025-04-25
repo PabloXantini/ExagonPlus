@@ -199,7 +199,7 @@ class BG{
             return vertexs;
         }
         std::vector<WVertex3D> modMesh(std::vector<WVertex3D>& vertexs, const std::vector<Coor3D>* vertcoors, const std::vector<RGBColor>* colors, const std::vector<Coor3D>* tovertcoors, const std::vector<RGBColor>* tocolors){
-            for(int i=0; i<this->allvcoors.size(); i++){
+            for(int i=0; i<vertexs.size(); i++){
                 if(vertcoors) putPosition(vertexs.at(i), vertcoors->at(i));
                 if(colors) putColor(vertexs.at(i), colors->at(i));
                 if(tovertcoors) putToPosition(vertexs.at(i), tovertcoors->at(i));
@@ -221,9 +221,6 @@ class BG{
             vnumber = vnum;
             timesto = patterntimesto;
             //Background
-            //vertexs = setRegular(radius, vnum);
-            //vertexs = addColors(vertexs.size()/3, timesto, colors);
-            //vertexs = padCoors(vertexs.size()/6, allvcoors);
             setRegular(radius,vnum);
             addColors(allvcoors.size(), timesto, colors);
             vertexs = setupMesh(allvcoors, vertexcolors, allvcoors, vertexcolors);
