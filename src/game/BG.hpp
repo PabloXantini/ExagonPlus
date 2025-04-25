@@ -54,43 +54,6 @@ class BG{
             ShaderBG->setFloat("morphprogress",0.0f);
         }
         /*
-            Reserva el siguiente espacio de atributos, como recomendacion se llama al final de cada insercion de valores
-        */
-        void reserveArgSpace(){
-            argsused+=argspace.at(argpointer);
-            argpointer++;
-        }
-        unsigned int calculateStride(){
-            unsigned int argstride=0;
-            for(int i=0; i<=argpointer; i++){
-                argstride+=argspace.at(i);
-            }
-            return argstride;
-        }
-        void restartSpacing(){
-            argsused=0;
-            argpointer=0;
-        }
-        /*
-            Añade un color a la mezcla de vertices
-
-        void PushColor(RGBColor color){
-            vertexs.push_back(color.R);
-            vertexs.push_back(color.G);
-            vertexs.push_back(color.B);
-        }
-        */
-        /*
-            Añade una coordenada 3D
-        */
-        /*
-        void PushCoor3D(Coor3D coors){
-            vertexs.push_back(coors.x);
-            vertexs.push_back(coors.y);
-            vertexs.push_back(coors.z);
-        }
-        */
-        /*
             Inserta un triangulo al conjunto de indices
         */
         void pushVTriangle(unsigned int a, unsigned int b, unsigned int c){
@@ -98,15 +61,6 @@ class BG{
             indexes.push_back(b);
             indexes.push_back(c);
         }
-        /*
-            Inserta un triangulo indicado por las coordenadas del triangulo
-        
-        void PushTriangle(Coor3D A, Coor3D B, Coor3D C){
-            PushCoor3D(A);
-            PushCoor3D(B);
-            PushCoor3D(C);
-        }
-        */
         /*
             Crea los indices, con lo que se va trazar cada triangulo de manera INDEXED
         */
@@ -120,27 +74,6 @@ class BG{
         }
         /*
             Guarda datos escenciales para el trazado del escenario (traza un poligono regular), con vertices puros
-
-            std::vector<float> setRegular(float radius, unsigned int vnumber){
-                vertexs.clear();
-                //std::vector<Coor3D> tempv={};
-                Coor3D currentcoor;
-                currentcoor.x=0.0f;
-                currentcoor.y=0.0f;
-                currentcoor.z=0.0f;
-                float anglex = (float)(4*acos(0.0)/vnumber);
-                vcoors.push_back(currentcoor);
-                for (int i=0; i<vnumber; i++){
-                currentcoor.x=radius*cos(anglex*i);
-                currentcoor.y=radius*sin(anglex*i);
-                vcoors.push_back(currentcoor);
-            }
-            tovcoors=vcoors;                       //Guardo para despues
-            vertexs=createTriangles(vcoors);
-            allvcoors=createTriangles(allvcoors, vcoors);
-            reserveArgSpace();
-            return vertexs;
-        }
         */
         std::vector<Coor3D> setRegular(float radius, unsigned int vnumber){
             vcoors.clear();
@@ -158,63 +91,14 @@ class BG{
             }
             tovcoors=vcoors;                       //Guardo para despues
             allvcoors=createTriangles(allvcoors, vcoors);
-            reserveArgSpace();
+            //reserveArgSpace();
             return vcoors;
         }
         /*
             Guarda datos escenciales para el trazado del nuevo escenario (traza un poligono regular), con vertices puros
-
-        std::vector<Coor3D> setNewRegular(float radius, unsigned int vnumber){
-            restartSpacing();
-            std::vector<Coor3D> cvcoors=vcoors;         //Guarda las coordenadas anteriores
-            //Reinicia las coordenadas
-            vcoors.clear();
-            tovcoors.clear();
-            //Logica sacada otra vez para formar el nuevo poligono
-            Coor3D currentcoor;
-            currentcoor.x=0.0f;
-            currentcoor.y=0.0f;
-            currentcoor.z=0.0f;
-            float anglex = (float)(4*acos(0.0)/vnumber);
-            vcoors.push_back(currentcoor);
-            tovcoors.push_back(currentcoor);
-            for (int i=0; i<vnumber; i++){
-                currentcoor.x=radius*cos(anglex*i);
-                currentcoor.y=radius*sin(anglex*i);
-                vcoors.push_back(currentcoor);
-                tovcoors.push_back(currentcoor);
-            }
-            //Evalua los casos en los que debe reducir el numero de poligonos
-            if(this->vnumber>=vnumber){                 //Decrease
-                for(int i=0; i<(this->vnumber-vnumber); i++){
-                    tovcoors.push_back(tovcoors.back());
-                }
-                //Prepara las coordenadas
-                vertexs.clear();
-                allvcoors.clear();
-                toallvcoors.clear();
-                
-                allvcoors=createTriangles(allvcoors, cvcoors);      //Pre Atrib 0
-                toallvcoors=createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
-                vertexs=createTriangles(vcoors);                    //Pos Atrib 0              
-            }else{                                      //Increase
-                for(int i=0; i<(vnumber-this->vnumber); i++){
-                    cvcoors.push_back(cvcoors.back());
-                }
-                vertexs.clear();
-                allvcoors.clear();
-                toallvcoors.clear();
-            
-                vertexs=createTriangles(cvcoors);                   //Pre Atrib 0
-                toallvcoors=createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
-                allvcoors=createTriangles(allvcoors, vcoors);       //Pos Atrib 2             
-            }
-            reserveArgSpace();
-            return toallvcoors;
-        }
         */
         std::vector<Coor3D> setNewRegular(float radius, unsigned int vnumber){
-            restartSpacing();
+            //restartSpacing();
             std::vector<Coor3D> cvcoors=vcoors;         //Guarda las coordenadas anteriores
             //Reinicia las coordenadas
             vcoors.clear();
@@ -256,60 +140,10 @@ class BG{
             
                 //cvcoors                                           //Pre Atrib 0
                 toallvcoors=createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
-                allvcoors=createTriangles(allvcoors, cvcoors);       //Pos Atrib 2             
+                allvcoors=createTriangles(allvcoors, cvcoors);      //Pos Atrib 2             
             }
-            reserveArgSpace();
             return toallvcoors;
         }
-        /*
-            Crea los triangulos de manera bruta para la manera CLASSIC
-
-        std::vector<float> createTriangles(std::vector<Coor3D>coors){
-            for(int i=1; i<(coors.size()-1); i++){
-                PushTriangle(coors.at(0), coors.at(i), coors.at(i+1));
-            }
-            PushTriangle(coors.at(0), coors.at(coors.size()-1), coors.at(1));
-            return vertexs;
-        }
-        */
-        /*
-            Inserta los colores en las coordenadas de las posiciones con algo de estilo
-        
-        std::vector<float> addColors(unsigned int vnum, unsigned int timesto, std::vector<RGBColor>&colors){
-            //std::cout << "Numero de vertices: " << vnum << std::endl;
-            vertexcolors.clear();           //Limpio primero que nada
-            int stride = calculateStride(); //Stride
-            int checkin = 0;
-            RGBColor newColor;
-            for(int i=0; i<vnum-timesto; i++){
-                //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
-                newColor = setColorPattern(checkin, timesto, colors);
-                insertColorAt(vertexs, newColor, argsused+i*stride);
-                pushColor(vertexcolors, newColor);
-                checkin++;
-            }
-            //Define el ultimo color si el poligono es par
-            if((vnum/3)%2==0){
-                for(int i=0;i<timesto;i++){
-                    //std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
-                    newColor = setColorPattern(checkin, timesto, colors);
-                    insertColorAt(vertexs, newColor, argsused+(vnum-timesto+i)*stride);
-                    pushColor(vertexcolors, newColor);
-                    checkin++;
-                }
-            }else{
-                //pushColor(vertexcolors, colors.back());
-                for(int i=0;i<timesto;i++){
-                    //std::cout << "Insertando en index: " << (3 +(vnum-timesto+i)* offset) << std::endl;
-                    newColor = colors.back();
-                    insertColorAt(vertexs, newColor, argsused+(vnum-timesto+i)*stride);
-                    pushColor(vertexcolors, newColor);
-                }
-            }
-            reserveArgSpace();          
-            return vertexs;
-        }
-        */
         void addColors(unsigned int vnum, unsigned int timesto, std::vector<RGBColor>&colors){
             //std::cout << "Numero de vertices: " << vnum << std::endl;
             vertexcolors.clear();           //Limpio primero que nada
@@ -332,22 +166,8 @@ class BG{
                     newColor = colors.back();
                     pushColor(vertexcolors, newColor);
                 }
-            }
-            reserveArgSpace();          
+            }        
         }
-        /*
-            Rellena las coordenadas para al iniciar el objeto
-        
-        std::vector<float> padCoors(unsigned int vnum, std::vector<Coor3D>&coors){
-            int stride = calculateStride();
-            for(int i=0; i<vnum; i++){
-                //std::cout << "Insertando en index: " << (3 + i* stride) << std::endl;
-                insertCoor3DAt(vertexs, coors.at(i), argsused+i*stride);
-            }
-            reserveArgSpace();
-            return vertexs;
-        }
-        */
         /*
             Establece el patron de los colores, 3 se usa para imprimir los triangulos de un solo color, mas o menos generan gradientes
         */
@@ -474,7 +294,6 @@ class BG{
         void swapColors(){
             std::rotate(vertexcolors.begin(), vertexcolors.begin()+timesto, vertexcolors.end());
             vertexs = modMesh(vertexs, NULL, &vertexcolors, NULL, &vertexcolors);
-            //engine->updateBufferColorWeight(this->getID(0),vertexcolors,1,argspace);
             engine->modBuffer(this->getID(0),vertexs,NULL);
         }
         /*
@@ -484,8 +303,6 @@ class BG{
             //Guardo nuevas coordenadas al buffer
             //std::vector<Coor3D> tallvcoors = allvcoors;
             toallvcoors=setNewRegular(radius, sides);
-            //engine->updateBufferCoorWeight(this->getID(0),allvcoors,0,argspace);
-            //engine->updateBufferCoorWeight(this->getID(0),toallvcoors,2,argspace);
             vertexs=modMesh(vertexs, &allvcoors, NULL, &toallvcoors, NULL);
             engine->modBuffer(this->getID(0),vertexs, NULL);
             //Preparo vertexs para temas de consistencia
@@ -493,16 +310,12 @@ class BG{
             createTriangles(allvcoors, vcoors);
             addColors(allvcoors.size(), timesto, pcolors);
             vertexs=setupMesh(allvcoors, vertexcolors, allvcoors, vertexcolors);
-            //addColors(vertexs.size()/3, timesto, pcolors);
-            //vertexs=padCoors(vertexs.size()/6, allvcoors);
         }
         void prepareBGforIncrease(int sides){
             //Preparo vertexs para temas de consistencia
             toallvcoors=setNewRegular(radius, sides);
             addColors(allvcoors.size(), timesto, pcolors);
             vertexs=setupMesh(allvcoors, vertexcolors, toallvcoors, vertexcolors);
-            //vertexs=addColors(vertexs.size()/3, timesto, pcolors);
-            //vertexs=padCoors(vertexs.size()/6, toallvcoors);
             this->vnumber=sides;
             engine->updateBuffer(this->getID(0),vertexs, NULL);
         }
