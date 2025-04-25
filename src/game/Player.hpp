@@ -3,6 +3,7 @@
 
 #include "GEngine/Engine.hpp"
 #include "GEngine/Shader.hpp"
+#include "utils/Vertex.h"
 #include "utils/Position.h"
 #include "utils/Color.h"
 #include "BG.hpp"
@@ -13,11 +14,10 @@
 class Player : public BG {
     private:
         std::vector<unsigned int> IDs={};                   //Esto me permite saber que IDs tienen cada forma que vaya a renderizar
-        std::vector<unsigned int> argspace={3,3,3};           //Pos//Color//toPos
-        unsigned int argsused=0;
-        unsigned int argpointer=0;
+        std::vector<unsigned int> argspace={3,3,3,3};       //Pos//Color//toPos//Color2
         std::vector<unsigned int> indexes={0,1,3,1,2,3};    //Indices de generacion
-        std::vector<float> vertexs={};                      //Vertices brutos del objeto
+        //std::vector<float> vertexs={};                      //Vertices brutos del objeto
+        std::vector<WVertex3D> vertexs={};                  //Vertices brutos del objeto
 
         std::vector<RGBColor> vertexcolors={};              //Gama de colores POR VERTICE
 
@@ -45,52 +45,13 @@ class Player : public BG {
             //std::cout << "ShaderPlayer ptr: " << ShaderPlayer << std::endl;
             //engine->registerShader(ShaderPlayer);
         }
-        /*
-            Reserva el siguiente espacio de atributos, como recomendacion se llama al final de cada insercion de valores
-        */
-        void reserveArgSpace(){
-            argsused+=argspace.at(argpointer);
-            argpointer++;
-        }
-        unsigned int calculateStride(){
-            unsigned int argstride=0;
-            for(int i=0; i<=argpointer; i++){
-                argstride+=argspace.at(i);
-            }
-            return argstride;
-        }
-        void restartSpacing(){
-            argsused=0;
-            argpointer=0;
-        }
-        std::vector<float> rawsetup(std::vector<Coor3D> coors){
-            vertexs.clear();
-            for (auto& coor : coors){
-                pushCoor3D(vertexs, coor);
-            }
-            reserveArgSpace();
-            return vertexs;
-        }
-        std::vector<float> addColor(std::vector<float>&vertexs, unsigned int vnum, RGBColor color){
+        void addColor( unsigned int vnum, RGBColor color){
             //std::cout << "Numero de vertices: " << vnum << std::endl;
             vertexcolors.clear();           //Limpio primero que nada
-            int stride = calculateStride(); //Stride
             for(int i=0; i<vnum; i++){
                 //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
-                insertColorAt(vertexs, color, argsused+i*stride);
                 pushColor(vertexcolors, color);
             }
-            reserveArgSpace();          
-            return vertexs;
-        }
-        std::vector<float> padCoors(std::vector<float>&vertexs, unsigned int vnum, std::vector<Coor3D>&coors){
-            int stride = calculateStride();
-            for(int i=0; i<vnum; i++){
-                //std::cout << "Insertando en index: " << (3 + i* stride) << std::endl;
-                insertCoor3DAt(vertexs, coors.at(i), argsused+i*stride);
-            }
-            reserveArgSpace();
-            return vertexs;
         }
         void rotatePlayerPos(float step){
             rotation+=step;
@@ -115,11 +76,10 @@ class Player : public BG {
             this->radiusPos=radiusPos;
             pcolor=playerColor;
             //vertices
-            vertexs=rawsetup(vcoors);
-            vertexs=addColor(vertexs,vertexs.size()/3,playerColor);
-            vertexs=padCoors(vertexs,vertexs.size()/6,vcoors);
+            addColor(vcoors.size(), playerColor);
+            vertexs=setupMesh(vcoors, vertexcolors, vcoors, vertexcolors);
             //Memoria del objeto
-            IDs.push_back(engine->createBuffer(vertexs,&indexes,9,argspace));
+            IDs.push_back(engine->createBuffer(vertexs,&indexes,12,argspace));
             //Transformar
             model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0,0.0,1.0));
             model = glm::translate(model, glm::vec3(radiusPos,0.0,0.0));
@@ -130,7 +90,7 @@ class Player : public BG {
         unsigned int getID(unsigned int index) const {
             return IDs.at(index);
         }
-        const std::vector<float>&getVertexs() const {
+        const std::vector<WVertex3D>&getVertexs() const {
             return vertexs;
         }
         const std::vector<unsigned int>&getIndexes() const {
