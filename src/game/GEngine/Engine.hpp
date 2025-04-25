@@ -105,10 +105,7 @@ class Engine {
         unsigned int createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
         unsigned int createBuffer(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
         void modBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes);
-        void updateBuffer(unsigned int VAO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes);
         void updateBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes);
-        void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors,unsigned int atribindex, const std::vector<unsigned int>& argsspace);
-        void updateBufferCoorWeight(unsigned int VAO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         //Shaders
         void registerShader(Shader* shader);
         void clearBuffers();
@@ -256,14 +253,6 @@ void Engine::registerShader(Shader* shader){
     Shaders.push_back(shader);
 };
 //Crea un buffer para un objeto dado argumentos
-unsigned int Engine::createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace){
-    Buffer newBuffer(verts, indexes, numargs);
-    for(auto& arg : argsspace){
-        newBuffer.addAttribute(arg);
-    }
-    Buffers.push_back(std::move(newBuffer));
-    return newBuffer.getVAO();
-}
 unsigned int Engine::createBuffer(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace){
     Buffer newBuffer(verts, indexes, numargs);
     for(auto& arg : argsspace){
@@ -278,61 +267,10 @@ void Engine::modBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, co
     buffer->update(verts, indexes);
 };
 //Sobrescribe todo el contenido del buffer
-void Engine::updateBuffer(unsigned int VAO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes){
-    Buffer* buffer = findBufferByVAO(VAO);
-    buffer->updateAll(verts, indexes);
-};
 void Engine::updateBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes){
     Buffer* buffer = findBufferByVAO(VAO);
     buffer->updateAll(verts, indexes);
 };
-//Actualiza el peso de colores
-void Engine::updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors, unsigned int atribindex, const std::vector<unsigned int>& argsspace){
-    Buffer* buffer = findBufferByVAO(VAO);
-    unsigned int VBO = buffer->getVBO();
-    int start=0;
-    for(int i=0;i<atribindex;i++){
-        start+=argsspace.at(i);
-    }
-    int colorsize=argsspace.at(atribindex);
-    int stride=buffer->getArgSize();
-    std::vector<float> colorspace;
-    for (auto& c : colors){
-        pushColor(colorspace, c);
-    }
-    //Abre el buffer en cuestion
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    for (size_t i=0; i<colors.size();++i) {
-        GLintptr offset = start*sizeof(float) + i*stride*sizeof(float);
-        glBufferSubData(GL_ARRAY_BUFFER, offset, colorsize*sizeof(float), &colorspace[i*colorsize]);
-    }
-    //Desvincula en buffer
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-void Engine::updateBufferCoorWeight(unsigned int VAO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace){
-    Buffer* buffer = findBufferByVAO(VAO);
-    unsigned int VBO = buffer->getVBO();
-    int start=0;
-    for(int i=0;i<atribindex;i++){
-        start+=argsspace.at(i);
-    }
-    int coorsize=argsspace.at(atribindex);
-    int stride=buffer->getArgSize();
-    std::vector<float> coorspace;
-    for (auto& coor : coors){
-        coorspace.push_back(coor.x);
-        coorspace.push_back(coor.y);
-        coorspace.push_back(coor.z);
-    }
-    //Abre el buffer en cuestion
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    for (size_t i=0; i<coors.size();++i) {
-        GLintptr offset = start*sizeof(float) + i*stride*sizeof(float);
-        glBufferSubData(GL_ARRAY_BUFFER, offset, coorsize*sizeof(float), &coorspace[i*coorsize]);
-    }
-    //Desvincula en buffer
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
 //Limpia todos los buffers
 void Engine::clearBuffers() {
     auto vaos = getAllVAOs(Buffers);

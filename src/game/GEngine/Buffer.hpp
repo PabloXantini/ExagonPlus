@@ -18,26 +18,6 @@ class Buffer {
         unsigned int VBO;
         unsigned int EBO=0;
     public:
-        Buffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, int argssize){
-            this->argssize=argssize;
-            glGenVertexArrays(1, &VAO);
-            glGenBuffers(1, &VBO);
-            //Opcional
-            if(indexes) glGenBuffers(1, &EBO);
-            //Asignacion de memoria para VAO
-            glBindVertexArray(VAO);
-            //Asignacion de memoria para VBO
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_STATIC_DRAW);
-            //Opcional: Asignacion de memoria para EBO
-            if(indexes){
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes->size() * sizeof(unsigned int), indexes->data(), GL_STATIC_DRAW);
-            }
-            //Desvincular
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-        }
         Buffer(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes, int argssize){
             this->argssize=argssize;
             glGenVertexArrays(1, &VAO);
@@ -90,19 +70,6 @@ class Buffer {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
         //Actualizacion forzosa
-        void updateAll(const std::vector<float>& verts, const std::vector<unsigned int>* indexes){
-            //Asignacion de memoria para VBO
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_STATIC_DRAW);
-            //Opcional: Asignacion de memoria para EBO
-            if(indexes){
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes->size() * sizeof(unsigned int), indexes->data(), GL_STATIC_DRAW);
-            }
-            //Desvincular
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            //glBindVertexArray(0);
-        }
         void updateAll(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes){
             //Asignacion de memoria para VBO
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
