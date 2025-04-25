@@ -112,9 +112,9 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setCamera(CameraX, CameraY, CameraZ);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
     a1=new Animation(9, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
-    a2=new Animation(4, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
-    a3=new Animation(7, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
-    a4=new Animation(11, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a3=new Animation(3, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a4=new Animation(6, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;

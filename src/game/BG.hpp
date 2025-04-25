@@ -98,7 +98,6 @@ class BG{
             Guarda datos escenciales para el trazado del nuevo escenario (traza un poligono regular), con vertices puros
         */
         std::vector<Coor3D> setNewRegular(float radius, unsigned int vnumber){
-            //restartSpacing();
             std::vector<Coor3D> cvcoors=vcoors;         //Guarda las coordenadas anteriores
             //Reinicia las coordenadas
             vcoors.clear();
@@ -239,11 +238,6 @@ class BG{
         unsigned int getID(unsigned int index) const {
             return IDs.at(index);
         }
-        /*
-        const std::vector<float>&getVertexs() const {
-            return vertexs;
-        }
-        */
         const std::vector<WVertex3D>&getVertexs() const {
             return vertexs;
         }
@@ -258,11 +252,6 @@ class BG{
             return pcolors;
         }
         //Setters
-        /*
-        void setVertexs(std::vector<float> vxs) {
-            vertexs=vxs;
-        }
-        */
         /*
             Vista
         */
@@ -298,7 +287,6 @@ class BG{
         */
         void prepareBGforDecrease(int sides){
             //Guardo nuevas coordenadas al buffer
-            //std::vector<Coor3D> tallvcoors = allvcoors;
             toallvcoors=setNewRegular(radius, sides);
             vertexs=modMesh(vertexs, &allvcoors, NULL, &toallvcoors, NULL);
             engine->modBuffer(this->getID(0),vertexs, NULL);
