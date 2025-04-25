@@ -28,6 +28,7 @@ class Player : public BG {
             {0.0f, -0.005f, 0.0f}
         };
         //General
+        float sensibility = 100.0f;
         float radiusPos = 0.6f;
         float scale = 1.0f;
         float rotation = 0.0f;
@@ -91,14 +92,24 @@ class Player : public BG {
             reserveArgSpace();
             return vertexs;
         }
+        void rotatePlayerPos(float step){
+            rotation+=step;
+            //Transformacion
+            model = glm::mat4(1.0f);    //Reiniciar la transformacion
+            model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0,0.0,1.0));
+            model = glm::translate(model, glm::vec3(radiusPos,0.0,0.0));
+            model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
+            model = glm::scale(model, glm::vec3(scale));
+        }
     public:
         Player()=default;
-        Player(Engine* engine, Shader* shader, float size, float radiusPos, float rotation, RGBColor playerColor):
+        Player(Engine* engine, Shader* shader, float sensibility, float size, float radiusPos, float rotation, RGBColor playerColor):
             engine(engine),
             ShaderPlayer(shader)
         {
             std::cout<<"Oh me creooo, dice Player"<<std::endl;
             initShaders();
+            this->sensibility=sensibility;
             this->scale=size;
             this->rotation=rotation;
             this->radiusPos=radiusPos;
@@ -134,6 +145,12 @@ class Player : public BG {
         void show() {
             ShaderPlayer->setMat4("Model", model);
             engine->renderPolygon(ShaderPlayer, this->getID(0), indexes.size());
+        }
+        /*
+            Mover
+        */
+        void move(float step) {
+            rotatePlayerPos(step);
         }
 };
 

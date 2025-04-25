@@ -16,10 +16,11 @@
 #include "../utils/Position.h"
 
 #include <iostream>
-#include <unordered_map>
+//#include <unordered_map>
 #include <vector>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 class Engine {
     private:
@@ -31,10 +32,8 @@ class Engine {
         float GFOV=45.0f;                           //Valor por defecto del FOV
         std::vector<Buffer> Buffers={};             //Buffers por VAO generados
         std::vector<Shader*> Shaders={};            //Shaders generados
-        std::unordered_map<int, bool> keyStates;    //Tokens de teclado
         GLFWwindow* window;                         //Ventana
-        //Shaders usados
-        //Shader* BASIC;
+        bool keyStates[350];                        //Tokens de teclado
         //Methods
         void setupShaders();
         GLFWimage load_icon(int resID);
@@ -74,6 +73,9 @@ class Engine {
             }
             return nullptr;
         }
+        bool& getKey(unsigned int index){
+            return keyStates[index];
+        }
         //Setters
         void setFOV(float FOV){
             GFOV=FOV;
@@ -97,6 +99,7 @@ class Engine {
         void handle();
         void close();
         //Keyboard Methods
+        void initKeyboardListening();
         void pollInput();
         bool isKeyPressed(int key);
         //Memory Methods
@@ -118,7 +121,8 @@ class Engine {
         void renderPolygon2(Shader* shader, unsigned int rVAO, unsigned int vertexcount);
 };
 
-//Callback
+//Callbacks
+//Pantalla
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     if (height == 0) return;
     glViewport(0, 0, width, height);
@@ -128,6 +132,23 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
         engine->resize(width, height);  // Llama al método de la clase
     }
     //std::cout<<"Cambio"<<std::endl;
+}
+//Teclado
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+    void* ptr = glfwGetWindowUserPointer(window);
+    if(ptr){
+        Engine* engine = static_cast<Engine*>(ptr);
+        if(key==GLFW_KEY_ESCAPE && action==GLFW_PRESS){
+            glfwSetWindowShouldClose(window, true);
+        }
+        if(key>=0 && key<350){
+            if(action==GLFW_PRESS){
+                engine->getKey(key)=true;
+            } else if(action==GLFW_RELEASE){
+                engine->getKey(key)=false;
+            }
+        }
+    }
 }
 
 Engine::Engine(){
@@ -189,6 +210,10 @@ void Engine::initWindowResizing(){
     glfwSetWindowUserPointer(window, this);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 }
+void Engine::initKeyboardListening(){
+    glfwSetWindowUserPointer(window, this);
+    glfwSetKeyCallback(window, key_callback);
+}
 //Coreccion de reescalado
 void Engine::resize(int width, int height){
     Rwidth=width;
@@ -223,18 +248,7 @@ void Engine::handle(){
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
-///
-//Keyboard Methods
-//Seteo de Teclas
-void Engine::pollInput() {
-    for (int key = 0; key < 350; ++key)
-        keyStates[key] = glfwGetKey(window, key) == GLFW_PRESS;
-}
-//Checar que numero de tecla se activo
-bool Engine::isKeyPressed(int key) {
-    return keyStates[key];
-}
-///
+
 //Memory Methods
 //Registra un shader para que lo reconozca la clase
 void Engine::registerShader(Shader* shader){

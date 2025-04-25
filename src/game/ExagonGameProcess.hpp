@@ -56,12 +56,14 @@ class ExagonGameProcess {
             {0.071f, 0.267f, 0.612f}//,//ColO - El ultimo solo se renderiza cuando es impar
         };
         //Variables propias de la clase
+        //Jugador
+        const float PLAYER_SENSIBILITY = 500.0f;
         //Punteros de funciones
         std::function<void(Animation*, float, int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         //Objetos de referencia
         Engine* EnginePlaceHolder;
-        Shader Shader1;
         //Aqui nacen los objetos que quiera usar en el juego
+        Shader Shader1;
         Timer gameTime;
         SongPlayer songPlayer;
         BG background;
@@ -73,7 +75,7 @@ class ExagonGameProcess {
         Animation* a2;
 
         //Methods
-        void handleEvents();
+        void handleEvents(float deltaTime);
         void changeDynamicSideBG(Animation* anim, float deltamov, int sides);
     public:
         //Constructor
@@ -98,9 +100,9 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     Shader1(IDR_VSHADER2,IDR_FSHADER2),
     gameTime(),
     songPlayer(),
-    background(EnginePlaceHolder, &Shader1, 0.9f,sides,3,pcolors),
-    center(EnginePlaceHolder, &Shader1, 0.18f,0.018f,sides,7,pcolors,wallcolors.at(0)),
-    player(EnginePlaceHolder, &Shader1, 2.0f,0.21f,60.0f,wallcolors.at(0))
+    background(EnginePlaceHolder, &Shader1, 0.9f, sides, 3, pcolors),
+    center(EnginePlaceHolder, &Shader1, 0.18f, 0.018f, sides,7, pcolors, wallcolors.at(0)),
+    player(EnginePlaceHolder, &Shader1, PLAYER_SENSIBILITY, 2.0f, 0.21f, 60.0f, wallcolors.at(0))
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
@@ -119,6 +121,7 @@ void ExagonGameProcess::PlayLevel(){
     float time = gameTime.getTime(); //Tiempo en general
     float dtime = gameTime.getDeltaTime();
     timer2 = time;
+    handleEvents(dtime);
     //std::cout<<time<<std::endl;
     //Cosas que se hacen siempre
     background.changeBGHue(time, hueFactor, hueSpeed);
@@ -138,8 +141,18 @@ void ExagonGameProcess::PlayLevel(){
     }     
 }
 //Event handler - A decidir como va a quedar
-void ExagonGameProcess::handleEvents(){
-    
+void ExagonGameProcess::handleEvents(float deltaTime){
+    //Nivel - Jugador
+    if(EnginePlaceHolder->getKey(262)){//Derecha
+        float velocity = - PLAYER_SENSIBILITY * deltaTime;
+        //std::cout<<"Se mueve a la derecha"<<std::endl;
+        player.move(velocity);
+    }
+    if(EnginePlaceHolder->getKey(263)){//Izquierda
+        float velocity = PLAYER_SENSIBILITY * deltaTime;
+        //std::cout<<"Se mueve a la izquierda"<<std::endl;
+        player.move(velocity);
+    }
 }
 //Cambia los lados de manera dinamica con morphing
 void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int sides){

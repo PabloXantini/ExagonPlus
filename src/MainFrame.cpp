@@ -25,6 +25,7 @@ int main() {
 
     if(!engine.initWindow(SCR_WIDTH, SCR_HEIGHT, TITLE)) return -1;
     engine.setWindowsIcons(iconsref);
+    engine.initKeyboardListening();
     engine.initWindowResizing();
     if(!engine.linkGLAD()) return -1;
     engine.blockFPS(60);
@@ -34,8 +35,6 @@ int main() {
 
     //Corredor del juego -- Lo puedo incluir en Engine
     while (engine.isWindowOpen()) {
-        //events
-        engine.pollInput();
         engine.rendWindowBackground();
         //render
         panel.show();
