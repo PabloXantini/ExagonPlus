@@ -11,6 +11,11 @@
 #include <vector>
 
 class Center : public BG {
+    protected:
+        //Borde
+        std::vector<Coor3D> wvcoors={};             //Coordenadas 3D POR VERTICE (Origen)
+        std::vector<Coor3D> wtovcoors={};           //Coordenadas 3D POR VERTICE (Destino)
+        unsigned int vnumber = 3;                   //Lados del centro
     private:
         std::vector<unsigned int> IDs={};           //Esto me permite saber que IDs tienen cada forma que vaya a renderizar
         std::vector<unsigned int> argspace={3,3,3}; //Pos//Color//toPos
@@ -20,9 +25,6 @@ class Center : public BG {
         std::vector<unsigned int> indexes={};       //Indices de generacion
         std::vector<float> vertexs={};              //Vertices brutos del objeto
         std::vector<float> wvertexs={};              //Vertices brutos del objeto
-        //Borde
-        std::vector<Coor3D> wvcoors={};             //Coordenadas 3D POR VERTICE (Origen)
-        std::vector<Coor3D> wtovcoors={};           //Coordenadas 3D POR VERTICE (Destino)
         //Relleno
         std::vector<Coor3D> vcoors={};              //Coordenadas 3D POR VERTICE (Origen)
         std::vector<Coor3D> tovcoors={};            //Coordenadas 3D POR VERTICE (Destino)
@@ -30,7 +32,6 @@ class Center : public BG {
         std::vector<RGBColor> vertexcolors={};      //Gama de colores POR VERTICE
         std::vector<RGBColor> wvertexcolors={};     //Colores de pared POR VERTICE
         //General
-        unsigned int vnumber = 3;                   //Lados del centro
         unsigned int timesto = 6;                   //Veces en la que se reproducira el patron
         float radius=1.2f;                          //Es para setear el largo del centro
         float padding=0.1f;                         //Grosor del borde
@@ -240,6 +241,18 @@ class Center : public BG {
             reserveArgSpace();          
             return vertexs;
         }
+        /*
+            Establece el patron de los colores, 3 se usa para imprimir los triangulos de un solo color, mas o menos generan gradientes
+        */
+        RGBColor setColorPattern(int check, unsigned int timesto, std::vector<RGBColor>&colors){
+            if (colors.empty() || timesto == 0) return RGBColor{0.0f, 0.0f, 0.0f};
+            int index = (check / timesto) % colors.size();
+            RGBColor currentColor = colors.at(index);
+        return currentColor;
+        }
+        /*
+            Aniade color a la pared
+        */
         std::vector<float> addWallColor(std::vector<float>&vertexs, unsigned int vnum, RGBColor color){
             //std::cout << "Numero de vertices: " << vnum << std::endl;
             wvertexcolors.clear();           //Limpio primero que nada
@@ -264,15 +277,6 @@ class Center : public BG {
             reserveArgSpace();
             return vertexs;
         }
-        /*
-            Establece el patron de los colores, 3 se usa para imprimir los triangulos de un solo color, mas o menos generan gradientes
-        */
-        RGBColor setColorPattern(int check, unsigned int timesto, std::vector<RGBColor>&colors){
-            if (colors.empty() || timesto == 0) return RGBColor{0.0f, 0.0f, 0.0f};
-            int index = (check / timesto) % colors.size();
-            RGBColor currentColor = colors.at(index);
-        return currentColor;
-    }
     public:
         //Constructors
         Center()=default;

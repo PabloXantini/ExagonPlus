@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
+#include "../utils/Vertex.h"
+
 #include <iostream>
 #include <vector>
 
@@ -36,6 +38,26 @@ class Buffer {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         }
+        Buffer(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes, int argssize){
+            this->argssize=argssize;
+            glGenVertexArrays(1, &VAO);
+            glGenBuffers(1, &VBO);
+            //Opcional
+            if(indexes) glGenBuffers(1, &EBO);
+            //Asignacion de memoria para VAO
+            glBindVertexArray(VAO);
+            //Asignacion de memoria para VBO
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(WVertex3D), verts.data(), GL_STATIC_DRAW);
+            //Opcional: Asignacion de memoria para EBO
+            if(indexes){
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes->size() * sizeof(unsigned int), indexes->data(), GL_STATIC_DRAW);
+            }
+            //Desvincular
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
+        }
         void addAttribute(unsigned int args){
             unsigned int argtest=argsused;
             if((argtest+args)>argssize) {
@@ -55,6 +77,19 @@ class Buffer {
             argsused+=args;
             attribpointer++;
         }
+        //Actualizacion sin cambiar tamanio
+        void update(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes){
+            //Asignacion de memoria para VBO
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, verts.size()*sizeof(WVertex3D), verts.data());
+            //Opcional: Asignacion de memoria para EBO
+            if(indexes){
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+                glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indexes->size()*sizeof(unsigned int), indexes->data());
+            }
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+        }
+        //Actualizacion forzosa
         void updateAll(const std::vector<float>& verts, const std::vector<unsigned int>* indexes){
             //Asignacion de memoria para VBO
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -66,7 +101,20 @@ class Buffer {
             }
             //Desvincular
             glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
+            //glBindVertexArray(0);
+        }
+        void updateAll(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes){
+            //Asignacion de memoria para VBO
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(WVertex3D), verts.data(), GL_STATIC_DRAW);
+            //Opcional: Asignacion de memoria para EBO
+            if(indexes){
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes->size() * sizeof(unsigned int), indexes->data(), GL_STATIC_DRAW);
+            }
+            //Desvincular
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            //glBindVertexArray(0);
         }
         const unsigned int getVAO() const {
             return VAO;

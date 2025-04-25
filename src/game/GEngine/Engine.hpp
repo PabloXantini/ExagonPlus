@@ -105,7 +105,10 @@ class Engine {
         //Memory Methods
         //Buffers
         unsigned int createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
-        void updateBuffer(unsigned int VBO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes);
+        unsigned int createBuffer(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
+        void modBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes);
+        void updateBuffer(unsigned int VAO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes);
+        void updateBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes);
         void updateBufferColorWeight(unsigned int VAO, std::vector<RGBColor>& colors,unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         void updateBufferCoorWeight(unsigned int VAO, std::vector<Coor3D>& coors, unsigned int atribindex, const std::vector<unsigned int>& argsspace);
         //Shaders
@@ -263,8 +266,25 @@ unsigned int Engine::createBuffer(const std::vector<float>& verts, const std::ve
     Buffers.push_back(std::move(newBuffer));
     return newBuffer.getVAO();
 }
+unsigned int Engine::createBuffer(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace){
+    Buffer newBuffer(verts, indexes, numargs);
+    for(auto& arg : argsspace){
+        newBuffer.addAttribute(arg);
+    }
+    Buffers.push_back(std::move(newBuffer));
+    return newBuffer.getVAO();
+}
 //Actualiza todo el contenido del buffer
+void Engine::modBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes){
+    Buffer* buffer = findBufferByVAO(VAO);
+    buffer->update(verts, indexes);
+};
+//Sobrescribe todo el contenido del buffer
 void Engine::updateBuffer(unsigned int VAO, const std::vector<float>& verts, const std::vector<unsigned int>* indexes){
+    Buffer* buffer = findBufferByVAO(VAO);
+    buffer->updateAll(verts, indexes);
+};
+void Engine::updateBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes){
     Buffer* buffer = findBufferByVAO(VAO);
     buffer->updateAll(verts, indexes);
 };

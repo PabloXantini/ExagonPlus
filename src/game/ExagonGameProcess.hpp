@@ -109,8 +109,8 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
-    a1=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
-    a2=new Animation(7, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a1=new Animation(7, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;
@@ -129,7 +129,7 @@ void ExagonGameProcess::PlayLevel(){
     if((time-timer1)>=colorSwapRatio){
         timer1=time;
         background.swapColors();
-        center.swapColors();
+        //center.swapColors();
         //std::cout<<"Cambio de color"<<std::endl;
     }
     //Test Timeline
@@ -160,17 +160,17 @@ void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int
     if(anim->Inited()){
         if(this->sides>sides){
             background.prepareBGforDecrease(sides);
-            center.prepareCenterforDecrease(sides);
+            //center.prepareCenterforDecrease(sides);
         }else{
             background.prepareBGforIncrease(sides);
-            center.prepareCenterforIncrease(sides);
+            //center.prepareCenterforIncrease(sides);
             this->sides=sides;
         }
     }
     background.softchangeSides(deltamov);
     if(this->sides>sides&&deltamov==1.0f){
         background.endUpdate(sides);
-        center.endUpdate(sides);
+        //center.endUpdate(sides);
         this->sides=sides;
     }
 }
