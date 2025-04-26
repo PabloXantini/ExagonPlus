@@ -32,7 +32,9 @@ void ExagonPanel::show(){
     //Background
     game.getBG().show();
     //Obstaculos
-    if(game.getWall()) game.getWall()->show();
+    for(auto& wall : game.getWalls()){
+        wall->show();
+    }
     //Centro
     game.getCenter().show();
     //Jugador

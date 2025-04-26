@@ -26,7 +26,6 @@ class Wall : public Center {
         float radiusPosOffset=10.0f;                    //Posicion de aparicion de los obstaculos
         float marginL=0.05f;                            //Grosor izquierdo
         float marginR=0.05f;                            //Grosor derecho
-        float TTL=5.0f;                                 //Tiempo de vida :(
         float timesto=4;
         std::vector<RGBColor> wallcolors;               //Color principal (por vertice)
         //Transformaciones

@@ -6,7 +6,7 @@
 
 #include <algorithm>
 #include <iostream>
-
+//El tiempo general
 class Timer {
     private:
         float temp;
@@ -34,6 +34,28 @@ class Timer {
             time=0.0f;
             glfwSetTime(0.0f);
         }  
+};
+//Me sirve para cosas que se repiten en sierto intervalo
+class Chronometer {
+    private:
+        float timer = 0.0f;         //Valor anterior en el tiempo
+        float tracktime = 1.0f;     //Valor aspirado
+    public:
+        Chronometer(float tracktime) {
+            this->tracktime = tracktime;
+        }
+        //Setters
+        void setTTime(float totime){
+            tracktime=totime;
+        }
+        //Me va servir para checar
+        bool track(float time){
+            if((time-timer)>=tracktime){
+                timer = time;
+                return true;
+            }
+            return false;
+        }
 };
 
 #endif

@@ -8,6 +8,7 @@
 #include "AnimationMaker.hpp"
 #include "BG.hpp"
 #include "Center.hpp"
+#include "WallObject.hpp"
 #include "Wall.hpp"
 #include "Player.hpp"
 
@@ -61,7 +62,7 @@ class ExagonGameProcess {
         const float PLAYER_SENSIBILITY = 500.0f;
         //Punteros de funciones
         std::function<void(Animation*, float, int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-        std::function<void(Animation*, float)>movW=std::bind(&ExagonGameProcess::collapseWall, this, std::placeholders::_1, std::placeholders::_2);
+        //std::function<void(Animation*, float)>movW=std::bind(&ExagonGameProcess::collapseWall, this, std::placeholders::_1, std::placeholders::_2);
         //Objetos de referencia
         Engine* EnginePlaceHolder;
         //Aqui nacen los objetos que quiera usar en el juego
@@ -72,9 +73,11 @@ class ExagonGameProcess {
         Center center;
         Player player;
         //Punteros de animaciones
-        std::vector<Animation*> animations={};
-        Wall* wt;
-        Animation* wa1;
+        //std::vector<Animation*> animations={};
+        std::vector<CompleteWall*> completeWalls={};
+        std::vector<unsigned int> WTIndexes = {0,1,2};
+        CompleteWall* WallTest;
+        //Animation* wa1;
         Animation* a1;
         Animation* a2;
         Animation* a3;
@@ -98,8 +101,8 @@ class ExagonGameProcess {
         Player& getPlayer() {
             return player;
         }
-        Wall* getWall() {
-            return wt;
+        std::vector<CompleteWall*>& getWalls() {
+            return completeWalls;
         }
         //Methods
         void PlayLevel();
@@ -119,8 +122,8 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
-    wt=new Wall(EnginePlaceHolder, &Shader1, &center, 2, 0.1f, 0.1f, 4, wallcolors);
-    wa1=new Animation(2.0f, movW, AnimType::LINEAR);
+    WallTest=new CompleteWall(EnginePlaceHolder, &Shader1, &center, 1.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4);
+    //wa1=new Animation(2.0f, movW, AnimType::LINEAR);
     a1=new Animation(9, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a3=new Animation(3, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
@@ -131,7 +134,7 @@ ExagonGameProcess::~ExagonGameProcess(){
     delete a2;
     delete a3;
     delete a4;
-    delete wt;
+    //delete wt1;
 }
 void ExagonGameProcess::PlayLevel(){
     //songPlayer.playSong(song);
@@ -143,7 +146,9 @@ void ExagonGameProcess::PlayLevel(){
     //Cosas que se hacen siempre
     background.changeBGHue(time, hueFactor, hueSpeed);
     background.rotateBG(time, deltaRotX, deltaRotY, deltaRotZ);
-    wa1->execute(dtime);
+    //Cosas de pared
+    WallTest->execute(dtime);
+    //Cosas ciclicas
     if((time-timer1)>=colorSwapRatio){
         timer1=time;
         background.swapColors();
@@ -178,14 +183,6 @@ void ExagonGameProcess::handleEvents(float deltaTime){
         player.move(velocity);
     }
 }
-//Colapso de la pared
-void ExagonGameProcess::collapseWall(Animation* anim, float deltamov){
-    wt->collapse(deltamov);
-    if(deltamov==1.0f){
-        wt->kill();
-        wt=nullptr;
-    }
-}
 //Cambia los lados de manera dinamica con morphing
 void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int sides){
     //std::cout<<deltamov<<std::endl;
@@ -193,12 +190,12 @@ void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int
         if(this->sides>sides){
             background.prepareBGforDecrease(sides);
             center.prepareCenterforDecrease(sides);
-            if(wt) wt->prepareWallforDecrease(sides);
+            //if(wt1) wt1->prepareWallforDecrease(sides);
             
         }else{
             background.prepareBGforIncrease(sides);
             center.prepareCenterforIncrease(sides);
-            if(wt) wt->prepareWallforIncrease(sides);
+            //if(wt1) wt1->prepareWallforIncrease(sides);
             this->sides=sides;
         }
     }
@@ -206,7 +203,7 @@ void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int
     if(this->sides>sides&&deltamov==1.0f){
         background.endUpdate(sides);
         center.endUpdate(sides);
-        if(wt) wt->endUpdate(sides);
+        //if(wt1) wt1->endUpdate(sides);
         this->sides=sides;
     }
 }
