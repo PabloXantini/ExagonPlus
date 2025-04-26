@@ -103,6 +103,7 @@ class Player : public BG {
             Renderizar/Mostrar
         */
         void show() {
+            ShaderPlayer->setInt("ObjectType", 0);
             ShaderPlayer->setMat4("Model", model);
             engine->renderPolygon(ShaderPlayer, this->getID(0), indexes.size());
         }

@@ -29,8 +29,13 @@ ExagonPanel::ExagonPanel(Engine* engine):
 void ExagonPanel::show(){
     //El orden de renderizado
     game.PlayLevel();
+    //Background
     game.getBG().show();
+    //Obstaculos
+    game.getWall()->show();
+    //Centro
     game.getCenter().show();
+    //Jugador
     game.getPlayer().show();
 }
 

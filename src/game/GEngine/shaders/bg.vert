@@ -4,6 +4,10 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec3 toPos;
 
+//Tipo de objeto
+uniform int ObjectType;
+
+//Escenario
 //Vista y Camara
 uniform mat4 Projection;
 uniform mat4 View;
@@ -13,6 +17,25 @@ uniform mat4 Rotation;
 uniform mat4 Model;
 //Polar Morphing
 uniform float morphprogress;
+
+//Pared
+//Colapse
+uniform float marginL;
+uniform float marginR;
+uniform float collapseprogress;
+
+vec3 WallCollapseToCenter(vec3 from, float t) {
+    from*=4;
+    vec3 normal = normalize(from);
+    from = mix(from, vec3(0.0,0.0,0.0), t);
+    if(gl_VertexID==2){
+        return from + normal * marginR;
+    }else if(gl_VertexID==3){
+        return from + normal * marginL;
+    }else{
+        return from;
+    }
+}
 
 vec3 polarMorph(vec3 from, vec3 to, float t) {
     vec2 pA = from.xy;
@@ -59,7 +82,12 @@ void main() {
     oFragColor = aColor;
     //Morphing polar
     vec3 mphPos = polarMorph(aPos, toPos, morphprogress);
+    vec3 collapsed = WallCollapseToCenter(mphPos, collapseprogress);
+    vec3 FinalPos = mphPos;
+    if(ObjectType==1){
+        FinalPos = collapsed;
+    }
     //Posicion
-    vec4 result = Projection * View * Rotation * Model * vec4(mphPos, 1.0); 
+    vec4 result = Projection * View * Rotation * Model * vec4(FinalPos, 1.0); 
     gl_Position = vec4(result);
 };

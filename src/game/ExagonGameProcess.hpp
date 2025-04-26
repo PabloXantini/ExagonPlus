@@ -8,6 +8,7 @@
 #include "AnimationMaker.hpp"
 #include "BG.hpp"
 #include "Center.hpp"
+#include "Wall.hpp"
 #include "Player.hpp"
 
 #include <iostream>
@@ -71,6 +72,7 @@ class ExagonGameProcess {
         Player player;
         //Punteros de animaciones
         std::vector<Animation*> animations={};
+        Wall* wt;
         Animation* a1;
         Animation* a2;
         Animation* a3;
@@ -93,6 +95,9 @@ class ExagonGameProcess {
         Player& getPlayer() {
             return player;
         }
+        Wall* getWall() {
+            return wt;
+        }
         //Methods
         void PlayLevel();
 };
@@ -111,6 +116,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
+    wt=new Wall(EnginePlaceHolder, &Shader1, &center, 0, 0.2f, 0.2f, 4, wallcolors);
     a1=new Animation(9, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a3=new Animation(3, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
@@ -121,6 +127,7 @@ ExagonGameProcess::~ExagonGameProcess(){
     delete a2;
     delete a3;
     delete a4;
+    delete wt;
 }
 void ExagonGameProcess::PlayLevel(){
     //songPlayer.playSong(song);

@@ -271,6 +271,7 @@ class BG{
             Renderizar/Mostrar
         */
         void show() {
+            ShaderBG->setInt("ObjectType", 0);
             ShaderBG->setMat4("Model", model);
             engine->renderPolygon2(ShaderBG, this->getID(0), getVertexs().size()*12);
         }

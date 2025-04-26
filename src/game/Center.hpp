@@ -138,24 +138,25 @@ class Center : public BG {
             }
         }
         /*
+            Aniade color a la pared
+        */ 
+        void addWallColor(unsigned int vnum, RGBColor color){
+           //std::cout << "Numero de vertices: " << vnum << std::endl;
+           wvertexcolors.clear();           //Limpio primero que nada
+           for(int i=0; i<vnum; i++){
+               //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
+               pushColor(wvertexcolors, color);
+            }         
+        }
+    protected:
+        /*
             Establece el patron de los colores, 3 se usa para imprimir los triangulos de un solo color, mas o menos generan gradientes
         */
         RGBColor setColorPattern(int check, unsigned int timesto, std::vector<RGBColor>&colors){
             if (colors.empty() || timesto == 0) return RGBColor{0.0f, 0.0f, 0.0f};
             int index = (check / timesto) % colors.size();
             RGBColor currentColor = colors.at(index);
-        return currentColor;
-        }
-        /*
-            Aniade color a la pared
-        */ 
-        void addWallColor(unsigned int vnum, RGBColor color){
-            //std::cout << "Numero de vertices: " << vnum << std::endl;
-            wvertexcolors.clear();           //Limpio primero que nada
-            for(int i=0; i<vnum; i++){
-                //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
-                pushColor(wvertexcolors, color);
-            }         
+            return currentColor;
         }
     public:
         //Constructors
@@ -206,11 +207,6 @@ class Center : public BG {
         unsigned int getID(unsigned int index) const {
             return IDs.at(index);
         }
-        /*
-        const std::vector<float>&getVertexs() const {
-            return vertexs;
-        }
-        */
         const std::vector<WVertex3D>&getVertexs() const {
             return vertexs;
         }
@@ -224,10 +220,14 @@ class Center : public BG {
         const std::vector<RGBColor>&getColors() const {
             return pcolors;
         }
+        const std::vector<Coor3D>&get3DCoors() const {
+            return wvcoors;
+        }
         /*
             Renderizar/Mostrar
         */
         void show() {
+            ShaderCenter->setInt("ObjectType", 0);
             ShaderCenter->setMat4("Model", model);
             engine->renderPolygon(ShaderCenter, this->getID(0), indexes.size());
             engine->renderPolygon(ShaderCenter, this->getID(1), indexes.size());
