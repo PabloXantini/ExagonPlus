@@ -106,6 +106,7 @@ class Engine {
         unsigned int createBuffer(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
         void modBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes);
         void updateBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes);
+        void eliminateBuffer(unsigned int VAO);
         //Shaders
         void registerShader(Shader* shader);
         void clearBuffers();
@@ -271,6 +272,16 @@ void Engine::updateBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts,
     Buffer* buffer = findBufferByVAO(VAO);
     buffer->updateAll(verts, indexes);
 };
+//Liberar contenido de cierto buffer por VAO
+void Engine::eliminateBuffer(unsigned int VAO) {
+    for (auto it = Buffers.begin(); it != Buffers.end(); ++it) {
+        if (it->getVAO() == VAO) {
+            it->free();        // liberar memoria del buffer si aplica
+            Buffers.erase(it); // quitarlo del vector
+            break;
+        }
+    } 
+}
 //Limpia todos los buffers
 void Engine::clearBuffers() {
     auto vaos = getAllVAOs(Buffers);
@@ -279,6 +290,7 @@ void Engine::clearBuffers() {
     glDeleteVertexArrays(vaos.size(), vaos.data());
     glDeleteBuffers(vbos.size(), vbos.data());
     glDeleteBuffers(ebos.size(), ebos.data());
+    Buffers.clear();
 }
 //Render Methods
 //Establece el color de la pantalla

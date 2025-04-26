@@ -29,9 +29,7 @@ class Animation {
         bool executing=false;
         AnimType type;
         std::function<void(Animation*, float, int)> callback;           //Cambio de BG
-        std::function<void(float, float)> callback2;        //Cambio de Escala
-        std::function<void(float, int, float)> callback3;   //Cambio de bg non linear
-        std::function<void(float, float, float)> callback4; //Cambio de escala non linear
+        std::function<void(Animation*, float)> callback2;               //General
         //Menos relevantes
         unsigned int newsides;
         float toscale;
@@ -60,9 +58,22 @@ class Animation {
             this->type=type;
             init();
         };
+        Animation(float duration, std::function<void(Animation*, float)> cb, AnimType type){
+            callback2=cb;
+            this->duration=duration;
+            this->type=type;
+            init();
+        };
         Animation(unsigned int sides, float duration, float easing, std::function<void(Animation*, float, int)> cb, AnimType type){
             callback=cb;
             newsides=sides;
+            this->duration=duration;
+            this->easing=easing;
+            this->type=type;
+            init();
+        };
+        Animation(float duration, float easing, std::function<void(Animation*, float)> cb, AnimType type){
+            callback2=cb;
             this->duration=duration;
             this->easing=easing;
             this->type=type;
@@ -98,6 +109,22 @@ class Animation {
                 case AnimType::BGEASEINOUT:
                     delta=ease_in_out(progress, easing);
                     callback(this, delta, newsides);
+                    break;
+                case AnimType::LINEAR:
+                    delta=linear(progress);
+                    callback2(this, delta);
+                    break;
+                case AnimType::EASEIN:
+                    delta=ease_in(progress, easing);
+                    callback2(this, delta);
+                    break;
+                case AnimType::EASEOUT:
+                    delta=ease_out(progress, easing);
+                    callback2(this, delta);
+                    break;
+                case AnimType::EASEINOUT:
+                    delta=ease_in_out(progress, easing);
+                    callback2(this, delta);
                     break;
             }
             //Condicion de fin

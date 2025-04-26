@@ -83,6 +83,10 @@ class Buffer {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             //glBindVertexArray(0);
         }
+        void free(){
+            glDeleteVertexArrays(1, &VAO);
+            glDeleteBuffers(1, &VBO);
+        }
         const unsigned int getVAO() const {
             return VAO;
         }

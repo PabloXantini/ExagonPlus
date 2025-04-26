@@ -179,6 +179,7 @@ class Center : public BG {
             setRegular(wvcoors,radius,vnum);
             addWallColor(wvcoors.size(), bordercolor);
             wvertexs= setupMesh(wvcoors, wvertexcolors, wvcoors, wvertexcolors);
+            tempcoors=wvcoors;
             wtovcoors=wvcoors;
             //Relleno
             setRegular(vcoors,cradius,vnum);
@@ -221,7 +222,10 @@ class Center : public BG {
             return pcolors;
         }
         const std::vector<Coor3D>&get3DCoors() const {
-            return wvcoors;
+            return tempcoors;
+        }
+        unsigned int getSides() const {
+            return vnumber;
         }
         /*
             Renderizar/Mostrar

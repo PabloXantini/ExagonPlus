@@ -2,6 +2,7 @@
 #define WALL_HPP
 
 #include "Center.hpp"
+#include "AnimationMaker.hpp"
 
 #include <iostream>
 #include <vector>
@@ -25,6 +26,7 @@ class Wall : public Center {
         float radiusPosOffset=10.0f;                    //Posicion de aparicion de los obstaculos
         float marginL=0.05f;                            //Grosor izquierdo
         float marginR=0.05f;                            //Grosor derecho
+        float TTL=5.0f;                                 //Tiempo de vida :(
         float timesto=4;
         std::vector<RGBColor> wallcolors;               //Color principal (por vertice)
         //Transformaciones
@@ -43,20 +45,45 @@ class Wall : public Center {
             //Inicializacion
             ShaderBG->setFloat("collapseprogress",0.0f);
         }
+        /*
+            Setea la pared
+        */
         void setupWall(unsigned int index, std::vector<Coor3D>& refcoors){
             refcoors.clear();
+            unsigned int sides = center->getSides();
             std::vector<Coor3D> coors = center->get3DCoors();
-            if(index<(vnumber-1)){
+            if(index<(sides-1)){
                 refcoors.push_back(coors.at(index+1));
                 refcoors.push_back(coors.at(index+2));
-            }else if(index=vnumber){
-                refcoors.push_back(coors.at(index));
+            }else {
+                refcoors.push_back(coors.at(sides));
                 refcoors.push_back(coors.at(1));
             }
             //Construir los otros lados
             refcoors.push_back(refcoors.at(1));
             refcoors.push_back(refcoors.at(0));
         }
+        /*
+            Setea la nueva posicion de la pared
+        */
+        std::vector<Coor3D> setNewWall(std::vector<Coor3D>& torefcoors, unsigned int vnumber){
+            torefcoors.clear();
+            std::vector<Coor3D> coors = center->get3DCoors();
+            if(indexPos<(vnumber-1)){
+                torefcoors.push_back(coors.at(indexPos+1));
+                torefcoors.push_back(coors.at(indexPos+2));
+            }else {
+                torefcoors.push_back(coors.at(vnumber));
+                torefcoors.push_back(coors.at(1));
+            }
+            //Construir los otros lados
+            torefcoors.push_back(torefcoors.at(1));
+            torefcoors.push_back(torefcoors.at(0));
+            return torefcoors;
+        }
+        /*
+            Aniade colores a la pared
+        */
         void addColors(unsigned int vnum, unsigned int timesto, std::vector<RGBColor>&colors){
             //std::cout << "Numero de vertices: " << vnum << std::endl;
             vertexcolors.clear();           //Limpio primero que nada
@@ -91,6 +118,9 @@ class Wall : public Center {
             //Memoria del objeto
             IDs.push_back(engine->createBuffer(vertexs,&indexes,12,argspace));
         }
+        ~Wall(){
+            std::cout<<"Y se marcho, y a su barco lo llamo libertad"<<std::endl;
+        }
         //Getters
         unsigned int getID(unsigned int index) const {
             return IDs.at(index);
@@ -113,6 +143,49 @@ class Wall : public Center {
             ShaderWall->setFloat("marginR",marginR);
             ShaderWall->setMat4("Model", model);
             engine->renderPolygon(ShaderWall, this->getID(0), indexes.size());
+        }
+        /*
+            Reserva la posicion para realizar el morphing
+        */
+        void prepareWallforDecrease(int sides){         
+            //Valor temporal
+            std::vector<Coor3D> refcoorsc = torefcoors;
+            //Guardo nuevas coordenadas al buffer
+            //Pared
+            torefcoors=setNewWall(torefcoors, sides);
+            vertexs=modMesh(vertexs, &refcoorsc, NULL, &torefcoors, NULL);
+            engine->modBuffer(this->getID(0),vertexs, &indexes);
+            //Preparo vertexs para temas de consistencia
+            addColors(torefcoors.size(), timesto, wallcolors);
+            vertexs=setupMesh(torefcoors, vertexcolors, torefcoors, vertexcolors);
+        }
+        
+        void prepareWallforIncrease(int sides){
+            //Valor temporal
+            std::vector<Coor3D> refcoorsc = torefcoors;
+            //Pared
+            //Preparo vertexs para temas de consistencia
+            torefcoors=setNewWall(torefcoors, sides);
+            addColors(torefcoors.size(), timesto, wallcolors);
+            vertexs=setupMesh(refcoorsc, vertexcolors, torefcoors, vertexcolors);
+            //Escribo
+            engine->updateBuffer(this->getID(0),vertexs, &indexes);
+        }
+        /*
+            Actualiza solo al terminar (morphing)
+        */
+        void endUpdate(int sides){
+            engine->updateBuffer(this->getID(0),vertexs, &indexes);
+        }
+        /*
+            Mover pared
+        */
+        void collapse(float step){
+            ShaderWall->setFloat("collapseprogress",step);
+        }
+        void kill(){
+            engine->eliminateBuffer(this->getID(0));
+            delete this;
         }
 };
 
