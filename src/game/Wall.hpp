@@ -109,8 +109,8 @@ class Wall : public Center {
         */
         void show() {
             ShaderWall->setInt("ObjectType", 1);
-            ShaderWall->setFloat("MarginL",marginL);
-            ShaderWall->setFloat("MarginR",marginR);
+            ShaderWall->setFloat("marginL",marginL);
+            ShaderWall->setFloat("marginR",marginR);
             ShaderWall->setMat4("Model", model);
             engine->renderPolygon(ShaderWall, this->getID(0), indexes.size());
         }

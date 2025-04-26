@@ -37,9 +37,9 @@ class ExagonGameProcess {
         float CameraZ = 2.0f;
         //Transformaciones
         float scale = 1.0f;
-        float deltaRotX=0.0f;
-        float deltaRotY=0.0f;
-        float deltaRotZ=-0.0f;    //El que mas nos interesa
+        float deltaRotX=1.0f;
+        float deltaRotY=1.0f;
+        float deltaRotZ=-180.0f;    //El que mas nos interesa
         //Timers                
         float timer1 = 0.0f;        //ColorSwap
         float timer2 = 0.0f;
@@ -116,7 +116,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
     //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
-    wt=new Wall(EnginePlaceHolder, &Shader1, &center, 0, 0.2f, 0.2f, 4, wallcolors);
+    wt=new Wall(EnginePlaceHolder, &Shader1, &center, 1, 0.1f, 0.1f, 4, wallcolors);
     a1=new Animation(9, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a3=new Animation(3, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
