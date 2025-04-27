@@ -89,7 +89,7 @@ class ExagonGameProcess {
         //std::vector<Animation*> animations={};
         //Paredes
         std::vector<CompleteWall*> completeWalls={};
-        std::vector<unsigned int> WTIndexes = {0,1,2};
+        std::vector<unsigned int> WTIndexes = {0,2,4};
         //CompleteWall* WallTest;
         //Animation* wa1;
         Animation* a1;
@@ -137,7 +137,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setCamera(CameraX, CameraY, CameraZ);
     //Timers
     T1=new Chronometer(2.0f);
-    T2=new Chronometer(2.0f);
+    T2=new Chronometer(0.06f);
     //Paredes?
     //WallTest=new CompleteWall(EnginePlaceHolder, &Shader1, &center, 1.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4);
     //Animaciones aparte
@@ -175,8 +175,8 @@ void ExagonGameProcess::PlayLevel(){
     }
     //Generacion de paredes
     if(T2->track(time)) {
-        CompleteWall* newWall = new CompleteWall(EnginePlaceHolder, &Shader1, &center, 1.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4);
-        completeWalls.push_back(newWall);  
+        //CompleteWall* newWall = new CompleteWall(EnginePlaceHolder, &Shader1, &center, 1.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4);
+        completeWalls.emplace_back(new CompleteWall(EnginePlaceHolder, &Shader1, &center, 2.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4));  
     }
     //Movimiento de paredes
     for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
@@ -200,6 +200,7 @@ void ExagonGameProcess::PlayLevel(){
         //center.swapColors();
     }
     //Test Timeline
+    /*
     if(time>=8.0f){
         a1->execute(dtime); 
     }
@@ -211,7 +212,8 @@ void ExagonGameProcess::PlayLevel(){
     }
     if(time>=17.0f){
         a4->execute(dtime);
-    }    
+    }
+    */    
 }
 //Event handler - A decidir como va a quedar
 void ExagonGameProcess::handleEvents(float deltaTime){

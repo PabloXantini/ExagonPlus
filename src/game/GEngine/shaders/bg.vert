@@ -25,7 +25,7 @@ uniform float marginR;
 uniform float collapseprogress;
 
 vec3 WallCollapseToCenter(vec3 from, float t) {
-    from*=7;
+    from*=14;
     vec3 normal = normalize(from);
     from = mix(from, vec3(0.0,0.0,0.0), t);
     if(gl_VertexID==2){

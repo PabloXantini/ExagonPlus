@@ -4,6 +4,8 @@
 #include "utils/Color.h"
 #include "AnimationMaker.hpp"
 #include "Wall.hpp"
+
+#include <iostream>
 #include <vector>
 
 class CompleteWall {
@@ -76,6 +78,9 @@ class CompleteWall {
             timesto=timestopattern;
             alive=true;
             setupWalls(indexes);
+        }
+        ~CompleteWall(){
+            std::cout<<"Tu papa te abandonoo"<<std::endl;
         }
         //Getters
         bool isAlive(){

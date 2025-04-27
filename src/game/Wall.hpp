@@ -29,6 +29,7 @@ class Wall : public Center {
         float timesto=4;
         std::vector<RGBColor> wallcolors;               //Color principal (por vertice)
         //Transformaciones
+        float step = 0.0f;
         glm::mat4 model = glm::mat4(1.0f);
         //Objetos de referencia
         Engine* engine;
@@ -42,7 +43,7 @@ class Wall : public Center {
             //ShaderBG = new Shader(IDR_VSHADER2,IDR_FSHADER2);
             //std::cout << "ShaderBG ptr: " << ShaderBG << std::endl;
             //Inicializacion
-            ShaderBG->setFloat("collapseprogress",0.0f);
+            //ShaderBG->setFloat("collapseprogress",0.0f);
         }
         /*
             Setea la pared
@@ -140,6 +141,7 @@ class Wall : public Center {
             ShaderWall->setInt("ObjectType", 1);
             ShaderWall->setFloat("marginL",marginL);
             ShaderWall->setFloat("marginR",marginR);
+            ShaderWall->setFloat("collapseprogress",step);
             ShaderWall->setMat4("Model", model);
             engine->renderPolygon(ShaderWall, this->getID(0), indexes.size());
         }
@@ -180,7 +182,7 @@ class Wall : public Center {
             Mover pared
         */
         void collapse(float step){
-            ShaderWall->setFloat("collapseprogress",step);
+            this->step=step;
         }
         void kill(){
             engine->eliminateBuffer(this->getID(0));
