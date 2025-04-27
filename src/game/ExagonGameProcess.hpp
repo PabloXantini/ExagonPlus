@@ -251,7 +251,6 @@ void ExagonGameProcess::PlayLevel(){
         //center.swapColors();
     }
     //Test Timeline
-    /*
     if(time>=8.0f){
         a1->execute(dtime); 
     }
@@ -264,7 +263,6 @@ void ExagonGameProcess::PlayLevel(){
     if(time>=17.0f){
         a4->execute(dtime);
     }
-    */    
 }
 //Event handler - A decidir como va a quedar
 void ExagonGameProcess::handleEvents(float deltaTime){
