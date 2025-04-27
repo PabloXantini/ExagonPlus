@@ -15,7 +15,6 @@ class CompleteWall {
         //Variables propias de la clase
         bool alive=false;                               //Indica si esta activo
         float animfactor=2.0f;                          //Easing/Exp Factor (En un futuro)
-        unsigned int timestowall;                       //Veces que se pinta el color por pared
         unsigned int timesto;                           //Veces que se pinta el color
         float marginL=0.05f;                            //Grosor izquierdo
         float marginR=0.05f;                            //Grosor derecho

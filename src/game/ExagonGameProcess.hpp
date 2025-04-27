@@ -6,6 +6,7 @@
 #include "Time.hpp"
 #include "Songplayer.hpp"
 #include "AnimationMaker.hpp"
+#include "LeverLoader.hpp"
 #include "BG.hpp"
 #include "Center.hpp"
 #include "WallObject.hpp"
@@ -23,6 +24,8 @@ class ExagonGameProcess {
         //Una prueba de valores como si los estuviera pasando desde otro programa
         //Cancion
         std::string song="levels/songs/Focus.mp3"; 
+        //DATOS CARGADOS
+        std::vector<ObsData> obstacleData ={};
         //Escenario
         unsigned int sides=5;
         //Ratio
@@ -65,17 +68,21 @@ class ExagonGameProcess {
         std::vector<float> randRotZ = {180.0f, 180.0f, 360.0f, 360.0f};
         //Tiempos de asignacion
         std::vector<float> randInterval = {5.0f, 7.0f, 6.0f};
+        std::vector<float> randIntervalObs = {4.0f, 3.0f, 5.0f};
         //=================================================================================//
         //Variables propias de la clase
+        //ID obstaculo
+        unsigned int obsID = 0;
         //Jugador
         const float PLAYER_SENSIBILITY = 500.0f;
         //Punteros de funciones
         std::function<void(Animation*, float, int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-        //std::function<void(Animation*, float)>movW=std::bind(&ExagonGameProcess::collapseWall, this, std::placeholders::_1, std::placeholders::_2);
         //Objetos de referencia
         Engine* EnginePlaceHolder;
         //Aqui nacen los objetos que quiera usar en el juego (usados apenas empezar)
         Shader Shader1;
+        LeverLoader gameLevel;
+        Obstacle obstacle;
         Timer gameTime;
         SongPlayer songPlayer;
         BG background;
@@ -85,6 +92,7 @@ class ExagonGameProcess {
         //Timers
         Chronometer* T1;    //Cosas random
         Chronometer* T2;    //Generacion de obstaculos
+        Chronometer* T3;    //Obstaculos random
         //Punteros de animaciones
         //std::vector<Animation*> animations={};
         //Paredes
@@ -124,6 +132,8 @@ class ExagonGameProcess {
 ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
     Shader1(IDR_VSHADER2,IDR_FSHADER2),
+    gameLevel(),
+    obstacle(),
     gameTime(),
     songPlayer(),
     background(EnginePlaceHolder, &Shader1, 200.0f, sides, 3, pcolors),
@@ -132,12 +142,16 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
+    gameLevel.loadLevel("src/levels/vanilla/lvl1.txt");
+    obstacleData = gameLevel.getInfo();
+    gameLevel.printInfo();
     //Perspectiva
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
     //Timers
-    T1=new Chronometer(2.0f);
-    T2=new Chronometer(0.06f);
+    T1=new Chronometer(2.0f);   //Rotaciones
+    T2=new Chronometer(0.06f);  //Paredes por defecto
+    T3=new Chronometer(2.0f);   //Obstaculos
     //Paredes?
     //WallTest=new CompleteWall(EnginePlaceHolder, &Shader1, &center, 1.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4);
     //Animaciones aparte
@@ -173,10 +187,47 @@ void ExagonGameProcess::PlayLevel(){
         deltaRotY=randRotY.at(rand()%randRotY.size());
         deltaRotZ=randRotZ.at(rand()%randRotZ.size());
     }
+    if(T3->track(time)) {
+        if(!obstacleData.empty()){
+            T3->setTTime(randIntervalObs.at(rand()%randIntervalObs.size()));
+            obstacle.restart();
+            obsID=rand()%obstacleData.size();
+        } 
+    }
     //Generacion de paredes
     if(T2->track(time)) {
-        //CompleteWall* newWall = new CompleteWall(EnginePlaceHolder, &Shader1, &center, 1.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4);
-        completeWalls.emplace_back(new CompleteWall(EnginePlaceHolder, &Shader1, &center, 2.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4));  
+        if(!obstacleData.empty()){
+            if(!obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
+                switch (obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type){
+                    case AnimType::LINEAR:
+                        completeWalls.emplace_back(new CompleteWall
+                            (EnginePlaceHolder, 
+                            &Shader1, 
+                            &center, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
+                            wallcolors, 4));
+                        break;
+                    default:
+                        completeWalls.emplace_back(new CompleteWall
+                            (EnginePlaceHolder, 
+                            &Shader1, 
+                            &center, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration,
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).factor,
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
+                            wallcolors, 4));
+                        break;  
+                }  
+            }     
+            obstacle.track(obstacleData, obsID);
+        }
     }
     //Movimiento de paredes
     for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
@@ -229,6 +280,7 @@ void ExagonGameProcess::handleEvents(float deltaTime){
         player.move(velocity);
     }
 }
+
 //Cambia los lados de manera dinamica con morphing
 void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int sides){
     //std::cout<<deltamov<<std::endl;

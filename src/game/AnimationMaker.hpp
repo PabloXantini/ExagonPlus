@@ -14,7 +14,8 @@ enum class AnimType {
     LINEAR,
     EASEIN,
     EASEOUT,
-    EASEINOUT
+    EASEINOUT,
+    UNKNOWN
 };
 
 class Animation {
