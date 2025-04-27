@@ -20,7 +20,7 @@ class CompleteWall {
         std::vector<RGBColor> wallcolors = {};          //Colores de las paredes
         std::vector<RGBColor> wallcolorsc = {};          //Colores de las paredes
         std::vector<unsigned int> wallindexes={0,2,4};  //Indices al gusto
-        std::vector<Wall> walls={};                     //Las paredes
+        std::vector<Wall*> walls={};                     //Las paredes
         //Objetos de referencia
         Engine* engine;
         Shader* shader;
@@ -33,7 +33,7 @@ class CompleteWall {
         */
         void setupWalls(std::vector<unsigned int> indexes){
             for(auto& index : indexes){
-                walls.emplace_back(engine, shader, center, index, marginL, marginR, timesto, setColorPattern());
+                walls.emplace_back(new Wall(engine, shader, center, index, marginL, marginR, timesto, setColorPattern()));
             }
         }
         /*
@@ -86,7 +86,7 @@ class CompleteWall {
         */
         void show(){
             for (auto& wall : walls){
-                wall.show();
+                wall->show();
             }
         }
         /*
@@ -100,11 +100,12 @@ class CompleteWall {
         */
         void collapseWall(Animation* anim, float deltamov){
             for(auto& wall : walls){
-                wall.collapse(deltamov);
+                wall->collapse(deltamov);
             }
             if(deltamov==1.0f){
                 for(auto& wall : walls){
-                    wall.kill();
+                    wall->kill();
+                    delete wall;
                 }
                 walls.clear();
                 alive=false;

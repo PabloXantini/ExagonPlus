@@ -225,7 +225,7 @@ class Center : public BG {
             return tempcoors;
         }
         unsigned int getSides() const {
-            return vnumber;
+            return tempcoors.size()-1;
         }
         /*
             Renderizar/Mostrar

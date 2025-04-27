@@ -184,7 +184,6 @@ class Wall : public Center {
         }
         void kill(){
             engine->eliminateBuffer(this->getID(0));
-            delete this;
         }
 };
 

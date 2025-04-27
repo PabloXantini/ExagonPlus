@@ -22,7 +22,6 @@ class BG{
         unsigned int argpointer=0;
 
         std::vector<unsigned int> indexes={};           //Indices de generacion
-        //std::vector<float> vertexs={};                //Vertices brutos del objeto
         std::vector<WVertex3D> vertexs={};              //Vertices brutos del objeto
         
         std::vector<Coor3D> vcoors={};                  //Coordenadas 3D POR VERTICE (Origen)
@@ -38,6 +37,9 @@ class BG{
         float radius=1.2f;                              //Es para setear el largo del escenario
         std::vector<RGBColor> pcolors={};               //Gama de colores
         //Transformaciones
+        float BGRotX=0.0f;
+        float BGRotY=0.0f;
+        float BGRotZ=0.0f;
         glm::mat4 model = glm::mat4(1.0f);
         //Objectos de referencia
         Engine* engine;
@@ -331,11 +333,14 @@ class BG{
         /*
             Rota el escenario
         */
-        void rotateBG(float time, float RX, float RY, float RZ){
+        void rotateBG(float step, float RX, float RY, float RZ){
             glm::mat4 rot = glm::mat4(1.0);
-            rot = glm::rotate(rot, glm::radians(time*RX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
-            rot = glm::rotate(rot, glm::radians(time*RY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
-            rot = glm::rotate(rot, glm::radians(time*RZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
+            BGRotX+=step*RX;
+            BGRotY+=step*RY;
+            BGRotZ+=step*RZ;
+            rot = glm::rotate(rot, glm::radians(BGRotX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
+            rot = glm::rotate(rot, glm::radians(BGRotY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
+            rot = glm::rotate(rot, glm::radians(BGRotZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
             ShaderBG->setMat4("Rotation",rot);
         }
 };

@@ -15,9 +15,11 @@
 #include <iostream>
 #include <functional>
 #include <string>
+#include <cstdlib>
 
 class ExagonGameProcess {
     private:
+        //=======================================================================
         //Una prueba de valores como si los estuviera pasando desde otro programa
         //Cancion
         std::string song="levels/songs/Focus.mp3"; 
@@ -43,7 +45,6 @@ class ExagonGameProcess {
         float deltaRotZ=-180.0f;    //El que mas nos interesa
         //Timers                
         float timer1 = 0.0f;        //ColorSwap
-        float timer2 = 0.0f;
         //Colores
         std::vector<RGBColor> wallcolors={
             {0.255f, 0.863f, 1.0f},//ColC - Color principal del centro y la pared
@@ -57,6 +58,14 @@ class ExagonGameProcess {
             {0.196f, 0.576f, 0.922f},//Col2
             {0.071f, 0.267f, 0.612f}//,//ColO - El ultimo solo se renderiza cuando es impar
         };
+        //Eventos que pueden ocurrir
+        //Rotacion aleatoria
+        std::vector<float> randRotX = {0.0f};
+        std::vector<float> randRotY = {0.0f};
+        std::vector<float> randRotZ = {180.0f, 180.0f, 360.0f, 360.0f};
+        //Tiempos de asignacion
+        std::vector<float> randInterval = {5.0f, 7.0f, 6.0f};
+        //=================================================================================//
         //Variables propias de la clase
         //Jugador
         const float PLAYER_SENSIBILITY = 500.0f;
@@ -65,18 +74,23 @@ class ExagonGameProcess {
         //std::function<void(Animation*, float)>movW=std::bind(&ExagonGameProcess::collapseWall, this, std::placeholders::_1, std::placeholders::_2);
         //Objetos de referencia
         Engine* EnginePlaceHolder;
-        //Aqui nacen los objetos que quiera usar en el juego
+        //Aqui nacen los objetos que quiera usar en el juego (usados apenas empezar)
         Shader Shader1;
         Timer gameTime;
         SongPlayer songPlayer;
         BG background;
         Center center;
         Player player;
+        //Objetos usados prejuego (usados para cargar el nivel)
+        //Timers
+        Chronometer* T1;    //Cosas random
+        Chronometer* T2;    //Generacion de obstaculos
         //Punteros de animaciones
         //std::vector<Animation*> animations={};
+        //Paredes
         std::vector<CompleteWall*> completeWalls={};
         std::vector<unsigned int> WTIndexes = {0,1,2};
-        CompleteWall* WallTest;
+        //CompleteWall* WallTest;
         //Animation* wa1;
         Animation* a1;
         Animation* a2;
@@ -86,7 +100,6 @@ class ExagonGameProcess {
         //Methods
         void handleEvents(float deltaTime);
         void changeDynamicSideBG(Animation* anim, float deltamov, int sides);
-        void collapseWall(Animation* anim, float deltamov);
     public:
         //Constructor
         ExagonGameProcess(Engine* enginehere);
@@ -119,11 +132,15 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
+    //Perspectiva
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
-    //a1=new Animation(3, 2.0f, chsBG, AnimType::BGLINEAR);
-    WallTest=new CompleteWall(EnginePlaceHolder, &Shader1, &center, 1.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4);
-    //wa1=new Animation(2.0f, movW, AnimType::LINEAR);
+    //Timers
+    T1=new Chronometer(2.0f);
+    T2=new Chronometer(2.0f);
+    //Paredes?
+    //WallTest=new CompleteWall(EnginePlaceHolder, &Shader1, &center, 1.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4);
+    //Animaciones aparte
     a1=new Animation(9, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a3=new Animation(3, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
@@ -134,26 +151,53 @@ ExagonGameProcess::~ExagonGameProcess(){
     delete a2;
     delete a3;
     delete a4;
-    //delete wt1;
+    delete T1;
+    delete T2;
 }
 void ExagonGameProcess::PlayLevel(){
     //songPlayer.playSong(song);
     float time = gameTime.getTime(); //Tiempo en general
     float dtime = gameTime.getDeltaTime();
-    timer2 = time;
+    //Eventos
     handleEvents(dtime);
-    //std::cout<<time<<std::endl;
     //Cosas que se hacen siempre
     background.changeBGHue(time, hueFactor, hueSpeed);
-    background.rotateBG(time, deltaRotX, deltaRotY, deltaRotZ);
+    background.rotateBG(dtime, deltaRotX, deltaRotY, deltaRotZ);
     //Cosas de pared
-    WallTest->execute(dtime);
-    //Cosas ciclicas
+    //WallTest->execute(dtime);
+
+    //Cambio de parametros
+    if(T1->track(time)) {
+        T1->setTTime(randInterval.at(rand()%randInterval.size()));
+        deltaRotX=randRotX.at(rand()%randRotX.size());
+        deltaRotY=randRotY.at(rand()%randRotY.size());
+        deltaRotZ=randRotZ.at(rand()%randRotZ.size());
+    }
+    //Generacion de paredes
+    if(T2->track(time)) {
+        CompleteWall* newWall = new CompleteWall(EnginePlaceHolder, &Shader1, &center, 1.0f, AnimType::LINEAR, WTIndexes, 0.1f, 0.1f, wallcolors, 4);
+        completeWalls.push_back(newWall);  
+    }
+    //Movimiento de paredes
+    for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
+        CompleteWall* wall = *ptr;
+        if (wall != nullptr) {
+            wall->execute(dtime);
+            if (wall->isAlive()==false) {
+                delete wall;
+                ptr = completeWalls.erase(ptr);
+            } else {
+                ++ptr;
+            }
+        } else {
+            ptr = completeWalls.erase(ptr);
+        }
+    }
+    //Cambio de color
     if((time-timer1)>=colorSwapRatio){
         timer1=time;
         background.swapColors();
         //center.swapColors();
-        //std::cout<<"Cambio de color"<<std::endl;
     }
     //Test Timeline
     if(time>=8.0f){
