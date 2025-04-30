@@ -26,8 +26,7 @@ class Center : public BG {
         std::vector<unsigned int> indexes={};           //Indices de generacion
         std::vector<WVertex3D> vertexs={};              //Vertices brutos del objeto
         std::vector<WVertex3D> wvertexs={};             //Vertices brutos del objeto
-        //std::vector<float> vertexs={};                  //Vertices brutos del objeto
-        //std::vector<float> wvertexs={};                 //Vertices brutos del objeto
+
         //Relleno
         std::vector<Coor3D> vcoors={};                  //Coordenadas 3D POR VERTICE (Origen)
         std::vector<Coor3D> tovcoors={};                //Coordenadas 3D POR VERTICE (Destino)

@@ -80,11 +80,14 @@ class Animation {
             this->type=type;
             init();
         };
+        ~Animation(){
+            //std::cout<<"Murio la animacion"<<std::endl;
+        }
         void execute(float deltatime){
             if(!activated) return;
             if(executing==false) {
                 hasInited=true;
-                std::cout<<"Inicio la accion"<<std::endl;
+                //std::cout<<"Inicio la accion"<<std::endl;
             }else{
                 hasInited=false;
             }
@@ -130,7 +133,7 @@ class Animation {
             }
             //Condicion de fin
             if(progress>=1.0f){
-                std::cout<<"Termino la accion"<<std::endl;
+                //std::cout<<"Termino la accion"<<std::endl;
                 activated=false;
                 hasFinished=true;
                 executing=false;
@@ -138,7 +141,7 @@ class Animation {
             }
         }
         void init(){
-            std::cout<<"Disponible"<<std::endl;
+            //std::cout<<"Disponible"<<std::endl;
             timeElapsed=0.0f;
             activated=true;
             hasInited=false;

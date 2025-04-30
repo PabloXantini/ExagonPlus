@@ -104,7 +104,7 @@ class Wall : public Center {
             ShaderWall(shader),
             center(center)
         {
-            std::cout<<"Oh me creooo, no puso pared"<<std::endl;
+            //std::cout<<"Oh me creooo, no puso pared"<<std::endl;
             this->indexPos=indexPos;
             this->wallcolors=wallcolors;
             marginL=margin_left;
@@ -119,7 +119,7 @@ class Wall : public Center {
             IDs.push_back(engine->createBuffer(vertexs,&indexes,12,argspace));
         }
         ~Wall(){
-            std::cout<<"Y se marcho, y a su barco lo llamo libertad"<<std::endl;
+            //std::cout<<"Y se marcho, y a su barco lo llamo libertad"<<std::endl;
         }
         //Getters
         unsigned int getID(unsigned int index) const {

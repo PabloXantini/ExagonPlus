@@ -142,7 +142,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
-    gameLevel.loadLevel("src/levels/vanilla/lvl1.txt");
+    gameLevel.loadLevel("levels/vanilla/lvl1.txt");
     obstacleData = gameLevel.getInfo();
     gameLevel.printInfo();
     //Perspectiva
@@ -200,7 +200,7 @@ void ExagonGameProcess::PlayLevel(){
             if(!obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
                 switch (obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type){
                     case AnimType::LINEAR:
-                        completeWalls.emplace_back(new CompleteWall
+                        completeWalls.push_back(new CompleteWall
                             (EnginePlaceHolder, 
                             &Shader1, 
                             &center, 
@@ -212,7 +212,7 @@ void ExagonGameProcess::PlayLevel(){
                             wallcolors, 4));
                         break;
                     default:
-                        completeWalls.emplace_back(new CompleteWall
+                        completeWalls.push_back(new CompleteWall
                             (EnginePlaceHolder, 
                             &Shader1, 
                             &center, 

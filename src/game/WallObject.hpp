@@ -19,9 +19,9 @@ class CompleteWall {
         float marginL=0.05f;                            //Grosor izquierdo
         float marginR=0.05f;                            //Grosor derecho
         std::vector<RGBColor> wallcolors = {};          //Colores de las paredes
-        std::vector<RGBColor> wallcolorsc = {};          //Colores de las paredes
+        std::vector<RGBColor> wallcolorsc = {};         //Colores de las paredes (copia)
         std::vector<unsigned int> wallindexes={0,2,4};  //Indices al gusto
-        std::vector<Wall*> walls={};                     //Las paredes
+        std::vector<Wall*> walls={};                    //Las paredes
         //Objetos de referencia
         Engine* engine;
         Shader* shader;
@@ -34,7 +34,7 @@ class CompleteWall {
         */
         void setupWalls(std::vector<unsigned int> indexes){
             for(auto& index : indexes){
-                walls.emplace_back(new Wall(engine, shader, center, index, marginL, marginR, timesto, setColorPattern()));
+                walls.push_back(new Wall(engine, shader, center, index, marginL, marginR, timesto, setColorPattern()));
             }
         }
         /*
@@ -79,7 +79,7 @@ class CompleteWall {
             setupWalls(indexes);
         }
         ~CompleteWall(){
-            std::cout<<"Tu papa te abandonoo"<<std::endl;
+            //std::cout<<"Tu papa te abandonoo"<<std::endl;
         }
         //Getters
         bool isAlive(){
