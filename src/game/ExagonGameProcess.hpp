@@ -65,7 +65,7 @@ class ExagonGameProcess {
         //Rotacion aleatoria
         std::vector<float> randRotX = {0.0f};
         std::vector<float> randRotY = {0.0f};
-        std::vector<float> randRotZ = {180.0f, 180.0f, 360.0f, 360.0f};
+        std::vector<float> randRotZ = {180.0f, -180.0f, 360.0f, -360.0f};
         //Tiempos de asignacion
         std::vector<float> randInterval = {5.0f, 7.0f, 6.0f};
         std::vector<float> randIntervalObs = {4.0f, 3.0f, 5.0f};
@@ -96,7 +96,8 @@ class ExagonGameProcess {
         //Punteros de animaciones
         //std::vector<Animation*> animations={};
         //Paredes
-        std::vector<CompleteWall*> completeWalls={};
+        //std::vector<CompleteWall*> completeWalls={};
+        std::vector<CompleteWall> completeWalls={};
         std::vector<unsigned int> WTIndexes = {0,2,4};
         //CompleteWall* WallTest;
         //Animation* wa1;
@@ -122,7 +123,7 @@ class ExagonGameProcess {
         Player& getPlayer() {
             return player;
         }
-        std::vector<CompleteWall*>& getWalls() {
+        std::vector<CompleteWall>& getWalls() {
             return completeWalls;
         }
         //Methods
@@ -167,6 +168,7 @@ ExagonGameProcess::~ExagonGameProcess(){
     delete a4;
     delete T1;
     delete T2;
+    delete T3;
 }
 void ExagonGameProcess::PlayLevel(){
     //songPlayer.playSong(song);
@@ -200,6 +202,17 @@ void ExagonGameProcess::PlayLevel(){
             if(!obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
                 switch (obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type){
                     case AnimType::LINEAR:
+                        completeWalls.push_back(CompleteWall
+                            (EnginePlaceHolder, 
+                            &Shader1, 
+                            &center, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
+                            wallcolors, 4));
+                        /*
                         completeWalls.push_back(new CompleteWall
                             (EnginePlaceHolder, 
                             &Shader1, 
@@ -210,8 +223,21 @@ void ExagonGameProcess::PlayLevel(){
                             obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
                             obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
                             wallcolors, 4));
+                        */
                         break;
                     default:
+                        completeWalls.push_back(CompleteWall
+                            (EnginePlaceHolder, 
+                            &Shader1, 
+                            &center, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration,
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).factor,
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
+                            wallcolors, 4));
+                        /*
                         completeWalls.push_back(new CompleteWall
                             (EnginePlaceHolder, 
                             &Shader1, 
@@ -223,6 +249,7 @@ void ExagonGameProcess::PlayLevel(){
                             obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
                             obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
                             wallcolors, 4));
+                        */
                         break;  
                 }  
             }     
@@ -230,6 +257,13 @@ void ExagonGameProcess::PlayLevel(){
         }
     }
     //Movimiento de paredes
+    for(CompleteWall& wall : this->completeWalls){
+        wall.execute(dtime);
+    }
+    this->completeWalls.erase(std::remove_if(this->completeWalls.begin(), this->completeWalls.end(),
+        [](CompleteWall &wall) { return wall.isAlive()==false; }
+    ), this->completeWalls.end());
+    /*
     for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
         CompleteWall* wall = *ptr;
         if (wall != nullptr) {
@@ -244,6 +278,7 @@ void ExagonGameProcess::PlayLevel(){
             ptr = completeWalls.erase(ptr);
         }
     }
+    */
     //Cambio de color
     if((time-timer1)>=colorSwapRatio){
         timer1=time;
