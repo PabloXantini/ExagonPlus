@@ -26,7 +26,7 @@ class Wall : public Center {
         float radiusPosOffset=10.0f;                    //Posicion de aparicion de los obstaculos
         float marginL=0.05f;                            //Grosor izquierdo
         float marginR=0.05f;                            //Grosor derecho
-        float timesto=4;
+        unsigned int timesto=4;
         std::vector<RGBColor> wallcolors;               //Color principal (por vertice)
         //Transformaciones
         float step = 0.0f;
@@ -89,7 +89,7 @@ class Wall : public Center {
             vertexcolors.clear();           //Limpio primero que nada
             int checkin = 0;
             RGBColor newColor;
-            for(int i=0; i<vnum; i++){
+            for(unsigned int i=0; i<vnum; i++){
                 //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
                 newColor = setColorPattern(checkin, timesto, colors);
                 pushColor(vertexcolors, newColor);

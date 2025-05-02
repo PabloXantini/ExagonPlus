@@ -29,7 +29,7 @@ class Animation {
         bool hasFinished=false;
         bool executing=false;
         AnimType type;
-        std::function<void(Animation*, float, int)> callback;           //Cambio de BG
+        std::function<void(Animation*, float, unsigned int)> callback;           //Cambio de BG
         std::function<void(Animation*, float)> callback2;               //General
         //Menos relevantes
         unsigned int newsides;
@@ -52,7 +52,7 @@ class Animation {
             return 0.0f;
         }
     public:     
-        Animation(unsigned int sides, float duration, std::function<void(Animation*, float, int)> cb, AnimType type){
+        Animation(unsigned int sides, float duration, std::function<void(Animation*, float, unsigned int)> cb, AnimType type){
             callback=cb;
             newsides=sides;
             this->duration=duration;
@@ -65,7 +65,7 @@ class Animation {
             this->type=type;
             init();
         };
-        Animation(unsigned int sides, float duration, float easing, std::function<void(Animation*, float, int)> cb, AnimType type){
+        Animation(unsigned int sides, float duration, float easing, std::function<void(Animation*, float, unsigned int)> cb, AnimType type){
             callback=cb;
             newsides=sides;
             this->duration=duration;

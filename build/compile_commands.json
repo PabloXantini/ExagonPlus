@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe    -o CMakeFiles\\ExagonPlus.dir\\src\\MainFrame.cpp.obj -c C:\\Users\\USER\\SideProjects\\CPrograms\\ExagonPlus\\src\\MainFrame.cpp",
+  "file": "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/src/MainFrame.cpp",
+  "output": "CMakeFiles/ExagonPlus.dir/src/MainFrame.cpp.obj"
+}
+]

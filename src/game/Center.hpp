@@ -70,7 +70,7 @@ class Center : public BG {
             currentcoor.z=0.0f;
             float anglex = (float)(4*acos(0.0)/vnumber);
             verts.push_back(currentcoor);
-            for (int i=0; i<vnumber; i++){
+            for (unsigned int i=0; i<vnumber; i++){
                 currentcoor.x=radius*cos(anglex*i);
                 currentcoor.y=radius*sin(anglex*i);
                 verts.push_back(currentcoor);
@@ -82,7 +82,7 @@ class Center : public BG {
         */
         std::vector<unsigned int> createIndexes(unsigned int vnumber){
             indexes.clear();
-            for(int i=1; i<vnumber; i++){
+            for(unsigned int i=1; i<vnumber; i++){
                 pushVTriangle(0, i, i+1);
             }
             pushVTriangle(0, vnumber, 1);
@@ -103,7 +103,7 @@ class Center : public BG {
             float anglex = (float)(4*acos(0.0)/vnumber);
             toverts.push_back(currentcoor);
             tempcoors.push_back(currentcoor);
-            for (int i=0; i<vnumber; i++){
+            for (unsigned int i=0; i<vnumber; i++){
                 currentcoor.x=radius*cos(anglex*i);
                 currentcoor.y=radius*sin(anglex*i);
                 toverts.push_back(currentcoor);
@@ -111,11 +111,11 @@ class Center : public BG {
             }
             //Evalua los casos en los que debe reducir el numero de poligonos
             if(this->vnumber>=vnumber){                 //Decrease
-                for(int i=0; i<(this->vnumber-vnumber); i++){
+                for(unsigned int i=0; i<(this->vnumber-vnumber); i++){
                     toverts.push_back(toverts.back());
                 }            
             }else{                                      //Increase
-                for(int i=0; i<(vnumber-this->vnumber); i++){
+                for(unsigned int i=0; i<(vnumber-this->vnumber); i++){
                     verts.push_back(verts.back());
                 }           
             }
@@ -129,7 +129,7 @@ class Center : public BG {
             vertexcolors.clear();           //Limpio primero que nada
             int checkin = 0;
             RGBColor newColor;
-            for(int i=0; i<vnum; i++){
+            for(unsigned int i=0; i<vnum; i++){
                 //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
                 newColor = setColorPattern(checkin, timesto, colors);
                 pushColor(vertexcolors, newColor);
@@ -142,7 +142,7 @@ class Center : public BG {
         void addWallColor(unsigned int vnum, RGBColor color){
            //std::cout << "Numero de vertices: " << vnum << std::endl;
            wvertexcolors.clear();           //Limpio primero que nada
-           for(int i=0; i<vnum; i++){
+           for(unsigned int i=0; i<vnum; i++){
                //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
                pushColor(wvertexcolors, color);
             }         

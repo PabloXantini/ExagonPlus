@@ -68,7 +68,7 @@ class BG{
         */
         std::vector<unsigned int> createIndexes(unsigned int vnumber){
             indexes.clear();
-            for(int i=1; i<vnumber; i++){
+            for(unsigned int i=1; i<vnumber; i++){
                 pushVTriangle(0, i, i+1);
             }
             pushVTriangle(0, vnumber, 1);
@@ -86,7 +86,7 @@ class BG{
             currentcoor.z=0.0f;
             float anglex = (float)(4*acos(0.0)/vnumber);
             vcoors.push_back(currentcoor);
-            for (int i=0; i<vnumber; i++){
+            for (unsigned int i=0; i<vnumber; i++){
                 currentcoor.x=radius*cos(anglex*i);
                 currentcoor.y=radius*sin(anglex*i);
                 vcoors.push_back(currentcoor);
@@ -112,7 +112,7 @@ class BG{
             float anglex = (float)(4*acos(0.0)/vnumber);
             vcoors.push_back(currentcoor);
             tovcoors.push_back(currentcoor);
-            for (int i=0; i<vnumber; i++){
+            for (unsigned int i=0; i<vnumber; i++){
                 currentcoor.x=radius*cos(anglex*i);
                 currentcoor.y=radius*sin(anglex*i);
                 vcoors.push_back(currentcoor);
@@ -120,7 +120,7 @@ class BG{
             }
             //Evalua los casos en los que debe reducir el numero de poligonos
             if(this->vnumber>=vnumber){                 //Decrease
-                for(int i=0; i<(this->vnumber-vnumber); i++){
+                for(unsigned int i=0; i<(this->vnumber-vnumber); i++){
                     tovcoors.push_back(tovcoors.back());
                 }
                 //Prepara las coordenadas
@@ -132,7 +132,7 @@ class BG{
                 toallvcoors=createTriangles(toallvcoors, tovcoors); //Pre Atrib 2
                 //vcoors                                            //Pos Atrib 0              
             }else{                                      //Increase
-                for(int i=0; i<(vnumber-this->vnumber); i++){
+                for(unsigned int i=0; i<(vnumber-this->vnumber); i++){
                     cvcoors.push_back(cvcoors.back());
                 }
                 //vertexs.clear();                                   //Limpio antes que nada
@@ -150,20 +150,20 @@ class BG{
             vertexcolors.clear();           //Limpio primero que nada
             int checkin = 0;
             RGBColor newColor;
-            for(int i=0; i<vnum-timesto; i++){
+            for(unsigned int i=0; i<vnum-timesto; i++){
                 newColor = setColorPattern(checkin, timesto, colors);
                 pushColor(vertexcolors, newColor);
                 checkin++;
             }
             //Define el ultimo color si el poligono es par
             if((vnum/3)%2==0){
-                for(int i=0;i<timesto;i++){
+                for(unsigned int i=0;i<timesto;i++){
                     newColor = setColorPattern(checkin, timesto, colors);
                     pushColor(vertexcolors, newColor);
                     checkin++;
                 }
             }else{
-                for(int i=0;i<timesto;i++){
+                for(unsigned int i=0;i<timesto;i++){
                     newColor = colors.back();
                     pushColor(vertexcolors, newColor);
                 }
@@ -186,7 +186,7 @@ class BG{
             Crea los triangulos de manera bruta para la manera CLASSIC usando coordenadas
         */
         std::vector<Coor3D> createTriangles(std::vector<Coor3D>&vcoors, std::vector<Coor3D>coors){
-            for(int i=1; i<(coors.size()-1); i++){
+            for(unsigned int i=1; i<(coors.size()-1); i++){
                 pushTriangle(vcoors, coors.at(0), coors.at(i), coors.at(i+1));
             }
             pushTriangle(vcoors, coors.at(0), coors.at(coors.size()-1), coors.at(1));
@@ -194,13 +194,13 @@ class BG{
         }
         std::vector<WVertex3D> setupMesh(std::vector<Coor3D>&vcoors, std::vector<RGBColor>&colors, std::vector<Coor3D>&tovcoors, std::vector<RGBColor>&tocolors){
             std::vector<WVertex3D> vertexs;
-            for(int i=0; i<vcoors.size(); i++){
+            for(unsigned int i=0; i<vcoors.size(); i++){
                 pushWVertex(vertexs, vcoors.at(i), colors.at(i), tovcoors.at(i), tocolors.at(i));
             }
             return vertexs;
         }
         std::vector<WVertex3D> modMesh(std::vector<WVertex3D>& vertexs, const std::vector<Coor3D>* vertcoors, const std::vector<RGBColor>* colors, const std::vector<Coor3D>* tovertcoors, const std::vector<RGBColor>* tocolors){
-            for(int i=0; i<vertexs.size(); i++){
+            for(unsigned int i=0; i<vertexs.size(); i++){
                 if(vertcoors) putPosition(vertexs.at(i), vertcoors->at(i));
                 if(colors) putColor(vertexs.at(i), colors->at(i));
                 if(tovertcoors) putToPosition(vertexs.at(i), tovertcoors->at(i));

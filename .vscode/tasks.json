@@ -6,30 +6,29 @@
             "command": "windres",
             "args": [
                 "${workspaceFolder}/src/resource.rc",
-                "-O", "coff",
-                "-o", "${workspaceFolder}/src/resource.o"
+                "-O",
+                "coff",
+                "-o",
+                "${workspaceFolder}/src/resource.o"
             ],
             "options": {
                 "cwd": "${fileDirname}"
             },
-            "problemMatcher": [
-
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
+            "problemMatcher": [],
+            "group": "build"
         },
         {
             "type": "cppbuild",
-            "dependsOn": ["Compilar recursos"],
+            "dependsOn": [
+                "Compilar recursos"
+            ],
             "label": "C/C++: g++.exe compilar archivo activo",
             "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
             "args": [
                 "",
                 "-g",
                 "-std=c++17",
-                "-I", 
+                "-I",
                 "../include",
                 "-L",
                 "../lib",
@@ -39,13 +38,33 @@
                 "-lglfw3dll",
                 "-lFreeImage",
                 "-o",
-                "${workspaceFolder}/ExagonPlus.exe",
+                "${workspaceFolder}/ExagonPlus.exe"
             ],
             "options": {
                 "cwd": "${fileDirname}"
             },
             "problemMatcher": [
                 "$gcc"
+            ],
+            "group": "build",
+            "detail": "Tarea generada por el depurador."
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: cl.exe compilar archivo activo",
+            "command": "cl.exe",
+            "args": [
+                "/Zi",
+                "/EHsc",
+                "/nologo",
+                "/Fe${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "${file}"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$msCompile"
             ],
             "group": {
                 "kind": "build",

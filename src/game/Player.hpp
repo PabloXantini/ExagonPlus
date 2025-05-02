@@ -48,7 +48,7 @@ class Player : public BG {
         void addColor( unsigned int vnum, RGBColor color){
             //std::cout << "Numero de vertices: " << vnum << std::endl;
             vertexcolors.clear();           //Limpio primero que nada
-            for(int i=0; i<vnum; i++){
+            for(unsigned int i=0; i<vnum; i++){
                 //std::cout << "Insertando en index: " << (3 + i* offset) << std::endl;
                 pushColor(vertexcolors, color);
             }

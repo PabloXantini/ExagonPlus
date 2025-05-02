@@ -51,7 +51,7 @@ class ExagonGameProcess {
         //Colores
         std::vector<RGBColor> wallcolors={
             {0.255f, 0.863f, 1.0f},//ColC - Color principal del centro y la pared
-            {0.2, 0.749, 0.871}//Col2
+            {0.2f, 0.749f, 0.871f}//Col2
         }; 
         std::vector<RGBColor> ccolors={
             {0.102f, 0.376f, 0.86f}
@@ -76,7 +76,7 @@ class ExagonGameProcess {
         //Jugador
         const float PLAYER_SENSIBILITY = 500.0f;
         //Punteros de funciones
-        std::function<void(Animation*, float, int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+        std::function<void(Animation*, float, unsigned int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         //Objetos de referencia
         Engine* EnginePlaceHolder;
         //Aqui nacen los objetos que quiera usar en el juego (usados apenas empezar)
@@ -108,7 +108,7 @@ class ExagonGameProcess {
 
         //Methods
         void handleEvents(float deltaTime);
-        void changeDynamicSideBG(Animation* anim, float deltamov, int sides);
+        void changeDynamicSideBG(Animation* anim, float deltamov, unsigned int sides);
     public:
         //Constructor
         ExagonGameProcess(Engine* enginehere);
@@ -315,7 +315,7 @@ void ExagonGameProcess::handleEvents(float deltaTime){
 }
 
 //Cambia los lados de manera dinamica con morphing
-void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, int sides){
+void ExagonGameProcess::changeDynamicSideBG(Animation* anim, float deltamov, unsigned int sides){
     //std::cout<<deltamov<<std::endl;
     if(anim->Inited()){
         if(this->sides>sides){
