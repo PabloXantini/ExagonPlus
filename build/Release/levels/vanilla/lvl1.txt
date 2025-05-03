@@ -1,0 +1,103 @@
+WALLCOLORS
+0.255   0.863   1.0
+0.2     0.749   0.871
+
+OBS
+ANIM
+2.0 LINEAR
+WALLDATA
+0 2 4   0.1     0.1
+X
+X
+X
+X
+X
+1 3 5   0.1     0.1
+X
+X
+X
+X
+X
+0 2 4   0.1     0.1
+X
+X
+X
+X
+X
+1 3 5   0.1     0.1
+X
+X
+X
+X
+X
+0 2 4   0.1     0.1
+X
+X
+X
+X
+X
+1 3 5   0.1     0.1
+X
+X
+X
+X
+X
+0 2 4   0.1     0.1
+0 2 4   0.1     0.1
+X
+X
+X
+X
+X
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+2.0 LINEAR
+WALLDATA
+0 2 4   0.1     0.05
+X
+X
+X
+X
+X
+1 3 5   0.1     0.05
+X
+X
+X
+X
+X
+0 2 4   0.1     0.05
+X
+X
+X
+X
+X
+ENDWALLDATA
+ENDANIM
+ANIM
+2.0 EASEINOUT 2.0
+WALLDATA
+1 3 5   0.1     0.05
+X
+X
+X
+X
+X
+0 2 4   0.1     0.05
+X
+X
+X
+X
+X
+1 3 5   0.1     0.05
+X
+X
+X
+X
+X
+ENDWALLDATA
+ENDANIM
+ENDOBS

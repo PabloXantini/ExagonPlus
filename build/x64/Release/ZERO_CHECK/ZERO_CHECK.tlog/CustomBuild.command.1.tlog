@@ -1,0 +1,10 @@
+^C:\USERS\USER\SIDEPROJECTS\CPROGRAMS\EXAGONPLUS\BUILD\CMAKEFILES\49C5425EDEE595803519FAEEC9707876\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/USER/SideProjects/CPrograms/ExagonPlus -BC:/Users/USER/SideProjects/CPrograms/ExagonPlus/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/ExagonPlus.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

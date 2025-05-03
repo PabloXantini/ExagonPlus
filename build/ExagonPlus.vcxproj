@@ -120,7 +120,7 @@
     <PostBuildEvent>
       <Message>	</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/src/levels C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/Debug
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/Debug
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -189,7 +189,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <PostBuildEvent>
       <Message>	</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/src/levels C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/Release
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/Release
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -258,7 +258,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <PostBuildEvent>
       <Message>	</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/src/levels C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/MinSizeRel
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/MinSizeRel
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -326,7 +326,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <PostBuildEvent>
       <Message>	</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/src/levels C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/RelWithDebInfo
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/RelWithDebInfo
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone

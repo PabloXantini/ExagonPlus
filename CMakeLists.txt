@@ -26,7 +26,6 @@ target_link_libraries(ExagonPlus PRIVATE glfw3dll.lib FreeImage.lib)
 #copiar cosas del ejecutable
 add_custom_command(TARGET ExagonPlus POST_BUILD COMMAND ${CMAKE_COMMAND} 
 -E copy_if_different 
-"${PROJECT_SOURCE_DIR}/src/levels"
 "${PROJECT_SOURCE_DIR}/glfw3.dll"
 "${PROJECT_SOURCE_DIR}/FreeImage.dll"
 $<TARGET_FILE_DIR:ExagonPlus>
