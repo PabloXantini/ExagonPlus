@@ -232,14 +232,6 @@ void ExagonGameProcess::PlayLevel(){
         }
     }
     //Movimiento de paredes
-    /*
-    for(CompleteWall& wall : this->completeWalls){
-        wall.execute(dtime);
-    }
-    this->completeWalls.erase(std::remove_if(this->completeWalls.begin(), this->completeWalls.end(),
-        [](CompleteWall &wall) { return wall.isAlive()==false; }
-    ), this->completeWalls.end());
-    */
     for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
         CompleteWall* wall = *ptr;
         if (wall != nullptr) {
