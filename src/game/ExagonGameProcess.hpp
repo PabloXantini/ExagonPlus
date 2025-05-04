@@ -97,7 +97,8 @@ class ExagonGameProcess {
         //std::vector<Animation*> animations={};
         //Paredes
         //std::vector<CompleteWall*> completeWalls={};
-        std::vector<CompleteWall*> completeWalls={};
+        //std::vector<CompleteWall*> completeWalls={};
+        std::vector<std::unique_ptr<CompleteWall>> completeWalls={};
         std::vector<unsigned int> WTIndexes = {0,2,4};
         //CompleteWall* WallTest;
         //Animation* wa1;
@@ -123,7 +124,12 @@ class ExagonGameProcess {
         Player& getPlayer() {
             return player;
         }
+        /*
         std::vector<CompleteWall*>& getWalls() {
+            return completeWalls;
+        }
+        */
+        std::vector<std::unique_ptr<CompleteWall>>& getWalls() {
             return completeWalls;
         }
         //Methods
@@ -202,7 +208,7 @@ void ExagonGameProcess::PlayLevel(){
             if(!obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
                 switch (obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type){
                     case AnimType::LINEAR:
-                        completeWalls.push_back(new CompleteWall
+                        completeWalls.emplace_back(std::make_unique<CompleteWall>
                             (EnginePlaceHolder, 
                             &Shader1, 
                             &center, 
@@ -214,7 +220,7 @@ void ExagonGameProcess::PlayLevel(){
                             wallcolors, 4));
                         break;
                     default:
-                        completeWalls.push_back(new CompleteWall
+                        completeWalls.emplace_back(std::make_unique<CompleteWall>
                             (EnginePlaceHolder, 
                             &Shader1, 
                             &center, 
@@ -233,6 +239,16 @@ void ExagonGameProcess::PlayLevel(){
     }
     //Movimiento de paredes
     for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
+        (*ptr)->execute(dtime);
+        if ((*ptr)->isAlive()==false) {
+            //delete *ptr;
+            ptr = completeWalls.erase(ptr);
+        } else {
+            ++ptr;
+        }
+    }
+    /*
+    for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
         CompleteWall* wall = *ptr;
         if (wall != nullptr) {
             wall->execute(dtime);
@@ -246,6 +262,7 @@ void ExagonGameProcess::PlayLevel(){
             ptr = completeWalls.erase(ptr);
         }
     }
+    */
     //Cambio de color
     if((time-timer1)>=colorSwapRatio){
         timer1=time;

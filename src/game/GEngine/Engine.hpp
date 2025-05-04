@@ -343,7 +343,6 @@ void Engine::clearShaders(){
     for(Shader* shader : Shaders){
         if(shader){
             shader->kill();
-            //delete shader;
         }
     }
     Shaders.clear();

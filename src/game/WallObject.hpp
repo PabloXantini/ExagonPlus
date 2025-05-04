@@ -34,7 +34,7 @@ class CompleteWall {
         */
         void setupWalls(std::vector<unsigned int> indexes){
             for(auto& index : indexes){
-                walls.emplace_back(Wall(engine, shader, center, index, marginL, marginR, timesto, setColorPattern()));
+                walls.emplace_back(engine, shader, center, index, marginL, marginR, timesto, setColorPattern());
             }
         }
         /*
@@ -79,7 +79,7 @@ class CompleteWall {
             setupWalls(indexes);
         }
         ~CompleteWall(){
-            std::cout<<"Tu papa te abandonoo"<<std::endl;
+            //std::cout<<"Tu papa te abandonoo"<<std::endl;
         }
         //Getters
         bool isAlive(){
