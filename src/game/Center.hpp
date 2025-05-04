@@ -48,8 +48,6 @@ class Center : public BG {
         //Objetos usados
         //Metodos de creacion
         void initShaders(){
-            //ShaderCenter = ShaderBG;
-            //std::cout << "ShaderCenter ptr: " << ShaderCenter << std::endl;
             //engine->registerShader(ShaderCenter);
         }
         /*

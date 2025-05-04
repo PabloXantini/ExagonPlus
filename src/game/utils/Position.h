@@ -1,6 +1,7 @@
 #ifndef POSITION_H
 #define POSITION_H
 
+#include <glm/glm.hpp>
 #include <vector>
 
 struct Coor3D {
@@ -33,4 +34,11 @@ void pushTriangle(std::vector<Coor3D>& mesh, Coor3D A, Coor3D B, Coor3D C){
     mesh.push_back(B);
     mesh.push_back(C);
 }
+/*
+    Conviert Coor3D a glm::vec3
+*/
+glm::vec3 parseToVec3(Coor3D& coor){
+    return glm::vec3(coor.x, coor.y, coor.z);
+}
+
 #endif

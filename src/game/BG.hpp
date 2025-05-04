@@ -48,8 +48,6 @@ class BG{
             Inicializacion de Shader
         */
         void initShaders(){
-            //ShaderBG = new Shader(IDR_VSHADER2,IDR_FSHADER2);
-            //std::cout << "ShaderBG ptr: " << ShaderBG << std::endl;
             //Registro
             engine->registerShader(ShaderBG);
             //Inicializacion

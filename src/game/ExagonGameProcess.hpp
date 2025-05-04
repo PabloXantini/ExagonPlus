@@ -241,7 +241,6 @@ void ExagonGameProcess::PlayLevel(){
     for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
         (*ptr)->execute(dtime);
         if ((*ptr)->isAlive()==false) {
-            //delete *ptr;
             ptr = completeWalls.erase(ptr);
         } else {
             ++ptr;

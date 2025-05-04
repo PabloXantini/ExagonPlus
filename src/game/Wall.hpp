@@ -31,6 +31,8 @@ class Wall : public Center {
         //Transformaciones
         float step = 0.0f;
         glm::mat4 model = glm::mat4(1.0f);
+        //Trackeo de posicion
+        std::vector<glm::vec3> poses = {};
         //Objetos de referencia
         Engine* engine;
         Shader* ShaderWall;
@@ -40,11 +42,29 @@ class Wall : public Center {
             Inicializacion de Shader
         */
         void initShaders(){
-            //ShaderBG = new Shader(IDR_VSHADER2,IDR_FSHADER2);
-            //std::cout << "ShaderBG ptr: " << ShaderBG << std::endl;
             //Inicializacion
-            //ShaderBG->setFloat("collapseprogress",0.0f);
         }
+        /*
+            Setea la posicion
+        */
+        void setPos(){
+            poses.clear();
+            for (auto& refcoor : refcoors){
+                poses.push_back(parseToVec3(refcoor));
+            }
+            for (auto& pos : poses){
+                pos*=14.0f;
+            }
+        }
+        void collapsePos(){
+            std::vector<glm::vec3> normals;
+            for (size_t i=0; i<poses.size()-2; i++){
+                normals.push_back(glm::normalize(poses.at(i)));
+                poses.at(i)=glm::mix(poses.at(i), glm::vec3(0.0f, 0.0f, 0.0f), step);              
+            }
+            poses.at(2)=poses.at(1)+normals.at(1)*marginR;
+            poses.at(3)=poses.at(0)+normals.at(0)*marginL;
+        } 
         /*
             Setea la pared
         */
@@ -62,6 +82,8 @@ class Wall : public Center {
             //Construir los otros lados
             refcoors.push_back(refcoors.at(1));
             refcoors.push_back(refcoors.at(0));
+            //Crea las verdaderas coordenadas
+            setPos();
         }
         /*
             Setea la nueva posicion de la pared
@@ -183,6 +205,8 @@ class Wall : public Center {
         */
         void collapse(float step){
             this->step=step;
+            //Cambio de posicion
+            collapsePos();
         }
         void kill(){
             engine->eliminateBuffer(this->getID(0));

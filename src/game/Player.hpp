@@ -36,14 +36,25 @@ class Player : public BG {
         RGBColor pcolor;
         //Transformaciones
         glm::mat4 model = glm::mat4(1.0f);
+        //Trackeo de posicion
+        std::vector<glm::vec3> poses={};
         //Objetos de referencia
         Engine* engine;
         Shader* ShaderPlayer;
         //Metodos de creacion
         void initShaders(){
-            //ShaderPlayer = ShaderBG;
-            //std::cout << "ShaderPlayer ptr: " << ShaderPlayer << std::endl;
-            //engine->registerShader(ShaderPlayer);
+            //Incializacion del shader
+        }
+        void setPos(){
+            //Solo considera las primeras 3 coordenadas por simplicidad
+            for(int i=0; i<3; i++){
+                poses.push_back(glm::vec3(model*glm::vec4(parseToVec3(vcoors.at(i)),1.0f)));
+            }
+        }
+        void changePos(){
+            for(auto& pos : poses){
+                pos=glm::vec3(model*glm::vec4(pos,1.0f));
+            }
         }
         void addColor( unsigned int vnum, RGBColor color){
             //std::cout << "Numero de vertices: " << vnum << std::endl;
@@ -61,6 +72,7 @@ class Player : public BG {
             model = glm::translate(model, glm::vec3(radiusPos,0.0,0.0));
             model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
             model = glm::scale(model, glm::vec3(scale));
+            changePos();
         }
     public:
         Player()=default;
@@ -85,6 +97,8 @@ class Player : public BG {
             model = glm::translate(model, glm::vec3(radiusPos,0.0,0.0));
             model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
             model = glm::scale(model, glm::vec3(size));
+            //Posicion verdadera
+            setPos();
         }
         //Getters
         unsigned int getID(unsigned int index) const {
