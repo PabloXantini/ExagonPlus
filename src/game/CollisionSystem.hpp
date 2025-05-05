@@ -87,7 +87,6 @@ class Collision {
                 for(auto& Wall : cWall->getWalls()){
                     if(Wall.getProgress()>=0.8f){
                         //Checa por SAT
-                        //std::cout<<"Voy a chequear"<<std::endl;
                         if(checkCollision(player, Wall)){
                             std::cout<<"GameOver"<<std::endl;
                         }else{

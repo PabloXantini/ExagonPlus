@@ -134,9 +134,11 @@ class Player : public BG {
         void move(float step) {
             rotatePlayerPos(step);
             //Comentalo si quieres
+            /*
             for(auto& pos : poses){
                 printVec3(pos);
             }
+            */
         }
 };
 
