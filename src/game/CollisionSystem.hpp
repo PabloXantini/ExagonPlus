@@ -45,15 +45,11 @@ class Collision {
                 max2 = -INFINITY;
                 for (const auto& v1 : objcoors1){
                     float projection = glm::dot(v1, axis);
-                    //projection < min1 ? max1=projection : max1=max1;
-                    //projection < min1 ? min1=projection : min1=min1;
                     min1 = std::min(min1, projection);
                     max1 = std::max(max1, projection);
                 }
                 for (const auto& v2 : objcoors2){
                     float projection = glm::dot(v2, axis);
-                    //projection > max2 ? max2=projection : max2=max2;
-                    //projection < min2 ? min2=projection : min2=min2;
                     min2 = std::min(min2, projection);
                     max2 = std::max(max2, projection);
                 }
@@ -62,11 +58,6 @@ class Collision {
                 }else{
                     return false;
                 }
-                /*
-                if(max1<min2||max2<min1){
-                    return false;
-                }
-                */
             }
             return true;
         }
@@ -82,7 +73,7 @@ class Collision {
             Metodo principal para realizar las colisiones globales entre jugador y paredes
         */
         void doCollisions(Player& player, std::vector<std::unique_ptr<CompleteWall>>& cWalls){
-            //Comprueba si para una pared completa (cada pared) esta cerca step>=0.85
+            //Comprueba si para una pared completa (cada pared) esta cerca step>=0.8
             for(auto& cWall : cWalls){
                 for(auto& Wall : cWall->getWalls()){
                     if(Wall.getProgress()>=0.8f){
@@ -90,7 +81,7 @@ class Collision {
                         if(checkCollision(player, Wall)){
                             std::cout<<"GameOver"<<std::endl;
                         }else{
-                            //std::cout<<"no"<<std::endl;
+                            std::cout<<"no"<<std::endl;
                         }
                     }
                 }

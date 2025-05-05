@@ -32,7 +32,8 @@ class Wall : public Center {
         float step = 0.0f;
         glm::mat4 model = glm::mat4(1.0f);
         //Trackeo de posicion
-        std::vector<glm::vec3> poses = {};
+        std::vector<glm::vec3> baseposes = {};          //Inicializado
+        std::vector<glm::vec3> poses = {};              //Verdaderos usados como posiciones dinamicas
         //Objetos de referencia
         Engine* engine;
         Shader* ShaderWall;
@@ -48,19 +49,20 @@ class Wall : public Center {
             Setea la posicion
         */
         void setPos(){
-            poses.clear();
+            baseposes.clear();
             for (auto& refcoor : refcoors){
-                poses.push_back(parseToVec3(refcoor));
+                baseposes.push_back(parseToVec3(refcoor));
             }
-            for (auto& pos : poses){
+            for (auto& pos : baseposes){
                 pos*=14.0f;
             }
+            poses=baseposes;
         }
         void collapsePos(){
             std::vector<glm::vec3> normals;
             for (size_t i=0; i<poses.size()-2; i++){
-                normals.push_back(glm::normalize(poses.at(i)));
-                poses.at(i)=glm::mix(poses.at(i), glm::vec3(0.0f, 0.0f, 0.0f), step);              
+                normals.push_back(glm::normalize(baseposes.at(i)));
+                poses.at(i)=glm::mix(baseposes.at(i), glm::vec3(0.0f), step);              
             }
             poses.at(2)=poses.at(1)+normals.at(1)*marginR;
             poses.at(3)=poses.at(0)+normals.at(0)*marginL;

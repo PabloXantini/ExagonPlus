@@ -38,7 +38,7 @@ class Player : public BG {
         glm::mat4 model = glm::mat4(1.0f);
         //Trackeo de posicion
         std::vector<glm::vec3> baseposes={};                //Inicializado
-        std::vector<glm::vec3> poses={};                    //Verdaderd
+        std::vector<glm::vec3> poses={};                    //Verdaderos usados como posiciones dinamicas
         //Objetos de referencia
         Engine* engine;
         Shader* ShaderPlayer;
@@ -56,7 +56,7 @@ class Player : public BG {
         }
         void changePos(){
             poses.clear();
-            for(auto& pos : baseposes){
+            for(const auto& pos : baseposes){
                 poses.push_back(glm::vec3(model*glm::vec4(pos,1.0f)));
             }
         }
@@ -103,6 +103,15 @@ class Player : public BG {
             model = glm::scale(model, glm::vec3(size));
             //Posicion verdadera
             setPos();
+            //Comentalo si quieres
+            /*
+            int c = 0;
+            for(auto& pos : poses){
+                std::cout<<c<<std::endl;
+                printVec3(pos);
+                c++;
+            }
+            //*/
         }
         //Getters
         unsigned int getID(unsigned int index) const {
@@ -135,10 +144,21 @@ class Player : public BG {
             rotatePlayerPos(step);
             //Comentalo si quieres
             /*
+            int c = 0;
             for(auto& pos : poses){
+                std::cout<<c<<std::endl;
                 printVec3(pos);
+                c++;
             }
-            */
+            //*/
+            /*
+            int c = 0;
+            for(auto& pos : getPos()){
+                std::cout<<c<<std::endl;
+                printVec3(pos);
+                c++;
+            }
+            //*/
         }
 };
 
