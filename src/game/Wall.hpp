@@ -156,6 +156,12 @@ class Wall : public Center {
         const std::vector<RGBColor>&getColors() const {
             return wallcolors;
         }
+        std::vector<glm::vec3>&getPos() {
+            return poses;
+        }
+        float getProgress() const {
+            return step;
+        }
         /*
             Renderizar/Mostrar
         */

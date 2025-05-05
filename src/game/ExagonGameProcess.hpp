@@ -7,6 +7,7 @@
 #include "Songplayer.hpp"
 #include "AnimationMaker.hpp"
 #include "LeverLoader.hpp"
+#include "CollisionSystem.hpp"
 #include "BG.hpp"
 #include "Center.hpp"
 #include "WallObject.hpp"
@@ -63,8 +64,8 @@ class ExagonGameProcess {
         };
         //Eventos que pueden ocurrir
         //Rotacion aleatoria
-        std::vector<float> randRotX = {0.0f};
-        std::vector<float> randRotY = {0.0f};
+        std::vector<float> randRotX = {0.0f, 0.5f, -0.5f};
+        std::vector<float> randRotY = {0.0f, 0.5f, -0.5f};
         std::vector<float> randRotZ = {180.0f, -180.0f, 360.0f, -360.0f};
         //Tiempos de asignacion
         std::vector<float> randInterval = {5.0f, 7.0f, 6.0f};
@@ -82,6 +83,7 @@ class ExagonGameProcess {
         //Aqui nacen los objetos que quiera usar en el juego (usados apenas empezar)
         Shader Shader1;
         LeverLoader gameLevel;
+        Collision colhandler;
         Obstacle obstacle;
         Timer gameTime;
         SongPlayer songPlayer;
@@ -140,6 +142,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     EnginePlaceHolder(plhEngine),
     Shader1(IDR_VSHADER2,IDR_FSHADER2),
     gameLevel(),
+    colhandler(),
     obstacle(),
     gameTime(),
     songPlayer(),
@@ -262,6 +265,8 @@ void ExagonGameProcess::PlayLevel(){
         }
     }
     */
+    //Colisiones
+    colhandler.doCollisions(player, completeWalls);
     //Cambio de color
     if((time-timer1)>=colorSwapRatio){
         timer1=time;

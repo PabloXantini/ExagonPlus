@@ -85,6 +85,9 @@ class CompleteWall {
         bool isAlive(){
             return alive;
         }
+        std::vector<Wall>& getWalls(){
+            return walls;
+        }
         /*
             Muestra las paredes a la vez
         */

@@ -16,7 +16,7 @@ class Player : public BG {
         std::vector<unsigned int> IDs={};                   //Esto me permite saber que IDs tienen cada forma que vaya a renderizar
         std::vector<unsigned int> argspace={3,3,3,3};       //Pos//Color//toPos//Color2
         std::vector<unsigned int> indexes={0,1,3,1,2,3};    //Indices de generacion
-        //std::vector<float> vertexs={};                      //Vertices brutos del objeto
+        //std::vector<float> vertexs={};                    //Vertices brutos del objeto
         std::vector<WVertex3D> vertexs={};                  //Vertices brutos del objeto
 
         std::vector<RGBColor> vertexcolors={};              //Gama de colores POR VERTICE
@@ -37,7 +37,8 @@ class Player : public BG {
         //Transformaciones
         glm::mat4 model = glm::mat4(1.0f);
         //Trackeo de posicion
-        std::vector<glm::vec3> poses={};
+        std::vector<glm::vec3> baseposes={};                //Inicializado
+        std::vector<glm::vec3> poses={};                    //Verdaderd
         //Objetos de referencia
         Engine* engine;
         Shader* ShaderPlayer;
@@ -48,12 +49,15 @@ class Player : public BG {
         void setPos(){
             //Solo considera las primeras 3 coordenadas por simplicidad
             for(int i=0; i<3; i++){
-                poses.push_back(glm::vec3(model*glm::vec4(parseToVec3(vcoors.at(i)),1.0f)));
+                baseposes.push_back(glm::vec3(model*glm::vec4(parseToVec3(vcoors.at(i)),1.0f)));
             }
+            //Copio a posiciones dinamicas
+            poses=baseposes;
         }
         void changePos(){
-            for(auto& pos : poses){
-                pos=glm::vec3(model*glm::vec4(pos,1.0f));
+            poses.clear();
+            for(auto& pos : baseposes){
+                poses.push_back(glm::vec3(model*glm::vec4(pos,1.0f)));
             }
         }
         void addColor( unsigned int vnum, RGBColor color){
@@ -113,6 +117,9 @@ class Player : public BG {
         const RGBColor&getColor() const {
             return pcolor;
         }
+        std::vector<glm::vec3>&getPos() {
+            return poses;
+        }
         /*
             Renderizar/Mostrar
         */
@@ -126,6 +133,10 @@ class Player : public BG {
         */
         void move(float step) {
             rotatePlayerPos(step);
+            //Comentalo si quieres
+            for(auto& pos : poses){
+                printVec3(pos);
+            }
         }
 };
 

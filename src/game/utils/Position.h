@@ -2,6 +2,7 @@
 #define POSITION_H
 
 #include <glm/glm.hpp>
+#include <iostream>
 #include <vector>
 
 struct Coor3D {
@@ -35,10 +36,16 @@ void pushTriangle(std::vector<Coor3D>& mesh, Coor3D A, Coor3D B, Coor3D C){
     mesh.push_back(C);
 }
 /*
-    Conviert Coor3D a glm::vec3
+    Convierte Coor3D a glm::vec3
 */
 glm::vec3 parseToVec3(Coor3D& coor){
     return glm::vec3(coor.x, coor.y, coor.z);
+}
+/*
+    Imprime un glm::vec3
+*/
+void printVec3(glm::vec3& pos){
+    std::cout<<"("<<pos.x<<", "<<pos.y<<", "<<pos.z<<")"<<std::endl;
 }
 
 #endif
