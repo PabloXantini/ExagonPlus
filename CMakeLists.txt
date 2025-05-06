@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(MSVC)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "Multithreaded$<$<CONFIG:Debug>:Debug>")
-    add_compile_options(/fsanitize=address /Zi /Od)
-    add_link_options(/INCREMENTAL:NO /DEBUG /fsanitize=address)
+    #add_compile_options(/fsanitize=address /Zi /Od)
+    #add_link_options(/INCREMENTAL:NO /DEBUG /fsanitize=address)
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)

@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Release/ExagonPlus.exe"
+			"path" : "RelWithDebInfo/ExagonPlus.exe"
 		},
 		{
-			"path" : "Release/ExagonPlus.pdb"
+			"path" : "RelWithDebInfo/ExagonPlus.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -14,10 +14,8 @@
 		"commands" : 
 		[
 			"add_executable",
-			"add_link_options",
 			"link_directories",
 			"target_link_libraries",
-			"add_compile_options",
 			"include_directories"
 		],
 		"files" : 
@@ -38,41 +36,29 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 10,
+				"line" : 16,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 16,
+				"line" : 27,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 27,
-				"parent" : 0
-			},
-			{
-				"command" : 4,
-				"file" : 0,
-				"line" : 9,
-				"parent" : 0
-			},
-			{
-				"command" : 5,
-				"file" : 0,
 				"line" : 13,
 				"parent" : 0
 			},
 			{
-				"command" : 5,
+				"command" : 3,
 				"file" : 0,
 				"line" : 14,
 				"parent" : 0
 			},
 			{
-				"command" : 5,
+				"command" : 3,
 				"file" : 0,
 				"line" : 15,
 				"parent" : 0
@@ -85,33 +71,21 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17"
-				},
-				{
-					"backtrace" : 5,
-					"fragment" : "/fsanitize=address"
-				},
-				{
-					"backtrace" : 5,
-					"fragment" : "/Zi"
-				},
-				{
-					"backtrace" : 5,
-					"fragment" : "/Od"
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /Zi /O2 /Ob1 /DNDEBUG -std:c++17"
 				}
 			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 6,
+					"backtrace" : 4,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include"
 				},
 				{
-					"backtrace" : 7,
+					"backtrace" : 5,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
 				},
 				{
-					"backtrace" : 8,
+					"backtrace" : 6,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/FreeImage"
 				}
 			],
@@ -133,33 +107,21 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG"
-				},
-				{
-					"backtrace" : 5,
-					"fragment" : "/fsanitize=address"
-				},
-				{
-					"backtrace" : 5,
-					"fragment" : "/Zi"
-				},
-				{
-					"backtrace" : 5,
-					"fragment" : "/Od"
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /MD /Zi /O2 /Ob1 /DNDEBUG"
 				}
 			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 6,
+					"backtrace" : 4,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include"
 				},
 				{
-					"backtrace" : 7,
+					"backtrace" : 5,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
 				},
 				{
-					"backtrace" : 8,
+					"backtrace" : 6,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/FreeImage"
 				}
 			],
@@ -179,15 +141,15 @@
 			"includes" : 
 			[
 				{
-					"backtrace" : 6,
+					"backtrace" : 4,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include"
 				},
 				{
-					"backtrace" : 7,
+					"backtrace" : 5,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
 				},
 				{
-					"backtrace" : 8,
+					"backtrace" : 6,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/FreeImage"
 				}
 			],
@@ -210,11 +172,11 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG",
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /Zi /O2 /Ob1 /DNDEBUG",
 				"role" : "flags"
 			},
 			{
-				"fragment" : "/machine:x64 /INCREMENTAL:NO",
+				"fragment" : "/machine:x64 /debug /INCREMENTAL",
 				"role" : "flags"
 			},
 			{
@@ -223,31 +185,16 @@
 			},
 			{
 				"backtrace" : 2,
-				"fragment" : "/INCREMENTAL:NO",
-				"role" : "flags"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "/DEBUG",
-				"role" : "flags"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "/fsanitize=address",
-				"role" : "flags"
-			},
-			{
-				"backtrace" : 3,
 				"fragment" : "-LIBPATH:C:\\Users\\USER\\SideProjects\\CPrograms\\ExagonPlus\\lib",
 				"role" : "libraryPath"
 			},
 			{
-				"backtrace" : 4,
+				"backtrace" : 3,
 				"fragment" : "glfw3dll.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 4,
+				"backtrace" : 3,
 				"fragment" : "FreeImage.lib",
 				"role" : "libraries"
 			},
