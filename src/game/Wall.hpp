@@ -141,6 +141,8 @@ class Wall : public Center {
             torefcoors=refcoors;
             //Memoria del objeto
             IDs.push_back(engine->createBuffer(vertexs,&indexes,12,argspace));
+            //SOLODEBUG
+            IDs.push_back(engine->createBuffer(poses,NULL,3,std::vector<unsigned int>{3}));
         }
         ~Wall(){
             //std::cout<<"Y se marcho, y a su barco lo llamo libertad"<<std::endl;
@@ -174,6 +176,9 @@ class Wall : public Center {
             ShaderWall->setFloat("collapseprogress",step);
             ShaderWall->setMat4("Model", model);
             engine->renderPolygon(ShaderWall, this->getID(0), indexes.size());
+            //SOLO DEBUG
+            ShaderWall->setInt("ObjectType", 2);
+            engine->renderLasso(ShaderWall, this->getID(1), poses.size());
         }
         /*
             Reserva la posicion para realizar el morphing
@@ -215,9 +220,13 @@ class Wall : public Center {
             this->step=step;
             //Cambio de posicion
             collapsePos();
+            //SOLO DEBUG
+            engine->modBuffer(this->getID(1), poses, NULL);
         }
         void kill(){
             engine->eliminateBuffer(this->getID(0));
+            //SOLO DEBUG
+            engine->eliminateBuffer(this->getID(1));
         }
 };
 

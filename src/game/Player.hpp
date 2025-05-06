@@ -28,8 +28,10 @@ class Player : public BG {
             {0.0f, -0.005f, 0.0f}
         };
         //General
+        bool liveStatus = true;
         float sensibility = 100.0f;
         float radiusPos = 0.6f;
+        float rotationInit = 0.0f;
         float scale = 1.0f;
         float rotation = 0.0f;
         //Color
@@ -56,8 +58,11 @@ class Player : public BG {
         }
         void changePos(){
             poses.clear();
+            //Aplicar la transformacion al reves?
+            glm::mat4 trans = glm::mat4(1.0f);
+            trans = glm::rotate(trans, glm::radians(rotation-rotationInit), glm::vec3(0.0,0.0,1.0));
             for(const auto& pos : baseposes){
-                poses.push_back(glm::vec3(model*glm::vec4(pos,1.0f)));
+                poses.push_back(glm::vec3(trans*glm::vec4(pos,1.0f)));
             }
         }
         void addColor( unsigned int vnum, RGBColor color){
@@ -89,6 +94,7 @@ class Player : public BG {
             this->sensibility=sensibility;
             this->scale=size;
             this->rotation=rotation;
+            this->rotationInit=rotation;
             this->radiusPos=radiusPos;
             pcolor=playerColor;
             //vertices
@@ -103,15 +109,8 @@ class Player : public BG {
             model = glm::scale(model, glm::vec3(size));
             //Posicion verdadera
             setPos();
-            //Comentalo si quieres
-            /*
-            int c = 0;
-            for(auto& pos : poses){
-                std::cout<<c<<std::endl;
-                printVec3(pos);
-                c++;
-            }
-            //*/
+            //SOLO DEBUG
+            IDs.push_back(engine->createBuffer(poses,NULL,3,std::vector<unsigned int>{3}));
         }
         //Getters
         unsigned int getID(unsigned int index) const {
@@ -129,6 +128,13 @@ class Player : public BG {
         std::vector<glm::vec3>&getPos() {
             return poses;
         }
+        bool isAlive(){
+            return liveStatus;
+        }
+        //Setters
+        void setLiveStatus(bool state){
+            liveStatus=state;
+        }
         /*
             Renderizar/Mostrar
         */
@@ -136,29 +142,18 @@ class Player : public BG {
             ShaderPlayer->setInt("ObjectType", 0);
             ShaderPlayer->setMat4("Model", model);
             engine->renderPolygon(ShaderPlayer, this->getID(0), indexes.size());
+            //SOLO DEBUG
+            ShaderPlayer->setInt("ObjectType", 2);
+            ShaderPlayer->setMat4("Model", glm::mat4(1.0f));
+            engine->renderLasso(ShaderPlayer, this->getID(1), poses.size());
         }
         /*
             Mover
         */
         void move(float step) {
             rotatePlayerPos(step);
-            //Comentalo si quieres
-            /*
-            int c = 0;
-            for(auto& pos : poses){
-                std::cout<<c<<std::endl;
-                printVec3(pos);
-                c++;
-            }
-            //*/
-            /*
-            int c = 0;
-            for(auto& pos : getPos()){
-                std::cout<<c<<std::endl;
-                printVec3(pos);
-                c++;
-            }
-            //*/
+            //SOLO DEBUG
+            engine->modBuffer(this->getID(1), poses, NULL);
         }
 };
 

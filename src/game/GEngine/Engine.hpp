@@ -102,9 +102,10 @@ class Engine {
         void initKeyboardListening();
         //Memory Methods
         //Buffers
-        unsigned int createBuffer(const std::vector<float>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
         unsigned int createBuffer(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
+        unsigned int createBuffer(const std::vector<glm::vec3>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
         void modBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes);
+        void modBuffer(unsigned int VAO, const std::vector<glm::vec3>& verts, const std::vector<unsigned int>* indexes);
         void updateBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes);
         void eliminateBuffer(unsigned int VAO);
         //Shaders
@@ -116,6 +117,7 @@ class Engine {
         void modifyPerspective(float FOV, float nearD, float farD);
         void setViewAll(float x, float y, float z);
         void rendWindowBackground();
+        void renderLasso(Shader* shader, unsigned int rVAO, unsigned int vertexcount);
         void renderPolygon(Shader* shader, unsigned int rVAO, unsigned int sides);
         void renderPolygon2(Shader* shader, unsigned int rVAO, unsigned int vertexcount);
 };
@@ -262,8 +264,20 @@ unsigned int Engine::createBuffer(const std::vector<WVertex3D>& verts, const std
     Buffers.push_back(std::move(newBuffer));
     return newBuffer.getVAO();
 }
+unsigned int Engine::createBuffer(const std::vector<glm::vec3>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace){
+    Buffer newBuffer(verts, indexes, numargs);
+    for(auto& arg : argsspace){
+        newBuffer.addAttribute(arg);
+    }
+    Buffers.push_back(std::move(newBuffer));
+    return newBuffer.getVAO();
+}
 //Actualiza todo el contenido del buffer
 void Engine::modBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes){
+    Buffer* buffer = findBufferByVAO(VAO);
+    buffer->update(verts, indexes);
+};
+void Engine::modBuffer(unsigned int VAO, const std::vector<glm::vec3>& verts, const std::vector<unsigned int>* indexes){
     Buffer* buffer = findBufferByVAO(VAO);
     buffer->update(verts, indexes);
 };
@@ -297,6 +311,13 @@ void Engine::clearBuffers() {
 void Engine::rendWindowBackground(){
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+}
+//Renderiza un lazo por puntos
+void Engine::renderLasso(Shader* shader, unsigned int rVAO, unsigned int vertexcount){
+    shader->use();
+    glBindVertexArray(rVAO);
+    glDrawArrays(GL_LINE_LOOP, 0, vertexcount);
+    glBindVertexArray(0);
 }
 //Renderiza un poligono con indices
 void Engine::renderPolygon(Shader* shader, unsigned int rVAO, unsigned int nindexes) {

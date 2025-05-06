@@ -80,11 +80,14 @@ out vec3 oFragColor;
 void main() {
     //Color
     oFragColor = aColor;
+    vec3 FinalPos = aPos;
     //Morphing polar
     vec3 mphPos = polarMorph(aPos, toPos, morphprogress);
+    //Colapso de pared
     vec3 collapsed = WallCollapseToCenter(mphPos, collapseprogress);
-    vec3 FinalPos = mphPos;
-    if(ObjectType==1){
+    if(ObjectType==0){
+        FinalPos = mphPos;
+    }else if(ObjectType==1){
         FinalPos = collapsed;
     }
     //Posicion

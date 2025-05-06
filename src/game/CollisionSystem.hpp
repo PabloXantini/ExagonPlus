@@ -79,9 +79,9 @@ class Collision {
                     if(Wall.getProgress()>=0.8f){
                         //Checa por SAT
                         if(checkCollision(player, Wall)){
-                            std::cout<<"GameOver"<<std::endl;
-                        }else{
-                            std::cout<<"no"<<std::endl;
+                            std::cout<<"Hubo Colision"<<std::endl;
+                            //De momento cualquier colision es GAMEOVER
+                            player.setLiveStatus(false);
                         }
                     }
                 }
