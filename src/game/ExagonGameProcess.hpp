@@ -66,7 +66,7 @@ class ExagonGameProcess {
         //Rotacion aleatoria
         std::vector<float> randRotX = {0.0f, 0.5f, -0.5f};
         std::vector<float> randRotY = {0.0f, 0.5f, -0.5f};
-        std::vector<float> randRotZ = {180.0f, -180.0f, 360.0f, -360.0f};
+        std::vector<float> randRotZ = {0.0f};//{180.0f, -180.0f, 360.0f, -360.0f};
         //Tiempos de asignacion
         std::vector<float> randInterval = {5.0f, 7.0f, 6.0f};
         std::vector<float> randIntervalObs = {4.0f, 3.0f, 5.0f};
