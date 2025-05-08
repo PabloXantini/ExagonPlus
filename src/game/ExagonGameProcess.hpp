@@ -87,7 +87,7 @@ class ExagonGameProcess {
         //Aqui nacen los objetos que quiera usar en el juego (usados apenas empezar)
         Shader Shader1;
         LeverLoader gameLevel;
-        Collision colhandler;
+        CollisionSystem colhandler;
         Obstacle obstacle;
         Timer gameTime;
         SongPlayer songPlayer;

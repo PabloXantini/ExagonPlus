@@ -8,8 +8,30 @@
 #include <algorithm>
 #include <cmath>
 
-class Collision {
+struct Collision {
+    bool collide = false;               //Hubo colision
+    glm::vec3 mtv = glm::vec3(0.0f);    //Minimum Translation Vector
+
+    float overlap = 0.0f;               //Solapamiento
+    glm::vec3 axis = glm::vec3(0.0f);   //Eje donde ocurre la colision
+};
+
+class CollisionSystem {
     private:
+        /*
+            Calcular la longitud de un solapamiento
+        */
+        float calculateOverlap(float min1, float max1, float min2, float max2){
+            //Corrige localmente para el calculo
+            if (min1 > max1) std::swap(min1, max1);
+            if (min2 > max2) std::swap(min2, max2);
+            //Proteccion
+            if (max1 <= min2 || max2 <= min1) return 0.0f;
+            //Calcula el solapamiento
+            float minOverlap = std::min(min1,min2);
+            float maxOverlap = std::max(max1,max2);
+            return maxOverlap - minOverlap;
+        } 
         /*
             Calcular normales para un poligono (Plano XY)
         */
@@ -26,7 +48,10 @@ class Collision {
         /*
             Implementacion del Separating Axis Theorem (Para colision de poligonos) para el plano XY
         */
-        bool applySAT(std::vector<glm::vec3>& objcoors1, std::vector<glm::vec3>& objcoors2){
+        Collision applySAT(std::vector<glm::vec3>& objcoors1, std::vector<glm::vec3>& objcoors2){
+            //Return
+            Collision collision;
+            float minoverlap = INFINITY;
             //Local
             std::vector<glm::vec3> normals = {};
             float min1 = INFINITY;
@@ -54,19 +79,27 @@ class Collision {
                     max2 = std::max(max2, projection);
                 }
                 if((min1<max2&&min1>min2)||(min2<max1&&min2>min1)){
+                    float overlap = calculateOverlap(min1, max1, min2, max2);
+                    if(overlap<minoverlap){
+                        minoverlap=overlap;
+                        collision.axis=axis;
+                    }
                     continue;
                 }else{
-                    return false;
+                    return collision;
                 }
             }
-            return true;
+            collision.collide = true;
+            collision.overlap = minoverlap;
+            collision.mtv = minoverlap*collision.axis;  //The MTV
+            return collision;
         }
     public:
-        Collision()=default;
+        CollisionSystem()=default;
         /*
             Bandera que determina el estado de colisiones para alguno de los dos tipos de objetos
         */
-        bool checkCollision(Player& player, Wall& Wall){
+        Collision checkCollision(Player& player, Wall& Wall){
             return applySAT(player.getPos(), Wall.getPos());
         }
         /*
@@ -78,8 +111,13 @@ class Collision {
                 for(auto& Wall : cWall->getWalls()){
                     if(Wall.getProgress()>=0.8f){
                         //Checa por SAT
-                        if(checkCollision(player, Wall)){
+                        Collision collision;
+                        collision = checkCollision(player, Wall);
+                        if(collision.collide){
                             std::cout<<"Hubo Colision"<<std::endl;
+                            std::cout<<collision.overlap<<std::endl;
+                            printVec3(collision.axis);
+                            printVec3(collision.mtv);
                             //De momento cualquier colision es GAMEOVER
                             player.setLiveStatus(false);
                         }
