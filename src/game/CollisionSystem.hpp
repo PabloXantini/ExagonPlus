@@ -40,7 +40,7 @@ class CollisionSystem {
             for(size_t i = 0; i<objv; i++){
                 glm::vec3 edge = objcoors[(i+1)%objv]-objcoors[i];
                 glm::vec3 edgeN = glm::normalize(edge);
-                glm::vec3 normalXY = glm::vec3(-edge.y, edge.x, edge.z);
+                glm::vec3 normalXY = glm::vec3(-edgeN.y, edgeN.x, edgeN.z);
                 //Lo guarda en un vector de normales
                 normals.push_back(normalXY);
             }
@@ -103,6 +103,28 @@ class CollisionSystem {
             return applySAT(player.getPos(), Wall.getPos());
         }
         /*
+            Resolver la colision
+        */
+        void resolveCollision(glm::vec3 force){
+            //Implementacion de la resolucion de colisiones
+            if (fabs(force.y) > fabs(force.x)) {
+                if (force.y > 0.5f) {
+                    // Colisión por debajo del jugador (el piso)
+                    std::cout<<"la colision ocurrio por debajo"<<std::endl;
+                } else{
+                    std::cout<<"la colision ocurrio por arriba"<<std::endl;
+                }
+            } else {
+                if (force.x > 0.5f) {
+                    // Colisión desde la izquierda
+                    std::cout<<"la colision ocurrio por la izquierda"<<std::endl;
+                } else {
+                    // Colisión desde la derecha
+                    std::cout<<"la colision ocurrio por la derecha"<<std::endl;
+                }
+            }
+        }
+        /*
             Metodo principal para realizar las colisiones globales entre jugador y paredes
         */
         void doCollisions(Player& player, std::vector<std::unique_ptr<CompleteWall>>& cWalls){
@@ -118,6 +140,7 @@ class CollisionSystem {
                             std::cout<<collision.overlap<<std::endl;
                             printVec3(collision.axis);
                             printVec3(collision.mtv);
+                            resolveCollision(collision.axis);
                             //De momento cualquier colision es GAMEOVER
                             player.setLiveStatus(false);
                         }

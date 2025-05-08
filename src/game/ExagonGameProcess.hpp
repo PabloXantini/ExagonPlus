@@ -151,7 +151,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
-    gameLevel.loadLevel("levels/vanilla/lvl1.txt");
+    gameLevel.loadLevel("levels/vanilla/debug2.txt");
     obstacleData = gameLevel.getInfo();
     //gameLevel.printInfo();
     //Perspectiva
