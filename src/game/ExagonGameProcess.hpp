@@ -75,9 +75,8 @@ class ExagonGameProcess {
         //Variables de la partida==========================================================//
         //Game
         bool GAME_ACTIVE=true;
-        float realTime = 0.0f;
         //Ratio de aparacion de obstaculos
-        const float WALLS_SPAWN_RATIO =0.033f;
+        const float WALLS_SPAWN_RATIO =0.058f;
         //ID obstaculo
         unsigned int obsID = 0;
         //Jugador
@@ -190,7 +189,6 @@ void ExagonGameProcess::PlayLevel(){
         //songPlayer.playSong(song);
         float time = gameTime.getTime(); //Tiempo en general
         float dtime = gameTime.getDeltaTime();
-        realTime+=dtime;
         //Eventos
         handleEvents(dtime);
         //Cosas que se hacen siempre
@@ -207,7 +205,7 @@ void ExagonGameProcess::PlayLevel(){
             deltaRotZ=randRotZ.at(rand()%randRotZ.size());
         }
         //Generacion de paredes
-        if(C1->track(dtime)) {
+        if(C1->track(time)) {
             if(obstacleData.empty()) return;
             if(!obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
                 switch (obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type){

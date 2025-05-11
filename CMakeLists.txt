@@ -11,6 +11,7 @@ if(MSVC)
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include/AL)
 include_directories(${PROJECT_SOURCE_DIR}/include/GLFW)
 include_directories(${PROJECT_SOURCE_DIR}/include/FreeImage)
 link_directories(${CMAKE_SOURCE_DIR}/lib)
@@ -24,12 +25,13 @@ endif()
 
 add_executable(ExagonPlus ${SOURCES})
 
-target_link_libraries(ExagonPlus PRIVATE glfw3dll.lib FreeImage.lib)
+target_link_libraries(ExagonPlus PRIVATE glfw3dll.lib FreeImage.lib OpenAl32.lib)
 #copiar cosas del ejecutable
 add_custom_command(TARGET ExagonPlus POST_BUILD COMMAND ${CMAKE_COMMAND} 
 -E copy_if_different 
 "${PROJECT_SOURCE_DIR}/glfw3.dll"
 "${PROJECT_SOURCE_DIR}/FreeImage.dll"
+"${PROJECT_SOURCE_DIR}/soft_oal.dll"
 $<TARGET_FILE_DIR:ExagonPlus>
 )
 #copiar cosas del juego

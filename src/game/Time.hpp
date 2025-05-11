@@ -60,7 +60,8 @@ class Chronometer {
 //Me sirve para cosas demasiado precisas
 class cbChronometer {
     private:
-        float elapsedTime = 0.0f;   //Valor anterior en el tiempo
+        float timer = 0.0f;         //Valor anterior del tiempo
+        float elapsedTime = 0.0f;   //Valor local del tiempo
         float tracktime = 1.0f;     //Valor aspirado
     public:
         cbChronometer(float tracktime) {
@@ -70,12 +71,23 @@ class cbChronometer {
         void setTTime(float totime){
             tracktime=totime;
         }
-        //Me va servir para checar
-        bool track(float deltaTime){
+        //Me va servir para checar por deltatime
+        bool trackDelta(float deltaTime){
             elapsedTime+=deltaTime;
             if(elapsedTime>=tracktime){
                 //Si el tiempo se pasa demasiado, me quedo con la rebaba y asi el cronometro termina antes
                 elapsedTime=-tracktime;
+                return true;
+            }
+            return false;
+        }
+        //Me va servir para checar por tiempo global
+        bool track(float time){
+            float diff=time-timer;
+            float leftover=diff-tracktime;
+            if(diff>=tracktime){
+                //Si el tiempo se pasa demasiado, me quedo con la rebaba y asi el cronometro termina antes
+                timer=time+leftover;
                 return true;
             }
             return false;

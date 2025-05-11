@@ -30,19 +30,19 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 25,
+				"line" : 26,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 16,
+				"line" : 17,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 27,
+				"line" : 28,
 				"parent" : 0
 			},
 			{
@@ -61,6 +61,12 @@
 				"command" : 3,
 				"file" : 0,
 				"line" : 15,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 16,
 				"parent" : 0
 			}
 		]
@@ -82,10 +88,14 @@
 				},
 				{
 					"backtrace" : 5,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
+					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/AL"
 				},
 				{
 					"backtrace" : 6,
+					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
+				},
+				{
+					"backtrace" : 7,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/FreeImage"
 				}
 			],
@@ -118,10 +128,14 @@
 				},
 				{
 					"backtrace" : 5,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
+					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/AL"
 				},
 				{
 					"backtrace" : 6,
+					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
+				},
+				{
+					"backtrace" : 7,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/FreeImage"
 				}
 			],
@@ -146,10 +160,14 @@
 				},
 				{
 					"backtrace" : 5,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
+					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/AL"
 				},
 				{
 					"backtrace" : 6,
+					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
+				},
+				{
+					"backtrace" : 7,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/FreeImage"
 				}
 			],
@@ -196,6 +214,11 @@
 			{
 				"backtrace" : 3,
 				"fragment" : "FreeImage.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 3,
+				"fragment" : "OpenAl32.lib",
 				"role" : "libraries"
 			},
 			{

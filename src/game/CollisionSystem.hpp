@@ -62,8 +62,8 @@ class CollisionSystem {
         */
         float calculateOverlap(float min1, float max1, float min2, float max2){
             //Corrige localmente para el calculo
-            if (min1 > max1) std::swap(min1, max1);
-            if (min2 > max2) std::swap(min2, max2);
+            //if (min1 > max1) std::swap(min1, max1);
+            //if (min2 > max2) std::swap(min2, max2);
             //Proteccion
             if (max1 <= min2 || max2 <= min1) return 0.0f;
             //Calcula el solapamiento
