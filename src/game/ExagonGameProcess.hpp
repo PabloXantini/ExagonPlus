@@ -66,7 +66,7 @@ class ExagonGameProcess {
         //Rotacion aleatoria
         std::vector<float> randRotX = {0.0f, 0.5f, -0.5f};
         std::vector<float> randRotY = {0.0f, 0.5f, -0.5f};
-        std::vector<float> randRotZ = {0.0f};//{180.0f, -180.0f, 360.0f, -360.0f};
+        std::vector<float> randRotZ = {180.0f, -180.0f, 360.0f, -360.0f};
         //Tiempos de asignacion
         std::vector<float> randInterval = {5.0f, 7.0f, 6.0f};
         std::vector<float> randIntervalObs = {4.0f, 3.0f, 5.0f};
@@ -116,6 +116,7 @@ class ExagonGameProcess {
         //Methods
         void handleEvents(float deltaTime);
         void changeDynamicSideBG(Animation* anim, float deltamov, unsigned int sides);
+        void switchObstacle();
     public:
         //Constructor
         ExagonGameProcess(Engine* enginehere);
@@ -151,7 +152,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
-    gameLevel.loadLevel("levels/vanilla/debug.txt");
+    gameLevel.loadLevel("levels/vanilla/lvl1.txt");
     obstacleData = gameLevel.getInfo();
     //gameLevel.printInfo();
     //Perspectiva
@@ -200,47 +201,41 @@ void ExagonGameProcess::PlayLevel(){
             deltaRotY=randRotY.at(rand()%randRotY.size());
             deltaRotZ=randRotZ.at(rand()%randRotZ.size());
         }
-        if(T3->track(time)) {
-            if(!obstacleData.empty()){
-                T3->setTTime(randIntervalObs.at(rand()%randIntervalObs.size()));
-                obstacle.restart();
-                obsID=rand()%obstacleData.size();
-            } 
-        }
         //Generacion de paredes
         if(T2->track(time)) {
-            if(!obstacleData.empty()){
-                if(!obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
-                    switch (obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type){
-                        case AnimType::LINEAR:
-                            completeWalls.emplace_back(std::make_unique<CompleteWall>
-                                (EnginePlaceHolder, 
-                                &Shader1, 
-                                &center, 
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration, 
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type, 
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
-                                wallcolors, 4));
-                            break;
-                        default:
-                            completeWalls.emplace_back(std::make_unique<CompleteWall>
-                                (EnginePlaceHolder, 
-                                &Shader1, 
-                                &center, 
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration,
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).factor,
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type, 
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
-                                obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
-                                wallcolors, 4));
-                            break;  
-                    }  
-                }     
-                obstacle.track(obstacleData, obsID);
-            }
+            if(obstacleData.empty()) return;
+            if(!obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
+                switch (obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type){
+                    case AnimType::LINEAR:
+                        completeWalls.emplace_back(std::make_unique<CompleteWall>
+                            (EnginePlaceHolder, 
+                            &Shader1, 
+                            &center, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
+                            wallcolors, 4));
+                        break;
+                    default:
+                        completeWalls.emplace_back(std::make_unique<CompleteWall>
+                            (EnginePlaceHolder, 
+                            &Shader1, 
+                            &center, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration,
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).factor,
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
+                            obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
+                            wallcolors, 4));
+                        break;  
+                }  
+            }     
+            obstacle.track(obstacleData, obsID);
+            //Cambio de obstaculos
+            if(obstacle.finished()) switchObstacle();
         }
         //Movimiento de paredes
         for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
@@ -286,6 +281,15 @@ void ExagonGameProcess::handleEvents(float deltaTime){
         float velocity = PLAYER_SENSIBILITY * deltaTime;
         //std::cout<<"Se mueve a la izquierda"<<std::endl;
         player.move(velocity);
+    }
+}
+
+
+//Cambia un obstaculo de manera aleatoria
+void ExagonGameProcess::switchObstacle(){
+    if(!obstacleData.empty()){
+        obstacle.restart();
+        obsID=rand()%obstacleData.size();
     }
 }
 

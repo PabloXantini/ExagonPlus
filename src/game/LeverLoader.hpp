@@ -27,10 +27,10 @@ struct ObsData {
 
 class Obstacle {
     private:
-        //bool MF=true;                   //Si necesita renderizar mas fragmentos
-        //bool DF=false;                  //Si no necesita renderizar nada
+        //bool MF=true;                 //Si necesita renderizar mas fragmentos
 
-        unsigned int cwallpointer=0;            //Guardo la posicion de la wall en cuestion
+        bool DF=false;                  //Si no necesita renderizar nada
+        unsigned int cwallpointer=0;    //Guardo la posicion de la wall en cuestion
         unsigned int canimpointer=0;    //Guardo la posicion de la animacion en cuestion
     public:
         Obstacle()=default;
@@ -41,6 +41,9 @@ class Obstacle {
         unsigned int getNoAnim(){
             return canimpointer;
         }
+        bool finished(){
+            return DF;
+        }
         void track(std::vector<ObsData>& obstacles, unsigned int ID){
             if(obstacles.empty()) return;
             cwallpointer++;
@@ -48,6 +51,7 @@ class Obstacle {
                 cwallpointer=0;
                 canimpointer++;
                 if(canimpointer>=obstacles.at(ID).anims.size()-1){
+                    DF=true;
                     canimpointer=0;
                 }
             }
@@ -55,6 +59,7 @@ class Obstacle {
         void restart(){
             cwallpointer=0;
             canimpointer=0;
+            DF=false;
         }
 };
 

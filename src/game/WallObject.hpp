@@ -35,7 +35,7 @@ class CompleteWall {
         void setupWalls(std::vector<unsigned int> indexes){
             size_t numi = indexes.size();
             unsigned int sides = center->getSides();
-            bool manyWalls = numi>=sides-1;
+            bool manyWalls = numi>=sides;
             unsigned int exit = 0;
             if(manyWalls) exit = indexes.at(rand()%sides);
             for(auto& index : indexes){
