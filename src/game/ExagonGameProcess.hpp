@@ -75,6 +75,9 @@ class ExagonGameProcess {
         //Variables de la partida==========================================================//
         //Game
         bool GAME_ACTIVE=true;
+        float realTime = 0.0f;
+        //Ratio de aparacion de obstaculos
+        const float WALLS_SPAWN_RATIO =0.033f;
         //ID obstaculo
         unsigned int obsID = 0;
         //Jugador
@@ -96,8 +99,8 @@ class ExagonGameProcess {
         Player player;
         //Objetos usados prejuego (usados para cargar el nivel)
         //Timers
+        cbChronometer* C1;    //Generacion de obstaculos
         Chronometer* T1;    //Cosas random
-        Chronometer* T2;    //Generacion de obstaculos
         Chronometer* T3;    //Obstaculos random
         //Punteros de animaciones
         //std::vector<Animation*> animations={};
@@ -159,9 +162,10 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
     //Timers
+    C1=new cbChronometer(WALLS_SPAWN_RATIO);  //Paredes por defecto
     T1=new Chronometer(2.0f);   //Rotaciones
-    T2=new Chronometer(0.06f);  //Paredes por defecto
-    T3=new Chronometer(2.0f);   //Obstaculos
+    //T2=new Chronometer(0.06f);  //Paredes por defecto
+    //T3=new Chronometer(2.0f);   //Obstaculos
     //Animaciones aparte
     a1=new Animation(9, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
@@ -173,9 +177,9 @@ ExagonGameProcess::~ExagonGameProcess(){
     delete a2;
     delete a3;
     delete a4;
+    delete C1;
     delete T1;
-    delete T2;
-    delete T3;
+    //delete T3;
 }
 void ExagonGameProcess::PlayLevel(){
     if(GAME_ACTIVE){
@@ -186,6 +190,7 @@ void ExagonGameProcess::PlayLevel(){
         //songPlayer.playSong(song);
         float time = gameTime.getTime(); //Tiempo en general
         float dtime = gameTime.getDeltaTime();
+        realTime+=dtime;
         //Eventos
         handleEvents(dtime);
         //Cosas que se hacen siempre
@@ -202,7 +207,7 @@ void ExagonGameProcess::PlayLevel(){
             deltaRotZ=randRotZ.at(rand()%randRotZ.size());
         }
         //Generacion de paredes
-        if(T2->track(time)) {
+        if(C1->track(dtime)) {
             if(obstacleData.empty()) return;
             if(!obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
                 switch (obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type){
