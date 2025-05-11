@@ -33,7 +33,14 @@ class CompleteWall {
             Crea las paredes segun el indice
         */
         void setupWalls(std::vector<unsigned int> indexes){
+            size_t numi = indexes.size();
+            unsigned int sides = center->getSides();
+            bool manyWalls = numi>=sides-1;
+            unsigned int exit = 0;
+            if(manyWalls) exit = indexes.at(rand()%sides);
             for(auto& index : indexes){
+                //Condicion que siempre se aplica cuando los espacios estan llenos
+                if(manyWalls&&index==exit) continue;
                 walls.emplace_back(engine, shader, center, index, marginL, marginR, timesto, setColorPattern());
             }
         }
