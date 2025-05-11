@@ -7,58 +7,14 @@ ANIM
 2.0 LINEAR
 WALLDATA
 1 2 3 4 5       0.1     0.1
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
-X
+X 38
 0 3     0.1     0.1
 0 3     0.1     0.1
 0 3     0.1     0.1
 0 3     0.1     0.1
 0 3     0.1     0.1
 0 3     0.1     0.1
-X
-X
-X
-X
-X
-X
-X
+X 7
 ENDWALLDATA
 ENDANIM
 ENDOBS

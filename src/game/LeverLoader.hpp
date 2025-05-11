@@ -143,10 +143,20 @@ class LeverLoader {
                         sstream >> currentAnim.duration >> type >> currentAnim.factor;
                         currentAnim.type = parseAnimType(type);
                     }else if(state == WALL){
-                        if(line=="X"){
+                        std::string token;
+                        sstream >> token;
+                        if(token=="X"){
+                            unsigned int count = 1;
+                            sstream >> count;
                             WallData emptyWall;
-                            currentAnim.wall.push_back(emptyWall);
+                            for(int i=0; i<count; i++){
+                                currentAnim.wall.push_back(emptyWall);
+                            }
                         }else{
+                            //Limpiar el buffer antes de hacer algo mas
+                            sstream.clear();               // Asegura que el stringstream esté limpio
+                            sstream.str(line);             // Reinicia con la línea completa
+                            //Paredes
                             currentWall={};
                             std::vector<float> tokens;
                             float value;
