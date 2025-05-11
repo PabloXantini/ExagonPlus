@@ -190,6 +190,9 @@ class BG{
             pushTriangle(vcoors, coors.at(0), coors.at(coors.size()-1), coors.at(1));
             return vcoors;
         }
+        /*
+            Sirve para inicializar la malla de vertices
+        */
         std::vector<WVertex3D> setupMesh(std::vector<Coor3D>&vcoors, std::vector<RGBColor>&colors, std::vector<Coor3D>&tovcoors, std::vector<RGBColor>&tocolors){
             std::vector<WVertex3D> vertexs;
             for(unsigned int i=0; i<vcoors.size(); i++){
@@ -197,6 +200,9 @@ class BG{
             }
             return vertexs;
         }
+        /*
+            Sirve para sobrescribir valores dentro de la malla de vertices
+        */
         std::vector<WVertex3D> modMesh(std::vector<WVertex3D>& vertexs, const std::vector<Coor3D>* vertcoors, const std::vector<RGBColor>* colors, const std::vector<Coor3D>* tovertcoors, const std::vector<RGBColor>* tocolors){
             for(unsigned int i=0; i<vertexs.size(); i++){
                 if(vertcoors) putPosition(vertexs.at(i), vertcoors->at(i));
@@ -205,6 +211,20 @@ class BG{
                 if(tocolors) putToColor(vertexs.at(i), tocolors->at(i));
             }
             return vertexs;
+        }
+        /*
+            Normaliza un angulo de rotacion
+        */
+        float normalizeAngle(float angle){
+            angle=std::fmod(angle,360.0f);
+            if(angle<0.0f) angle+=360.0f;
+            return angle; 
+        }
+        /*
+            Obtiene un vector de rotacion
+        */
+        glm::vec3 getRotVector(float rotation){
+            return glm::normalize(glm::vec3(std::cos(glm::radians(rotation)),std::sin(glm::radians(rotation)),0.0f));
         }
     public:
         //Constructors

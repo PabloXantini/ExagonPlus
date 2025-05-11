@@ -9,6 +9,7 @@
 #include "BG.hpp"
 
 #include <iostream>
+#include <cmath>
 #include <vector>
 
 class Player : public BG {
@@ -58,7 +59,7 @@ class Player : public BG {
         }
         void changePos(){
             poses.clear();
-            //Aplicar la transformacion al reves?
+            //Una transformacion distinta
             glm::mat4 trans = glm::mat4(1.0f);
             trans = glm::rotate(trans, glm::radians(rotation-rotationInit), glm::vec3(0.0,0.0,1.0));
             for(const auto& pos : baseposes){
@@ -75,6 +76,8 @@ class Player : public BG {
         }
         void rotatePlayerPos(float step){
             rotation+=step;
+            //Clampear la rotacion
+            rotation=normalizeAngle(rotation);
             //Transformacion
             model = glm::mat4(1.0f);    //Reiniciar la transformacion
             model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0,0.0,1.0));
@@ -82,6 +85,21 @@ class Player : public BG {
             model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0,0.0,1.0));
             model = glm::scale(model, glm::vec3(scale));
             changePos();
+        }
+        void collidePlayerPos(glm::vec3 direction){
+            float epsilon = 1.5f;
+            //Obtener el vector de rotacion
+            glm::vec3 radial = getRotVector(rotation);
+            float ProjDtoR = glm::dot(radial, direction);       //Proyeccion de direccion respecto al radial
+            //Obtener el vector rotacional
+            glm::vec3 ProjRot = ProjDtoR * radial;
+            glm::vec3 TanRot = epsilon*(direction - ProjRot);
+
+            //Convertir la fuerza en una rotacion polar
+            float step = glm::degrees(glm::length(TanRot))/radiusPos;
+            if(glm::cross(radial, TanRot).z<0) step*=-1.0f;
+            //Aplicar la rotacion de nuevo
+            rotatePlayerPos(step);
         }
     public:
         Player()=default;
@@ -152,6 +170,14 @@ class Player : public BG {
         */
         void move(float step) {
             rotatePlayerPos(step);
+            //SOLO DEBUG
+            engine->modBuffer(this->getID(1), poses, NULL);
+        }
+        /*
+            Colisiona
+        */
+        void collide(glm::vec3 direction) {
+            collidePlayerPos(direction);
             //SOLO DEBUG
             engine->modBuffer(this->getID(1), poses, NULL);
         }

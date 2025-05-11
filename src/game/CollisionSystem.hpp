@@ -67,8 +67,8 @@ class CollisionSystem {
             //Proteccion
             if (max1 <= min2 || max2 <= min1) return 0.0f;
             //Calcula el solapamiento
-            float minOverlap = std::min(min1,min2);
-            float maxOverlap = std::max(max1,max2);
+            float minOverlap = std::max(min1,min2);
+            float maxOverlap = std::min(max1,max2);
             return maxOverlap - minOverlap;
         } 
         /*
@@ -126,7 +126,8 @@ class CollisionSystem {
                     if(overlap<minoverlap){
                         minoverlap=overlap;
                         collision.axis=normal.axis;
-                        //if(normal.owner==target) collision.collidedside=normal.sidename;
+                        if(normal.owner!=target) collision.axis=-normal.axis;
+                        if(normal.owner==target) collision.collidedside=normal.sidename;
                     }
                 }else{
                     return collision;
@@ -135,20 +136,6 @@ class CollisionSystem {
             collision.collide = true;
             collision.overlap = minoverlap;
             collision.mtv = minoverlap*collision.axis;  //MTV (Minimum Translation Vector)
-
-            /*
-            // Determina qué lado se parece más al MTV
-            float bestN = -INFINITY;
-            for (const auto& normal : normals) {
-                if (normal.owner == target) {
-                    float d = glm::dot(collision.axis, normal.axis);
-                    if (d > bestN) {
-                        bestN = d;
-                        collision.collidedside = normal.sidename;
-                    }
-                }
-            }
-            */
 
             return collision;
         }
@@ -161,28 +148,35 @@ class CollisionSystem {
             return applySAT(player.getPos(), Wall.getPos(), ObjOwner::OBJ2);
         }
         /*
-            Resolver la colision
+            Resolver la colision del jugador
         */
-        void resolveCollision(Collision force){
+        void resolveCollision(Collision force, Player& player){
             //Implementacion de la resolucion de colisiones
             switch(force.collidedside){
+                case Side::NONE: //Lado ajeno
+                    player.collide(force.mtv);
+                    break;
                 case Side::S0:  //Arista inferior
-                    std::cout<<"la colision ocurrio por debajo"<<std::endl;
-                    //Pierdes
+                    //std::cout<<"la colision ocurrio por debajo"<<std::endl;
+                    player.setLiveStatus(false);
+                    //GAMEOVER
                     break;
                 case Side::S1:  //Arista lateral
-                    std::cout<<"la colision ocurrio por un lateral"<<std::endl;
+                    //std::cout<<"la colision ocurrio por un lateral"<<std::endl;
+                    player.collide(force.mtv);
                     //Comportamiento solido
                     break;
                 case Side::S2:  //Arista superior
-                    std::cout<<"la colision ocurrio por arriba"<<std::endl;
+                    //std::cout<<"la colision ocurrio por arriba"<<std::endl;
                     break;
                 case Side::S3:  //Arista lateral
-                    std::cout<<"la colision ocurrio por un lateral"<<std::endl;
+                    //std::cout<<"la colision ocurrio por un lateral"<<std::endl;
+                    player.collide(force.mtv);
                     //Comportamiento solido
                     break;
             }
         }
+
         /*
             Metodo principal para realizar las colisiones globales entre jugador y paredes
         */
@@ -200,9 +194,7 @@ class CollisionSystem {
                             //printVec3(collision.axis);
                             //std::cout<<collision.overlap<<std::endl;
                             std::cout<<showSide(collision.collidedside)<<std::endl;
-                            resolveCollision(collision);
-                            //De momento cualquier colision es GAMEOVER
-                            player.setLiveStatus(false);
+                            resolveCollision(collision, player);
                         }
                     }
                 }
