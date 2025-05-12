@@ -417,6 +417,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\MainFrame.cpp" />
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\AEngine\AudioProcessor.cpp" />
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\AEngine\Engine.cpp" />
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\glad.c" />
     <ResourceCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\resource.rc" />

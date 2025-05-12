@@ -18,7 +18,8 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 file(GLOB_RECURSE SOURCES
     src/MainFrame.cpp
     src/glad.c
-    src/game/AEngine/Engine.cpp)
+    src/game/AEngine/Engine.cpp
+    src/game/AEngine/AudioProcessor.cpp)
 
 if(WIN32)
     list(APPEND SOURCES src/resource.rc)
