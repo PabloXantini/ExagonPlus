@@ -85,7 +85,8 @@ class ExagonGameProcess {
         //Punteros de funciones
         std::function<void(Animation*, float, unsigned int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         //Objetos de referencia
-        Engine* EnginePlaceHolder;
+        Engine* GEnginePH;
+
         //Aqui nacen los objetos que quiera usar en el juego (usados apenas empezar)
         Shader Shader1;
         LeverLoader gameLevel;
@@ -141,16 +142,16 @@ class ExagonGameProcess {
 };
 
 ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
-    EnginePlaceHolder(plhEngine),
+    GEnginePH(plhEngine),
     Shader1(IDR_VSHADER2,IDR_FSHADER2),
     gameLevel(),
     colhandler(),
     obstacle(),
     gameTime(),
     songPlayer(),
-    background(EnginePlaceHolder, &Shader1, 200.0f, sides, 3, pcolors),
-    center(EnginePlaceHolder, &Shader1, 0.18f, 0.018f, sides,7, pcolors, wallcolors.at(0)),
-    player(EnginePlaceHolder, &Shader1, PLAYER_SENSIBILITY, 2.0f, 0.21f, 60.0f, wallcolors.at(0))
+    background(GEnginePH, &Shader1, 200.0f, sides, 3, pcolors),
+    center(GEnginePH, &Shader1, 0.18f, 0.018f, sides,7, pcolors, wallcolors.at(0)),
+    player(GEnginePH, &Shader1, PLAYER_SENSIBILITY, 2.0f, 0.21f, 60.0f, wallcolors.at(0))
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
@@ -211,7 +212,7 @@ void ExagonGameProcess::PlayLevel(){
                 switch (obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).type){
                     case AnimType::LINEAR:
                         completeWalls.emplace_back(std::make_unique<CompleteWall>
-                            (EnginePlaceHolder, 
+                            (GEnginePH, 
                             &Shader1, 
                             &center, 
                             obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration, 
@@ -223,7 +224,7 @@ void ExagonGameProcess::PlayLevel(){
                         break;
                     default:
                         completeWalls.emplace_back(std::make_unique<CompleteWall>
-                            (EnginePlaceHolder, 
+                            (GEnginePH, 
                             &Shader1, 
                             &center, 
                             obstacleData.at(obsID).anims.at(obstacle.getNoAnim()).duration,
@@ -275,12 +276,12 @@ void ExagonGameProcess::PlayLevel(){
 //Event handler - A decidir como va a quedar
 void ExagonGameProcess::handleEvents(float deltaTime){
     //Nivel - Jugador
-    if(EnginePlaceHolder->getKey(262)){//Derecha
+    if(GEnginePH->getKey(262)){//Derecha
         float velocity = - PLAYER_SENSIBILITY * deltaTime;
         //std::cout<<"Se mueve a la derecha"<<std::endl;
         player.move(velocity);
     }
-    if(EnginePlaceHolder->getKey(263)){//Izquierda
+    if(GEnginePH->getKey(263)){//Izquierda
         float velocity = PLAYER_SENSIBILITY * deltaTime;
         //std::cout<<"Se mueve a la izquierda"<<std::endl;
         player.move(velocity);

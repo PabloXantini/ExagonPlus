@@ -2,6 +2,7 @@
 #include <psapi.h>
 
 #include "game/GEngine/Engine.hpp"
+#include "game/AEngine/Engine.hpp"
 #include "game/ExagonPanel.hpp"
 
 #include <iostream>
@@ -21,14 +22,19 @@ std::vector<int> iconsref ={IDR_PNG1, IDR_PNG1};
 
 //Arranca el juego
 int main() {
-    Engine engine; //Arranca el motor
+    Engine engine;          //Arranca el motor grafico
+    AudioEngine aengine;    //Arranca el motor de sonido
 
+    //Inicializar el motor grafico
     if(!engine.initWindow(SCR_WIDTH, SCR_HEIGHT, TITLE)) return -1;
     engine.setWindowsIcons(iconsref);
     engine.initKeyboardListening();
     engine.initWindowResizing();
     if(!engine.linkGLAD()) return -1;
     engine.blockFPS(60);
+
+    //Inicializar el motor de sonido
+    if(!aengine.init()) return -1;
 
     //Llamo a los objetos necesarios
     ExagonPanel panel(&engine);
@@ -44,6 +50,7 @@ int main() {
         engine.handle();
     }
     //Limpio todo al cerrar
+    aengine.close();
     engine.close();
     engine.destroyWindow();
 

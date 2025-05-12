@@ -120,7 +120,7 @@
     <PostBuildEvent>
       <Message>	</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/soft_oal.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/Debug
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/OpenAL32.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/Debug
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -139,7 +139,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>glfw3dll.lib;FreeImage.lib;OpenAl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3dll.lib;FreeImage.lib;OpenAL32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:/Users/USER/SideProjects/CPrograms/ExagonPlus/lib;C:/Users/USER/SideProjects/CPrograms/ExagonPlus/lib/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -189,7 +189,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <PostBuildEvent>
       <Message>	</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/soft_oal.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/Release
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/OpenAL32.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/Release
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -208,7 +208,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>glfw3dll.lib;FreeImage.lib;OpenAl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3dll.lib;FreeImage.lib;OpenAL32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:/Users/USER/SideProjects/CPrograms/ExagonPlus/lib;C:/Users/USER/SideProjects/CPrograms/ExagonPlus/lib/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -258,7 +258,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <PostBuildEvent>
       <Message>	</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/soft_oal.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/MinSizeRel
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/OpenAL32.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/MinSizeRel
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -277,7 +277,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>glfw3dll.lib;FreeImage.lib;OpenAl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3dll.lib;FreeImage.lib;OpenAL32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:/Users/USER/SideProjects/CPrograms/ExagonPlus/lib;C:/Users/USER/SideProjects/CPrograms/ExagonPlus/lib/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -326,7 +326,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <PostBuildEvent>
       <Message>	</Message>
       <Command>setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/soft_oal.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/RelWithDebInfo
+"C:\Program Files\CMake\bin\cmake.exe" -E copy_if_different C:/Users/USER/SideProjects/CPrograms/ExagonPlus/glfw3.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/FreeImage.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/OpenAL32.dll C:/Users/USER/SideProjects/CPrograms/ExagonPlus/build/RelWithDebInfo
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
@@ -345,7 +345,7 @@ exit /b %1
 if %errorlevel% neq 0 goto :VCEnd</Command>
     </PostBuildEvent>
     <Link>
-      <AdditionalDependencies>glfw3dll.lib;FreeImage.lib;OpenAl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalDependencies>glfw3dll.lib;FreeImage.lib;OpenAL32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:/Users/USER/SideProjects/CPrograms/ExagonPlus/lib;C:/Users/USER/SideProjects/CPrograms/ExagonPlus/lib/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -417,6 +417,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\MainFrame.cpp" />
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\AEngine\Engine.cpp" />
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\glad.c" />
     <ResourceCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\resource.rc" />
   </ItemGroup>

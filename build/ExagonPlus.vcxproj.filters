@@ -4,6 +4,9 @@
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\MainFrame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\AEngine\Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>

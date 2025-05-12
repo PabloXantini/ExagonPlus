@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "MinSizeRel/ExagonPlus.exe"
+			"path" : "Release/ExagonPlus.exe"
 		},
 		{
-			"path" : "MinSizeRel/ExagonPlus.pdb"
+			"path" : "Release/ExagonPlus.pdb"
 		}
 	],
 	"backtrace" : 1,
@@ -30,7 +30,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 26,
+				"line" : 27,
 				"parent" : 0
 			},
 			{
@@ -42,7 +42,7 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 28,
+				"line" : 29,
 				"parent" : 0
 			},
 			{
@@ -77,7 +77,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O1 /Ob1 /DNDEBUG -std:c++17"
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG -std:c++17"
 				}
 			],
 			"includes" : 
@@ -110,14 +110,15 @@
 			},
 			"sourceIndexes" : 
 			[
-				0
+				0,
+				1
 			]
 		},
 		{
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /W3 /MD /O1 /Ob1 /DNDEBUG"
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /MD /O2 /Ob2 /DNDEBUG"
 				}
 			],
 			"includes" : 
@@ -142,7 +143,7 @@
 			"language" : "C",
 			"sourceIndexes" : 
 			[
-				1
+				2
 			]
 		},
 		{
@@ -174,7 +175,7 @@
 			"language" : "RC",
 			"sourceIndexes" : 
 			[
-				2
+				3
 			]
 		}
 	],
@@ -190,7 +191,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O1 /Ob1 /DNDEBUG",
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG",
 				"role" : "flags"
 			},
 			{
@@ -218,7 +219,7 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "OpenAl32.lib",
+				"fragment" : "OpenAL32.lib",
 				"role" : "libraries"
 			},
 			{
@@ -243,7 +244,8 @@
 			[
 				0,
 				1,
-				2
+				2,
+				3
 			]
 		}
 	],
@@ -253,6 +255,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/MainFrame.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/game/AEngine/Engine.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

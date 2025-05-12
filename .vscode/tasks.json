@@ -33,10 +33,12 @@
                 "-L",
                 "../lib",
                 "${workspaceFolder}/src/MainFrame.cpp",
+                "${workspaceFolder}/src/game/AEngine/Engine.cpp",
                 "${workspaceFolder}/src/glad.c",
                 "${workspaceFolder}/src/resource.o",
                 "-lglfw3dll",
                 "-lFreeImage",
+                "-lOpenAL32",
                 "-o",
                 "${workspaceFolder}/ExagonPlus.exe"
             ],

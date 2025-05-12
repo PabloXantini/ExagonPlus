@@ -15,9 +15,10 @@ include_directories(${PROJECT_SOURCE_DIR}/include/AL)
 include_directories(${PROJECT_SOURCE_DIR}/include/GLFW)
 include_directories(${PROJECT_SOURCE_DIR}/include/FreeImage)
 link_directories(${CMAKE_SOURCE_DIR}/lib)
-file(GLOB_RECURSE SOURCES 
+file(GLOB_RECURSE SOURCES
     src/MainFrame.cpp
-    src/glad.c) 
+    src/glad.c
+    src/game/AEngine/Engine.cpp)
 
 if(WIN32)
     list(APPEND SOURCES src/resource.rc)
@@ -25,13 +26,13 @@ endif()
 
 add_executable(ExagonPlus ${SOURCES})
 
-target_link_libraries(ExagonPlus PRIVATE glfw3dll.lib FreeImage.lib OpenAl32.lib)
+target_link_libraries(ExagonPlus PRIVATE glfw3dll.lib FreeImage.lib OpenAL32.lib)
 #copiar cosas del ejecutable
 add_custom_command(TARGET ExagonPlus POST_BUILD COMMAND ${CMAKE_COMMAND} 
 -E copy_if_different 
 "${PROJECT_SOURCE_DIR}/glfw3.dll"
 "${PROJECT_SOURCE_DIR}/FreeImage.dll"
-"${PROJECT_SOURCE_DIR}/soft_oal.dll"
+"${PROJECT_SOURCE_DIR}/OpenAL32.dll"
 $<TARGET_FILE_DIR:ExagonPlus>
 )
 #copiar cosas del juego
