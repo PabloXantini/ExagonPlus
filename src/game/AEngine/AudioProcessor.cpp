@@ -6,7 +6,7 @@ MP3Data readAudio(const char* path){
     MP3Data output;
     if(!drmp3_init_file(&mp3, path, NULL)){
         std::cout<<"Error: Unable to read file"<<std::endl;
-        return;  
+        return output;  
     }else{
         output.success=true;
     }
@@ -19,4 +19,5 @@ MP3Data readAudio(const char* path){
     output.channels=mp3.channels;
     
     drmp3_uninit(&mp3);
+    return output;
 }

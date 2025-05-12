@@ -34,6 +34,7 @@
                 "../lib",
                 "${workspaceFolder}/src/MainFrame.cpp",
                 "${workspaceFolder}/src/game/AEngine/Engine.cpp",
+                "${workspaceFolder}/src/game/AEngine/AudioProcessor.cpp",
                 "${workspaceFolder}/src/glad.c",
                 "${workspaceFolder}/src/resource.o",
                 "-lglfw3dll",

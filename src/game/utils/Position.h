@@ -14,7 +14,7 @@ struct Coor3D {
 /*
     Añade una coordenada 3D, en base a un vector determinado
 */
-void pushCoor3D(std::vector<float>&vertexs, Coor3D coors){
+inline void pushCoor3D(std::vector<float>&vertexs, Coor3D coors){
     vertexs.push_back(coors.x);
     vertexs.push_back(coors.y);
     vertexs.push_back(coors.z);
@@ -22,7 +22,7 @@ void pushCoor3D(std::vector<float>&vertexs, Coor3D coors){
 /*
     Añade una coordenada 3D a la mezcla de vertices, dependiendo del desplazamiento
 */
-void insertCoor3DAt(std::vector<float>&vertexs, Coor3D coor, int offset){
+inline void insertCoor3DAt(std::vector<float>&vertexs, Coor3D coor, int offset){
     vertexs.insert(vertexs.begin()+offset, coor.x);
     vertexs.insert(vertexs.begin()+offset+1, coor.y);
     vertexs.insert(vertexs.begin()+offset+2, coor.z);
@@ -30,7 +30,7 @@ void insertCoor3DAt(std::vector<float>&vertexs, Coor3D coor, int offset){
 /*
     Crea un triangulo y la aniade a la malla
 */
-void pushTriangle(std::vector<Coor3D>& mesh, Coor3D A, Coor3D B, Coor3D C){
+inline void pushTriangle(std::vector<Coor3D>& mesh, Coor3D A, Coor3D B, Coor3D C){
     mesh.push_back(A);
     mesh.push_back(B);
     mesh.push_back(C);
@@ -38,13 +38,13 @@ void pushTriangle(std::vector<Coor3D>& mesh, Coor3D A, Coor3D B, Coor3D C){
 /*
     Convierte Coor3D a glm::vec3
 */
-glm::vec3 parseToVec3(Coor3D& coor){
+inline glm::vec3 parseToVec3(Coor3D& coor){
     return glm::vec3(coor.x, coor.y, coor.z);
 }
 /*
     Imprime un glm::vec3
 */
-void printVec3(glm::vec3& pos){
+inline void printVec3(glm::vec3& pos){
     std::cout<<"("<<pos.x<<", "<<pos.y<<", "<<pos.z<<")"<<std::endl;
 }
 
