@@ -37,7 +37,7 @@ class Audio {
             defineFormat(data.channels, data.bitsPerSample);
             //Crea el buffer y lo inicializa
             alCall(alGenBuffers, 1, &ID);
-            alCall(alBufferData, ID, format, data.samples.data(), data.samples.size(), data.sampleRate);
+            alCall(alBufferData, ID, format, data.samples.data(), data.samples.size()*sizeof(uint16_t), data.sampleRate);
             //Lo elimina de la RAM (lo puedo comentar si lo necesito luego)
             data.samples.clear();   
         }
