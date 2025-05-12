@@ -9,19 +9,21 @@
 class ExagonPanel {
     private:
         Engine* engine;
+        AudioEngine* aengine;
         ExagonGameProcess game;
         //GLFWwindow* window;
     public:
         //Constructor
-        ExagonPanel(Engine* engine);
+        ExagonPanel(Engine* engine, AudioEngine* aengine);
         //Methods
         void show();
 };
 
 //Constructor
-ExagonPanel::ExagonPanel(Engine* engine):
+ExagonPanel::ExagonPanel(Engine* engine, AudioEngine* aengine):
     engine(engine),
-    game(engine)
+    aengine(aengine),
+    game(engine, aengine)
 {
     std::cout<<"Oh me creooo, dice Panel"<<std::endl;
 }

@@ -37,7 +37,7 @@ int main() {
     if(!aengine.init()) return -1;
 
     //Llamo a los objetos necesarios
-    ExagonPanel panel(&engine);
+    ExagonPanel panel(&engine, &aengine);
 
     //Corredor del juego -- Lo puedo incluir en Engine
     while (engine.isWindowOpen()) {

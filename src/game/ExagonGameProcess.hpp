@@ -86,7 +86,7 @@ class ExagonGameProcess {
         std::function<void(Animation*, float, unsigned int)>chsBG=std::bind(&ExagonGameProcess::changeDynamicSideBG, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
         //Objetos de referencia
         Engine* GEnginePH;
-
+        AudioEngine* AEnginePH;
         //Aqui nacen los objetos que quiera usar en el juego (usados apenas empezar)
         Shader Shader1;
         LeverLoader gameLevel;
@@ -122,7 +122,7 @@ class ExagonGameProcess {
         void switchObstacle();
     public:
         //Constructor
-        ExagonGameProcess(Engine* enginehere);
+        ExagonGameProcess(Engine* enginehere, AudioEngine* plhAEngine);
         ~ExagonGameProcess();
         //Getters   
         BG& getBG() {
@@ -141,14 +141,15 @@ class ExagonGameProcess {
         void PlayLevel();
 };
 
-ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
+ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine):
     GEnginePH(plhEngine),
+    AEnginePH(plhAEngine),
     Shader1(IDR_VSHADER2,IDR_FSHADER2),
     gameLevel(),
     colhandler(),
     obstacle(),
     gameTime(),
-    songPlayer(),
+    songPlayer(AEnginePH),
     background(GEnginePH, &Shader1, 200.0f, sides, 3, pcolors),
     center(GEnginePH, &Shader1, 0.18f, 0.018f, sides,7, pcolors, wallcolors.at(0)),
     player(GEnginePH, &Shader1, PLAYER_SENSIBILITY, 2.0f, 0.21f, 60.0f, wallcolors.at(0))
@@ -171,6 +172,10 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine):
     a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a3=new Animation(3, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a4=new Animation(6, 5.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
+    //Preambulo
+    songPlayer.loadSong("levels/songs/focus.mp3");
+    songPlayer.setupSong(0, 1.0f, 1.0f, true);
+    songPlayer.playSong();
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;
@@ -184,7 +189,8 @@ ExagonGameProcess::~ExagonGameProcess(){
 void ExagonGameProcess::PlayLevel(){
     if(GAME_ACTIVE){
         if(!player.isAlive()){
-            GAME_ACTIVE = false; 
+            GAME_ACTIVE = false;
+            songPlayer.stopSong(); 
             return;
         } 
         //songPlayer.playSong(song);

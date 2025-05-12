@@ -4,7 +4,7 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 
-#include "utils/Position.h"
+#include "../utils/Position.h"
 #include "Handler.hpp"
 
 class AudioSource {
