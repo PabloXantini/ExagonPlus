@@ -10,19 +10,99 @@
 #include <string>
 #include <vector>
 
-struct WallData {
-    float marginL;
-    float marginR;
-    std::vector<unsigned int> indexes; 
+enum class SwitchMode {
+    CYCLIC,
+    RANDOM,
+    UNKNOWN
+};
+enum class SwitchSubMode {
+    PROBABILISTIC,
+    INTERVAL,
+    UNKNOWN
+};
+enum class Func {
+    FUNC1,
+    FUNC2,
+    UNKNOWN
+};
+struct RotSwitch {
+    SwitchMode modeX = SwitchMode::RANDOM;
+    SwitchMode modeY = SwitchMode::RANDOM;
+    SwitchMode modeZ = SwitchMode::RANDOM;
+};
+struct PollSwitch {
+    SwitchMode mode = SwitchMode::RANDOM;
+    SwitchSubMode submode = SwitchSubMode::PROBABILISTIC;
+    //Aplicable en PROBABILISTIC
+    unsigned int PWeight = 0;
+    //Aplicable en INTERVAL
+    unsigned int pad = 0; 
 };
 struct AnimData {
+    AnimType type;
+    float duration;
+    float factor;
+    Func func;
+    //Lados
+    unsigned int arg1 = 0;
+    //Escalado/Rotacion
+    float arg2 = 0.0f;
+};
+struct AnimSequence {
+    std::vector<AnimData> animations;
+};
+struct Event {
+    float timestamp = 0;
+    AnimData animation;
+};
+struct PollRot {
+    std::vector<float> pollRotX;
+    std::vector<float> pollRotY;
+    std::vector<float> pollRotZ;
+};
+struct WallData {
+    float marginL = 0.0f;
+    float marginR = 0.0f;
+    std::vector<unsigned int> indexes; 
+};
+struct AnimWallData {
     AnimType type;
     float duration;
     float factor;
     std::vector<WallData> wall;
 };
 struct ObsData {
-    std::vector<AnimData> anims;
+    std::vector<AnimWallData> anims;
+};
+struct PhaseData {
+    //Config
+    unsigned int PhaseID = 0;
+    unsigned int sides = 0;
+    bool RythmPulsing = false;
+    RotSwitch RotS;
+    PollSwitch BGConfig;
+    PollSwitch CamConfig;
+    //Maincolors - Colores
+    std::vector<RGBColor> mainColors={};
+    //WallColors - Colores de pared
+    std::vector<RGBColor> wallColors={};
+    //PollTime - Intervalos aleatorios de tiempo para transformaciones
+    std::vector<float> pollTime={};
+    //PollDRot
+    PollRot pollDRot={};
+    //PollAnim para BG
+    std::vector<AnimData> BGAnimations={};
+    //PollAnim para Camara
+    std::vector<AnimSequence> CamAnimations={};
+    //Events
+    std::vector<Event> events={};
+
+    //Obstaculos
+    std::vector<ObsData> obs={};
+};
+struct Phase {
+    unsigned int PhaseID = 0;
+    float timestamp = 0.0f;
 };
 
 class Obstacle {
@@ -65,6 +145,7 @@ class Obstacle {
 
 class LeverLoader {
     private:
+
         std::vector<ObsData> obs={};
         std::vector<RGBColor> wallColors={};
         enum State {
@@ -75,10 +156,25 @@ class LeverLoader {
             WALL
         } state = NONE;
         //Methods
+        //Metodos para parsing
         AnimType parseAnimType(const std::string& typeStr) {
             if (typeStr == "LINEAR") return AnimType::LINEAR;
             if (typeStr == "EASEINOUT") return AnimType::EASEINOUT;
             return AnimType::UNKNOWN;
+        }
+        SwitchMode parseSwitchMode(const std::string& typeStr){
+            if(typeStr == "RANDOM") return SwitchMode::RANDOM;
+            if(typeStr == "CYCLIC") return SwitchMode::CYCLIC;
+            return SwitchMode::UNKNOWN;
+        }
+        SwitchSubMode parseSwitchSubMode(const std::string& typeStr){
+            if(typeStr == "PROBABILISTIC") return SwitchSubMode::PROBABILISTIC;
+            if(typeStr == "INTERVAL") return SwitchSubMode::INTERVAL;
+            return SwitchSubMode::UNKNOWN;
+        }
+        Func parseFunc(const std::string& typeStr){
+            if (typeStr == "SOFTCHANGESIDE") return Func::FUNC1;
+            return Func::UNKNOWN;
         }
     public:
         LeverLoader()=default;
@@ -91,7 +187,7 @@ class LeverLoader {
         void loadLevel(const char* filepath){
             obs.clear();
             ObsData currentObs;
-            AnimData currentAnim;
+            AnimWallData currentAnim;
             WallData currentWall;
             //Cosas de archivos
             std::string line;

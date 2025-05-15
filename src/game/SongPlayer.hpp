@@ -40,6 +40,7 @@ void SongPlayer::loadSong(const char* SongPath){
 void SongPlayer::setupSong(unsigned int index, float volume, float pitch, ALboolean loopEnabled){
     if(index<SongID.size()){
         src = new AudioSource(SongID.at(index), volume, pitch, loopEnabled);
+        engine->registerSource(*src);
     } else {
         std::cout<<"Error: no se pudo configurar la musica: Fuera de rango"<<std::endl;
     }

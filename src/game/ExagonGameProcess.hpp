@@ -69,6 +69,7 @@ class ExagonGameProcess {
         std::vector<float> randRotZ = {180.0f, -180.0f, 360.0f, -360.0f};
         //Tiempos de asignacion
         std::vector<float> randInterval = {5.0f, 7.0f, 6.0f};
+        //Pruebas
         std::vector<float> randIntervalObs = {4.0f, 3.0f, 5.0f};
         //=================================================================================//
         //Variables propias de la clase
@@ -105,10 +106,7 @@ class ExagonGameProcess {
         //Punteros de animaciones
         //std::vector<Animation*> animations={};
         //Paredes
-        //std::vector<CompleteWall*> completeWalls={};
-        //std::vector<CompleteWall*> completeWalls={};
         std::vector<std::unique_ptr<CompleteWall>> completeWalls={};
-        std::vector<unsigned int> WTIndexes = {0,2,4};
         //CompleteWall* WallTest;
         //Animation* wa1;
         Animation* a1;
@@ -156,7 +154,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
     //Inicializacion del nivel
-    gameLevel.loadLevel("levels/vanilla/debug2.txt");
+    gameLevel.loadLevel("levels/vanilla/lvl1.txt");
     obstacleData = gameLevel.getInfo();
     gameLevel.printInfo();
     //Perspectiva
@@ -173,8 +171,8 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
     a3=new Animation(3, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a4=new Animation(6, 5.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     //Preambulo
-    songPlayer.loadSong("levels/songs/focus.mp3");
-    songPlayer.setupSong(0, 1.0f, 1.0f, true);
+    songPlayer.loadSong(song.c_str());
+    songPlayer.setupSong(0, 0.5f, 1.0f, true);
     songPlayer.playSong();
 }
 ExagonGameProcess::~ExagonGameProcess(){
@@ -264,7 +262,7 @@ void ExagonGameProcess::PlayLevel(){
             background.swapColors();
             //center.swapColors();
         }
-        //Test Timeline
+        /*
         if(time>=8.0f){
             a1->execute(dtime); 
         }
@@ -277,6 +275,7 @@ void ExagonGameProcess::PlayLevel(){
         if(time>=17.0f){
             a4->execute(dtime);
         }
+        */
     }
 }
 //Event handler - A decidir como va a quedar

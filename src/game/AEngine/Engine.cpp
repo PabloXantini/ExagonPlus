@@ -50,9 +50,9 @@ void AudioEngine::registerSource(AudioSource& source){
 void AudioEngine::close(){
     ALCboolean closed;
     clearElements();
-    alcCall(alcCloseDevice, closed, device, device);
     alcCall(alcMakeContextCurrent, contextMadeCurrent, device, nullptr);
     alcCall(alcDestroyContext, device, ccontext);
+    alcCall(alcCloseDevice, closed, device, device);
 }
 //Privates
 /*
@@ -76,8 +76,8 @@ bool AudioEngine::getAvailableDevices(std::vector<std::string>& devicesVec, ALCd
 void AudioEngine::clearElements(){
     auto audios = getAllAudios();
     auto sources = getAllSources();
-    alCall(alDeleteBuffers, audios.size(), audios.data());
     alCall(alDeleteSources, sources.size(), sources.data());
+    alCall(alDeleteBuffers, audios.size(), audios.data());
     AudioBuffers.clear();
     Sources.clear();
 }

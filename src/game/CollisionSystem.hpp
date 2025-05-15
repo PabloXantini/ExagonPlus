@@ -190,10 +190,10 @@ class CollisionSystem {
                         collision = checkCollision(player, Wall);
                         if(collision.collide){
                             //std::cout<<"Hubo Colision"<<std::endl;
-                            printVec3(collision.mtv);
+                            //printVec3(collision.mtv);
                             //printVec3(collision.axis);
                             //std::cout<<collision.overlap<<std::endl;
-                            std::cout<<showSide(collision.collidedside)<<std::endl;
+                            //std::cout<<showSide(collision.collidedside)<<std::endl;
                             resolveCollision(collision, player);
                         }
                     }
