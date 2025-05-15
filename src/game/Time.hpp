@@ -86,8 +86,8 @@ class cbChronometer {
             float diff=time-timer;
             float leftover=diff-tracktime;
             if(diff>=tracktime){
-                //Si el tiempo se pasa demasiado, me quedo con la rebaba y asi el cronometro termina antes
-                timer=time+leftover;
+                //Si el tiempo se pasa demasiado, ajusto el timer para que intente comparar correctamente
+                timer=time-leftover;
                 return true;
             }
             return false;

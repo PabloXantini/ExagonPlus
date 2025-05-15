@@ -156,7 +156,9 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
     //Inicializacion del nivel
     gameLevel.loadLevel("levels/vanilla/lvl1.txt");
     obstacleData = gameLevel.getInfo();
-    gameLevel.printInfo();
+    //gameLevel.printInfo();
+    gameLevel.loadLevel("levels/vanilla/lvltest.txt");
+    gameLevel.printLevelInfo();
     //Perspectiva
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
@@ -174,6 +176,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
     songPlayer.loadSong(song.c_str());
     songPlayer.setupSong(0, 0.5f, 1.0f, true);
     songPlayer.playSong();
+    gameTime.restart();
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;
@@ -191,8 +194,9 @@ void ExagonGameProcess::PlayLevel(){
             songPlayer.stopSong(); 
             return;
         } 
-        //songPlayer.playSong(song);
+
         float time = gameTime.getTime(); //Tiempo en general
+        //std::cout<<time<<std::endl;
         float dtime = gameTime.getDeltaTime();
         //Eventos
         handleEvents(dtime);
