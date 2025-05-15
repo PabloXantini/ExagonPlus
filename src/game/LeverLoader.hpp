@@ -351,9 +351,6 @@ class LeverLoader {
             }
             std::cout<<"Duration: "<<event.animation.duration<<"\n";
         }
-        void printObstacle(ObsData& obs){
-
-        }
     public:
         LeverLoader()=default;
         const std::vector<ObsData>& getInfo() const{
@@ -462,10 +459,12 @@ class LeverLoader {
             std::cout<<level.song<<"\n";
             //Secuencia de niveles
             std::cout<<"\n--- Level Sequence ---\n";
+            if (level.phases.empty()) std::cout<<"(vacio)\n";
             for(auto& phase : level.phases){
                 printPhase(phase);
             }
             std::cout<<"\n--- Phase Details ---\n";
+            if (level.phaseData.empty()) std::cout<<"(vacio)\n";
             //Detalles de cada phase
             for(auto& phaseData : level.phaseData){
                 std::cout<<"\n--- Phase Configuration ---\n";
@@ -514,6 +513,7 @@ class LeverLoader {
                     }
                 }
             }
+            std::cout<<std::endl;
         }
         void printInfo(){
             // Mostrar resultados
