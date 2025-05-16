@@ -169,8 +169,9 @@ class LeverLoader {
             MAINCOLORS,
             WALLCOLORS,
             POLLTIME,
-            POLLROT,
+            POLLDROT,
             POLLANIM,
+            SEQUENCE,
             EVENTS,
             OBS,
             ANIM,
@@ -180,6 +181,8 @@ class LeverLoader {
         //Metodos para parsing
         AnimType parseAnimType(const std::string& typeStr) {
             if (typeStr == "LINEAR") return AnimType::LINEAR;
+            if (typeStr == "EASEIN") return AnimType::EASEIN;
+            if (typeStr == "EASEOUT") return AnimType::EASEOUT;
             if (typeStr == "EASEINOUT") return AnimType::EASEINOUT;
             return AnimType::UNKNOWN;
         }
@@ -195,12 +198,209 @@ class LeverLoader {
         }
         Func parseFunc(const std::string& typeStr){
             if (typeStr == "SOFTCHANGESIDE") return Func::FUNC1;
+            if (typeStr == "CAMZ") return Func::FUNC2;
             return Func::UNKNOWN;
         }
-        void readColor(std::istringstream sstream){
+        void readString(std::istringstream& sstream, std::string& dstring){
+            sstream>>dstring;
+        }
+        void readPhaseTimestamp(std::istringstream& sstream, std::vector<Phase>& dphases){
+            Phase phase;
+            sstream>>phase.PhaseID>>phase.timestamp;
+            dphases.push_back(phase);
+        }
+        void readSides(std::istringstream& sstream, PhaseData& dPhase) {
+            sstream>>dPhase.sides;
+        }
+        void readRythmPulsing(std::istringstream& sstream, PhaseData& dPhase){
+            sstream>>dPhase.RythmPulsing;
+        }
+        void readPollSwitchRot(std::istringstream& sstream, const std::string& axis, PhaseData& dPhase) {
+            std::string mode;
+            sstream >> mode;
+            if (axis =="ROTX") dPhase.RotS.modeX = parseSwitchMode(mode);
+            else if (axis =="ROTY") dPhase.RotS.modeY = parseSwitchMode(mode);
+            else if (axis =="ROTZ") dPhase.RotS.modeZ = parseSwitchMode(mode);
+        }
+        void readPollSwitchAnim(std::istringstream& sstream, const std::string& target, PhaseData& dPhase) {
+            std::string mode;
+            std::string submode;
+            sstream>>mode>>submode;
+            SwitchMode SMode=parseSwitchMode(mode);
+            SwitchSubMode SSubMode=parseSwitchSubMode(submode);
+            if (target =="BG"){
+                dPhase.BGConfig.mode=SMode;
+                dPhase.BGConfig.submode=SSubMode;
+                switch(dPhase.BGConfig.submode){
+                    case SwitchSubMode::PROBABILISTIC:
+                        sstream>>dPhase.BGConfig.PWeight;
+                        break;
+                    case SwitchSubMode::INTERVAL:
+                        sstream>>dPhase.BGConfig.pad;
+                        break;
+                }
+            }else if (target=="CAM"){
+                dPhase.BGConfig.mode=SMode;
+                dPhase.BGConfig.submode=SSubMode;
+                switch(dPhase.BGConfig.submode){
+                    case SwitchSubMode::PROBABILISTIC:
+                        sstream>>dPhase.CamConfig.PWeight;
+                        break;
+                    case SwitchSubMode::INTERVAL:
+                        sstream>>dPhase.CamConfig.pad;
+                        break;
+                }
+                return;
+            }
+        }
+        void readConfig(std::istringstream& sstream, PhaseData& dPhase){
+            //IDENTIFICADORES
+            std::string identifier;
+            std::string identifier2;
+            std::string identifier3;
+            //Determino la configuracion
+            sstream>>identifier;
+            //Funciones de 1 argumento
+            if(identifier=="SIDES"){
+                readSides(sstream, dPhase);
+                return;
+            }else if(identifier=="RYTHM_PULSING"){
+                readRythmPulsing(sstream, dPhase);
+                return;
+            }
+            //Funciones de 2 argumentos
+            sstream>>identifier2;
+            if(identifier=="POLL_SWITCHING"&&(identifier2=="ROTX"||identifier2=="ROTY"||identifier2=="ROTZ")){
+                readPollSwitchRot(sstream, identifier2, dPhase);
+                return;
+            }
+            //Funciones de 3 argumentos
+            sstream>>identifier3;
+            if(identifier=="POLL_SWITCHING"&&identifier2=="ANIM"&&(identifier3=="BG"||identifier3=="CAM")){
+                readPollSwitchAnim(sstream, identifier3, dPhase);
+                return;
+            }
+        }
+        void readColor(std::istringstream& sstream, std::vector<RGBColor>& dcolors){
             RGBColor color;
-            sstream >> color.R >> color.G >> color.B;
-            wallColors.push_back(color);
+            sstream>>color.R>>color.G>>color.B;
+            dcolors.push_back(color);
+        }
+        void readListFloat(std::istringstream& sstream, std::vector<float>& darray){
+            float number;
+            while (sstream>>number) darray.push_back(number);
+        }
+        void readListPFloat(std::istringstream& sstream, std::vector<float>& darray){
+            float number;
+            while(sstream>>number){
+                if(number>=0.0f) {
+                    darray.push_back(number);
+                }  
+            }  
+        }
+        void readAnim(std::istringstream& sstream, AnimWallData& dAnimation){
+            std::string type;
+            sstream >> dAnimation.duration >> type >> dAnimation.factor;
+            dAnimation.type = parseAnimType(type);
+        }
+        void readAnimAction(std::istringstream& sstream, AnimData& dAnimation){
+            std::string func;
+            std::string type;
+            sstream>>func;
+            Func function = parseFunc(func);
+            dAnimation.func = function;
+            switch(function){
+                case Func::FUNC1:
+                    sstream>>dAnimation.f1arg1>>dAnimation.duration>>type;
+                    break;
+                case Func::FUNC2:
+                    sstream>>dAnimation.f2arg1>>dAnimation.duration>>type;
+                    break;
+                case Func::FUNC3:
+                    sstream>>dAnimation.f2arg1>>dAnimation.duration>>type;
+                    break;
+            }
+            AnimType animt = parseAnimType(type);
+            dAnimation.type = animt;
+            switch(animt){
+                case AnimType::LINEAR:
+                    break;
+                case AnimType::UNKNOWN:
+                    break;
+                default:
+                    sstream>>dAnimation.factor;
+            }
+        }
+        void readPollTime(std::istringstream& sstream, const std::string& target, PhaseData& dPhase){
+            if(target=="ROT"){
+                readListPFloat(sstream, dPhase.pollTime);
+            }
+        }
+        void readPollDRot(std::istringstream& sstream, PhaseData& dPhase){
+            char axis;
+            sstream>>axis;
+            switch (axis){
+                case 'X':
+                    readListFloat(sstream, dPhase.pollDRot.pollRotX);
+                    break;
+                case 'Y':
+                    readListFloat(sstream, dPhase.pollDRot.pollRotY);
+                    break;
+                case 'Z':
+                    readListFloat(sstream, dPhase.pollDRot.pollRotZ);
+                    break;
+            }
+        }
+        void readPollAnim(std::istringstream& sstream, const std::string& target, PhaseData& dPhase, AnimSequence& dSeq){
+            AnimData animation={};
+            if(target=="BG"){
+                readAnimAction(sstream, animation);
+                dPhase.BGAnimations.push_back(animation);
+            }else if(target=="CAM"){
+                readAnimAction(sstream, animation);
+                dSeq.animations.push_back(animation);
+            }
+        }
+        void readEvent(std::istringstream& sstream, PhaseData& dPhase){
+            Event event={};
+            std::string func;
+            sstream>>event.timestamp>>func;
+            Func function = parseFunc(func);
+            event.animation.func = function;
+            event.animation.type=AnimType::LINEAR;
+            switch(function){
+                case Func::FUNC3:
+                    sstream>>event.animation.f2arg1>>event.animation.duration;
+                    break;
+            }
+            dPhase.events.push_back(event);
+        }
+        void readWall(std::istringstream& sstream, const std::string& line, AnimWallData& dAnimation){
+            WallData currentWall={};
+            std::string token;
+            sstream >> token;
+            if(token=="X"){
+                unsigned int count = 1;
+                sstream >> count;
+                for(int i=0; i<count; i++){
+                    dAnimation.wall.push_back(currentWall);
+                }
+            }else{
+                //Limpiar el buffer antes de hacer algo mas
+                sstream.clear();               // Asegura que el stringstream esté limpio
+                sstream.str(line);             // Reinicia con la línea completa
+                //Paredes         
+                std::vector<float> tokens;
+                readListPFloat(sstream, tokens);
+                if (tokens.size() >= 2) {
+                    currentWall.marginL = tokens[tokens.size()-2];
+                    currentWall.marginR = tokens[tokens.size()-1];
+                    for (size_t i = 0; i < tokens.size()-2; ++i) {
+                        currentWall.indexes.push_back(static_cast<unsigned int>(tokens[i]));
+                    }
+                }
+                dAnimation.wall.push_back(currentWall);
+            }
         }
         std::string showMode(SwitchMode mode){
             switch(mode){
@@ -212,8 +412,8 @@ class LeverLoader {
         }
         std::string showSubMode(SwitchSubMode submode){
             switch(submode){
-                case SwitchSubMode::PROBABILISTIC: return "CYCLIC";
-                case SwitchSubMode::INTERVAL: return "RANDOM";
+                case SwitchSubMode::PROBABILISTIC: return "PROBABILISTIC";
+                case SwitchSubMode::INTERVAL: return "INTERVAL";
                 case SwitchSubMode::UNKNOWN: return "UNKNOWN";
                 default: return "INVALID";
             }
@@ -222,6 +422,7 @@ class LeverLoader {
             switch(func){
                 case Func::FUNC1: return "FUNC1";
                 case Func::FUNC2: return "FUNC2";
+                case Func::FUNC3: return "FUNC3";
                 case Func::UNKNOWN: return "UNKNOWN";
                 default: return "INVALID";
             }
@@ -263,13 +464,13 @@ class LeverLoader {
             SwitchSubMode CamSubMode = phaseData.CamConfig.submode;
             switch(CamSubMode){
                 case SwitchSubMode::PROBABILISTIC:
-                    std::cout<<"PollSwitching BG: "<<showMode(phaseData.CamConfig.mode)<<" "<<showSubMode(CamSubMode)<<" "<<phaseData.BGConfig.PWeight<<"\n";
+                    std::cout<<"PollSwitching Cam: "<<showMode(phaseData.CamConfig.mode)<<" "<<showSubMode(CamSubMode)<<" "<<phaseData.BGConfig.PWeight<<"\n";
                     break;
                 case SwitchSubMode::INTERVAL:
-                    std::cout<<"PollSwitching BG: "<<showMode(phaseData.CamConfig.mode)<<" "<<showSubMode(CamSubMode)<<" "<<phaseData.BGConfig.pad<<"\n";
+                    std::cout<<"PollSwitching Cam: "<<showMode(phaseData.CamConfig.mode)<<" "<<showSubMode(CamSubMode)<<" "<<phaseData.BGConfig.pad<<"\n";
                     break;
                 default:
-                    std::cout<<"PollSwitching BG: "<<showMode(phaseData.CamConfig.mode)<<" "<<showSubMode(CamSubMode)<<"\n";
+                    std::cout<<"PollSwitching Cam: "<<showMode(phaseData.CamConfig.mode)<<" "<<showSubMode(CamSubMode)<<"\n";
                     break;
             }
         }
@@ -364,9 +565,17 @@ class LeverLoader {
         */
         void loadLevel(const char* filepath){
             obs.clear();
+            //Reinicio TODO
+            level={};
+            //Locales
+            PhaseData currentPhase;
             ObsData currentObs;
+            AnimSequence currentAnimSeq;
             AnimWallData currentAnim;
             WallData currentWall;
+            //IDENTIFICADORES
+            std::string identifier1;
+            std::string identifier2;
             //Cosas de archivos
             std::string line;
             std::ifstream fstream(filepath);
@@ -375,9 +584,66 @@ class LeverLoader {
                 while(std::getline(fstream, line)){
                     if(line.empty()) continue;
                     std::istringstream sstream(line);
-
+                    if(line=="SONG"){
+                        state = SONG;
+                        continue;
+                    }
+                    if(line=="LEVEL_SEQUENCE"){
+                        state = LEVEL_SEQ;
+                        continue;
+                    }
+                    if(line.rfind("PHASE",0)==0){
+                        //Reinicia
+                        currentPhase={};
+                        std::string i;
+                        sstream>>i>>currentPhase.PhaseID;
+                        state = PHASE;
+                        continue;
+                    }
+                    if(line=="CONFIG"){
+                        state = CONFIG;
+                        continue;
+                    }
+                    if(line=="ENDCONFIG"){
+                        state = PHASE;
+                        continue;
+                    }
+                    if(line=="MAINCOLORS"){
+                        state = MAINCOLORS;
+                        continue;
+                    }
                     if(line=="WALLCOLORS"){
                         state = WALLCOLORS;
+                        continue;
+                    }
+                    if(line.rfind("POLLTIME",0)==0){
+                        std::string i;
+                        sstream>>i>>identifier1;
+                        state = POLLTIME;
+                        continue;
+                    }
+                    if(line=="POLLDROT"){
+                        state = POLLDROT;
+                        continue;
+                    }
+                    if(line.rfind("POLLANIM",0)==0){
+                        std::string i;
+                        sstream>>i>>identifier1;
+                        state = POLLANIM;
+                        continue;
+                    }
+                    if(line=="SEQUENCE"){
+                        currentAnimSeq={};
+                        state = SEQUENCE;
+                        continue;
+                    }
+                    if(line=="ENDSEQUENCE"){
+                        currentPhase.CamAnimations.push_back(currentAnimSeq);
+                        state = PHASE;
+                        continue;
+                    }
+                    if(line=="EVENTS"){
+                        state = EVENTS;
                         continue;
                     }
                     if(line=="OBS") {
@@ -405,48 +671,52 @@ class LeverLoader {
                         continue;
                     }
                     if (line=="ENDOBS"){
+                        currentPhase.obs.push_back(currentObs);
                         obs.push_back(currentObs);
-                        state = NONE;
+                        state = PHASE;
                         continue;
                     }
-                    if(state == WALLCOLORS){
-                        RGBColor color;
-                        sstream >> color.R >> color.G >> color.B;
-                        wallColors.push_back(color);
-                    }else if(state == ANIM){
-                        std::string type;
-                        sstream >> currentAnim.duration >> type >> currentAnim.factor;
-                        currentAnim.type = parseAnimType(type);
-                    }else if(state == WALL){
-                        std::string token;
-                        sstream >> token;
-                        if(token=="X"){
-                            unsigned int count = 1;
-                            sstream >> count;
-                            WallData emptyWall;
-                            for(int i=0; i<count; i++){
-                                currentAnim.wall.push_back(emptyWall);
-                            }
-                        }else{
-                            //Limpiar el buffer antes de hacer algo mas
-                            sstream.clear();               // Asegura que el stringstream esté limpio
-                            sstream.str(line);             // Reinicia con la línea completa
-                            //Paredes
-                            currentWall={};
-                            std::vector<float> tokens;
-                            float value;
-                            while (sstream >> value) {
-                                tokens.push_back(value);
-                            }
-                            if (tokens.size() >= 2) {
-                                currentWall.marginL = tokens[tokens.size()-2];
-                                currentWall.marginR = tokens[tokens.size()-1];
-                                for (size_t i = 0; i < tokens.size()-2; ++i) {
-                                    currentWall.indexes.push_back(static_cast<unsigned int>(tokens[i]));
-                                }
-                            }
-                            currentAnim.wall.push_back(currentWall);
-                        }
+                    if (line=="ENDPHASE"){
+                        level.phaseData.push_back(currentPhase);
+                        state = NONE;
+                    }
+                    switch(state){
+                        case SONG:
+                            readString(sstream, level.song);
+                            break;
+                        case LEVEL_SEQ:
+                            readPhaseTimestamp(sstream, level.phases);
+                            break;
+                        case CONFIG:
+                            readConfig(sstream, currentPhase);
+                            break;
+                        case MAINCOLORS:
+                            readColor(sstream, currentPhase.mainColors);
+                            break;
+                        case WALLCOLORS:
+                            readColor(sstream, currentPhase.wallColors);
+                            break;
+                        case POLLTIME:
+                            readPollTime(sstream, identifier1, currentPhase);
+                            break;
+                        case POLLDROT:
+                            readPollDRot(sstream, currentPhase);
+                            break;
+                        case POLLANIM:
+                            readPollAnim(sstream, identifier1, currentPhase, currentAnimSeq);
+                            break;
+                        case SEQUENCE:
+                            readPollAnim(sstream, identifier1, currentPhase, currentAnimSeq);
+                            break;
+                        case EVENTS:
+                            readEvent(sstream, currentPhase);
+                            break;
+                        case ANIM:
+                            readAnim(sstream, currentAnim);
+                            break;
+                        case WALL:
+                            readWall(sstream, line, currentAnim);
+                            break;                    
                     }
                 }
             }
@@ -467,6 +737,7 @@ class LeverLoader {
             if (level.phaseData.empty()) std::cout<<"(vacio)\n";
             //Detalles de cada phase
             for(auto& phaseData : level.phaseData){
+                printPhaseID(phaseData);
                 std::cout<<"\n--- Phase Configuration ---\n";
                 printPhaseConfig(phaseData);
                 std::cout<<"\n--- Main Colors ---\n";
@@ -492,7 +763,7 @@ class LeverLoader {
                 std::cout<<"\n--- Poll Animations for Camnera ---\n";
                 for(size_t i=0; i<phaseData.CamAnimations.size(); i++){
                     std::cout<<"Sequence #"<<i<<"\n";
-                    for(size_t j=0; phaseData.CamAnimations[i].animations.size(); j++){
+                    for(size_t j=0; j<phaseData.CamAnimations[i].animations.size(); j++){
                         printAnimEvent(phaseData.CamAnimations[i].animations[j]);
                     }
                 }
@@ -514,34 +785,6 @@ class LeverLoader {
                 }
             }
             std::cout<<std::endl;
-        }
-        void printInfo(){
-            // Mostrar resultados
-            std::cout << "--- Wall Colors ---\n";
-            for (auto& color : wallColors) {
-                std::cout << color.R << " " << color.G << " " << color.B << "\n";
-            }
-            std::cout << "\n--- Obstacles ---\n";
-            for (size_t i = 0; i < obs.size(); ++i) {
-                std::cout << "Obstacle #" << i << "\n";
-                for (size_t j = 0; j < obs[i].anims.size(); ++j) {
-                    std::cout << "  Anim #" << j 
-                            << " (Type: " << static_cast<int>(obs[i].anims[j].type) 
-                            << ", Duration: " << obs[i].anims[j].duration 
-                            << ", Factor: " << obs[i].anims[j].factor << ")\n";
-                    for (auto& wall : obs[i].anims[j].wall) {
-                        std::cout << "    Indexes:";
-                        if (wall.indexes.empty()) {
-                            std::cout << " (vacío)";
-                        } else {
-                            for (auto idx : wall.indexes) {
-                                std::cout << " " << idx;
-                            }
-                        }
-                        std::cout << " | marginL: " << wall.marginL << ", marginR: " << wall.marginR << "\n";
-                    }
-                }
-            }
         }
 };
 
