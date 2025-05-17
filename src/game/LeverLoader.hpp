@@ -131,13 +131,13 @@ class Obstacle {
         bool finished(){
             return DF;
         }
-        void track(std::vector<ObsData>& obstacles, unsigned int ID){
-            if(obstacles.empty()) return;
+        void track(std::vector<ObsData>* obstacles, unsigned int ID){
+            if(obstacles->empty()) return;
             cwallpointer++;
-            if(cwallpointer>=obstacles.at(ID).anims.at(canimpointer).wall.size()-1){
+            if(cwallpointer>=obstacles->at(ID).anims.at(canimpointer).wall.size()-1){
                 cwallpointer=0;
                 canimpointer++;
-                if(canimpointer>=obstacles.at(ID).anims.size()-1){
+                if(canimpointer>=obstacles->at(ID).anims.size()-1){
                     DF=true;
                     canimpointer=0;
                 }
