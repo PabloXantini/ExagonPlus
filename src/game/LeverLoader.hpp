@@ -80,6 +80,7 @@ struct PhaseData {
     unsigned int PhaseID = 0;
     unsigned int sides = 0;
     bool RythmPulsing = false;
+    float ColorSwapRatio = 0.5f;
     RotSwitch RotS;
     PollSwitch BGConfig;
     PollSwitch CamConfig;
@@ -215,6 +216,9 @@ class LeverLoader {
         void readRythmPulsing(std::istringstream& sstream, PhaseData& dPhase){
             sstream>>dPhase.RythmPulsing;
         }
+        void readColorSwapR(std::istringstream& sstream, PhaseData& dPhase){
+            sstream>>dPhase.ColorSwapRatio;
+        }
         void readPollSwitchRot(std::istringstream& sstream, const std::string& axis, PhaseData& dPhase) {
             std::string mode;
             sstream >> mode;
@@ -266,6 +270,9 @@ class LeverLoader {
                 return;
             }else if(identifier=="RYTHM_PULSING"){
                 readRythmPulsing(sstream, dPhase);
+                return;
+            }else if(identifier=="COLOR_SWAP_RATIO"){
+                readColorSwapR(sstream, dPhase);
                 return;
             }
             //Funciones de 2 argumentos
@@ -446,6 +453,7 @@ class LeverLoader {
         void printPhaseConfig(PhaseData& phaseData){
             std::cout<<"Intial Sides: "<<phaseData.sides<<"\n";
             std::cout<<"Rythm Pulsing: "<<std::boolalpha<<phaseData.RythmPulsing<<"\n";
+            std::cout<<"Color Swap Ratio: "<<phaseData.ColorSwapRatio<<"\n";
             std::cout<<"PollSwitching RotX: "<<showMode(phaseData.RotS.modeX)<<"\n";
             std::cout<<"PollSwitching RotY: "<<showMode(phaseData.RotS.modeY)<<"\n";
             std::cout<<"PollSwitching RotZ: "<<showMode(phaseData.RotS.modeZ)<<"\n";

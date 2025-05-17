@@ -26,18 +26,9 @@ class ExagonGameProcess {
         //DATOS CARGADOS
         LevelData currentLevel;
  
-        //Ratio
-        float colorSwapRatio=1.5f;  //Cada cuantos segundos cambia de color
         //Cambio de color
         float hueFactor=0.2f;
         float hueSpeed=0.5f;
-        //Timers                
-        float timer1 = 0.0f;        //ColorSwap
-        //Eventos que pueden ocurrir
-        //Rotacion aleatoria
-        //std::vector<float> randRotX = {0.0f, 0.5f, -0.5f};
-        //std::vector<float> randRotY = {0.0f, 0.5f, -0.5f};
-        //std::vector<float> randRotZ = {180.0f, -180.0f, 360.0f, -360.0f};
         //Tiempos de asignacion
 
         //=================================================================================//
@@ -66,6 +57,8 @@ class ExagonGameProcess {
             {0.196f, 0.576f, 0.922f},//Col2
             {0.071f, 0.267f, 0.612f}//,//ColO - El ultimo solo se renderiza cuando es impar
         };
+        //Ratio de cambio de color
+        float COLOR_SWAP_RATIO=1.0f;
         //==================================GAMEPLAY=======================================//
         //Variables de la partida==========================================================//
         //Poll
@@ -86,7 +79,7 @@ class ExagonGameProcess {
         bool GAME_ACTIVE=true;
         unsigned int SIDES= 3;
         //Ratio de aparacion de obstaculos
-        const float WALLS_SPAWN_RATIO = 0.058f;
+        const float WALLS_SPAWN_RATIO = 0.06f;
         //ID obstaculo
         unsigned int obsID = 0;
         //Jugador
@@ -109,9 +102,9 @@ class ExagonGameProcess {
         Player player;
         //Objetos usados prejuego (usados para cargar el nivel)
         //Timers
-        cbChronometer* C1;    //Generacion de obstaculos
+        cbChronometer* C1;  //Generacion de obstaculos
         Chronometer* T1;    //Cosas random
-        Chronometer* T3;    //Obstaculos random
+        Chronometer* T2;    //Cambio de color
         //Punteros de animaciones
         //std::vector<Animation*> animations={};
         //Paredes
@@ -128,6 +121,7 @@ class ExagonGameProcess {
         void loadLevel();
         void startLevel();
         void handleEvents(float deltaTime);
+        void switchRotBG(float time);
         void switchObstacle();
         float chooseInPoll(std::vector<float>& poll, SwitchMode& mode, unsigned int& ptr);
         void spawnWallsByObstacle(float time);
@@ -161,10 +155,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
     colhandler(),
     obstacle(),
     gameTime(),
-    songPlayer(AEnginePH)//,
-    //background(GEnginePH, &Shader1, 200.0f, sides, 3, pcolors),
-    //center(GEnginePH, &Shader1, 0.18f, 0.018f, sides,7, pcolors, wallcolors.at(0)),
-    //player(GEnginePH, &Shader1, PLAYER_SENSIBILITY, 2.0f, 0.21f, 60.0f, wallcolors.at(0))
+    songPlayer(AEnginePH)
 {
     std::cout<<"Oh me creooo, dice el juego"<<std::endl;
 
@@ -179,9 +170,6 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
 
     //Timers
     C1=new cbChronometer(WALLS_SPAWN_RATIO);  //Paredes por defecto
-    T1=new Chronometer(2.0f);   //Rotaciones
-    //T2=new Chronometer(0.06f);  //Paredes por defecto
-    //T3=new Chronometer(2.0f);   //Obstaculos
     //Animaciones aparte
     a1=new Animation(9, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
     a2=new Animation(5, 1.0f, 2.0f, chsBG, AnimType::BGEASEINOUT);
@@ -202,7 +190,7 @@ ExagonGameProcess::~ExagonGameProcess(){
     delete a4;
     delete C1;
     delete T1;
-    //delete T3;
+    delete T2;
 }
 void ExagonGameProcess::PlayLevel(){
     if(GAME_ACTIVE){
@@ -222,14 +210,8 @@ void ExagonGameProcess::PlayLevel(){
         background.rotateBG(dtime, deltaRotX, deltaRotY, deltaRotZ);
         //Cosas de pared
         //WallTest->execute(dtime);
-
         //Cambio de parametros
-        if(T1->track(time)) {
-            T1->setTTime(randIntervalR.at(rand()%randIntervalR.size()));
-            deltaRotX=chooseInPoll(pollRotX, rotMode.modeX, ptrRotX);
-            deltaRotY=chooseInPoll(pollRotY, rotMode.modeY, ptrRotY);
-            deltaRotZ=chooseInPoll(pollRotZ, rotMode.modeZ, ptrRotZ);
-        }
+        switchRotBG(time);
         //Generacion de paredes
         spawnWallsByObstacle(time);
         //Movimiento de paredes
@@ -244,8 +226,7 @@ void ExagonGameProcess::PlayLevel(){
         //Colisiones
         colhandler.doCollisions(player, completeWalls);
         //Cambio de color
-        if((time-timer1)>=colorSwapRatio){
-            timer1=time;
+        if(T2->track(time)){
             background.swapColors();
             //center.swapColors();
         }
@@ -285,6 +266,7 @@ void ExagonGameProcess::loadLevel(){
 void ExagonGameProcess::linkLevel(){
     this->SONG=currentLevel.song;
     this->SIDES=currentLevel.phaseData[0].sides;
+    this->COLOR_SWAP_RATIO=currentLevel.phaseData[0].ColorSwapRatio;
     this->pcolors=currentLevel.phaseData[0].mainColors;
     this->wallcolors=currentLevel.phaseData[0].wallColors;
     this->obstacleData=&currentLevel.phaseData[0].obs;
@@ -299,6 +281,8 @@ void ExagonGameProcess::linkLevel(){
 //Arranca un nivel antes de empezar
 void ExagonGameProcess::startLevel(){
     //Elegir las variables iniciales
+    T1=new Chronometer(randIntervalR.at(0));   //Rotaciones
+    T2=new Chronometer(COLOR_SWAP_RATIO);     //Cambio de color
     deltaRotX=chooseInPoll(pollRotX, rotMode.modeX, ptrRotX);
     deltaRotY=chooseInPoll(pollRotY, rotMode.modeY, ptrRotY);
     deltaRotZ=chooseInPoll(pollRotZ, rotMode.modeZ, ptrRotZ);
@@ -322,6 +306,15 @@ void ExagonGameProcess::handleEvents(float deltaTime){
         player.move(velocity);
     }
 }
+//Cambia las rotaciones del escenario
+void ExagonGameProcess::switchRotBG(float time){
+    if(T1->track(time)) {
+        T1->setTTime(randIntervalR.at(rand()%randIntervalR.size()));
+        deltaRotX=chooseInPoll(pollRotX, rotMode.modeX, ptrRotX);
+        deltaRotY=chooseInPoll(pollRotY, rotMode.modeY, ptrRotY);
+        deltaRotZ=chooseInPoll(pollRotZ, rotMode.modeZ, ptrRotZ);
+    }
+}
 //Cambia un obstaculo de manera aleatoria
 void ExagonGameProcess::switchObstacle(){
     if(!obstacleData->empty()){
@@ -329,6 +322,7 @@ void ExagonGameProcess::switchObstacle(){
         obsID=rand()%obstacleData->size();
     }
 }
+//Elige un valor dentro de un poll de flotantes
 float ExagonGameProcess::chooseInPoll(std::vector<float>& poll, SwitchMode& mode, unsigned int& ptr){
     if(poll.empty()) return 0.0f;
     switch(mode){
