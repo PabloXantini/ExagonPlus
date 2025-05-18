@@ -1,0 +1,50 @@
+LEVEL
+
+ID          1
+PATH        levels/vanilla/lvltest2.txt
+NAME        LINEAR EAGERNESS
+SONG        
+DIFICULTY   EASY
+
+ENDLEVEL
+
+LEVEL
+
+ID          2
+PATH        levels/vanilla/lvl2.txt
+NAME        CUBICIAN SNARES
+SONG        
+DIFICULTY   MEDIUM
+
+ENDLEVEL
+
+LEVEL
+
+ID          3
+PATH        levels/vanilla/lvl3.txt
+NAME        HEXAGONS AND DRAGONS
+SONG        
+DIFICULTY   HARD
+
+ENDLEVEL
+
+LEVEL
+
+ID          4
+PATH        levels/vanilla/lvl4.txt
+NAME        KALEIDOSCOPE
+SONG        
+DIFICULTY   HARDEST
+
+ENDLEVEL
+
+LEVEL
+
+ID          5
+PATH        levels/vanilla/lvl5.txt
+PATHF       levels/vanilla/lvlF.txt
+NAME        THROUGH OF LINES AND EDGES
+SONG        
+DIFICULTY   HARDEST
+
+ENDLEVEL

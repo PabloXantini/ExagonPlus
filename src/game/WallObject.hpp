@@ -87,6 +87,10 @@ class CompleteWall {
         }
         ~CompleteWall(){
             //std::cout<<"Tu papa te abandonoo"<<std::endl;
+            for(Wall& wall : walls){
+                wall.kill();     
+            }
+            walls.clear();
         }
         //Getters
         bool isAlive(){

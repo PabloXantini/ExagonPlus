@@ -80,6 +80,8 @@ class ExagonGameProcess {
             GAME_MENU,
             GAME_START
         } STATE = GAME_START;// GAME_ACTIVE;
+        //Niveles
+        std::vector<Level> gameLevels = {};
         //Cancion
         std::string SONG="levels/songs/Focus.mp3";
         //bool GAME_ACTIVE=true;
@@ -99,6 +101,7 @@ class ExagonGameProcess {
         AudioEngine* AEnginePH;
         //Aqui nacen los objetos que quiera usar en el juego (usados apenas empezar)
         Shader Shader1;
+        ListLvlLoader gameList;
         LeverLoader gameLevel;
         CollisionSystem colhandler;
         Obstacle obstacle;
@@ -162,6 +165,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
     GEnginePH(plhEngine),
     AEnginePH(plhAEngine),
     Shader1(IDR_VSHADER2,IDR_FSHADER2),
+    gameList(),
     gameLevel(),
     colhandler(),
     obstacle(),
@@ -193,6 +197,9 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
     //gameTime.restart();
     //loadLevel();
     //startLevel();
+    gameList.loadList("levels/vanilla/list.lvl");
+    gameLevels = gameList.getListInfo();
+    gameList.printListInfo();
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;
@@ -200,8 +207,6 @@ ExagonGameProcess::~ExagonGameProcess(){
     delete a3;
     delete a4;
     delete C1;
-    //delete T1;
-    //delete T2;
 }
 void ExagonGameProcess::run(){
     float time = gameTime.getTime(); //Tiempo en general

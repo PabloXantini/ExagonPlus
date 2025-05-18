@@ -37,7 +37,6 @@ SongPlayer::SongPlayer(AudioEngine* engine):
 }
 void SongPlayer::loadSong(const char* SongPath){
     SongID.push_back(engine->makeAudio(SongPath));
-    //firstTime = false;
 }
 void SongPlayer::discardSong(){
     if (SongID.empty()){

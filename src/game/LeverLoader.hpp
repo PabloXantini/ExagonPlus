@@ -9,6 +9,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <unordered_set>
 
 enum class SwitchMode {
     CYCLIC,
@@ -112,6 +113,14 @@ struct LevelData {
     std::vector<Phase> phases={};
     std::vector<PhaseData> phaseData={};
 };
+struct Level {
+    unsigned int ID = 0;
+    std::string path;
+    std::string pathf;
+    std::string name;
+    std::string songname;
+    std::string dificulty;
+};
 
 class Obstacle {
     private:
@@ -148,6 +157,117 @@ class Obstacle {
             cwallpointer=0;
             canimpointer=0;
             DF=false;
+        }
+};
+
+inline static bool orderByID(const Level& level1, const Level& level2){
+    return level1.ID<level2.ID;
+}
+
+class ListLvlLoader {
+    private:
+        //Paquete final
+        std::vector<Level> levels;
+        std::unordered_set<unsigned int> shownIDs;
+        enum ListState {
+            NONE,
+            LEVEL
+        } state = NONE;
+        //Metodos para parsing
+        std::string readSentence(std::istringstream& sstream){
+            std::string sentence;
+            std::string word;
+            while (sstream>>word){
+                if(!sentence.empty()) sentence+=" ";
+                sentence+=word;
+            }
+            return sentence;
+        }
+        unsigned int readUInt(std::istringstream& sstream){
+            unsigned int unum;
+            sstream>>unum;
+            return unum;
+        }
+        void readLevelHeader(std::istringstream& sstream, Level& level){
+            std::string identifier;
+            //Determino el metadato
+            sstream>>identifier;
+            if(identifier=="ID"){
+                unsigned int ID = readUInt(sstream);
+                if(shownIDs.find(ID)==shownIDs.end()){
+                    shownIDs.insert(ID);
+                    level.ID = ID;    
+                }else{
+                    std::cout<<"Error: No puedes poner una ID ya existente"<<std::endl;
+                    return;
+                }
+            }else if(identifier=="PATH"){
+                level.path = readSentence(sstream);
+            }else if(identifier=="PATHF"){
+                level.pathf = readSentence(sstream);
+            }else if(identifier=="NAME"){
+                level.name = readSentence(sstream);
+            }else if(identifier=="SONG"){
+                level.songname = readSentence(sstream);
+            }else if(identifier=="DIFICULTY"){
+                level.dificulty = readSentence(sstream);
+            }
+        }
+        void printLevelHeader(Level& level){
+            std::cout<<"Level ID: "<<level.ID<<"\n";
+            std::cout<<"Archive Path: "<<level.path<<"\n";
+            std::cout<<"Archive Path Final: "<<level.pathf<<"\n";
+            std::cout<<"Level name: "<<level.name<<"\n";
+            std::cout<<"Song used: "<<level.songname<<"\n";
+            std::cout<<"Dificulty: "<<level.dificulty<<"\n";
+        }
+    public:
+        ListLvlLoader()=default;
+        //Getters
+        const std::vector<Level>& getListInfo(){
+            return levels;
+        }
+        void loadList(const char* filepath){
+            //Reinicio TODO
+            shownIDs.clear();
+            levels.clear();
+            Level currentLevel;
+            //Cosas de archivos
+            std::string line;
+            std::ifstream fstream(filepath);
+            //Lee el archivo
+            if(fstream){
+                while(std::getline(fstream, line)){
+                    if(line.empty()) continue;
+                    std::istringstream sstream(line);
+                    if(line=="LEVEL"){
+                        currentLevel={};
+                        state=LEVEL;
+                    }
+                    if(line=="ENDLEVEL"){
+                        levels.push_back(currentLevel);
+                        state=NONE;
+                    }
+                    switch(state){
+                        case LEVEL:
+                            readLevelHeader(sstream, currentLevel);
+                            break;
+                    }
+                }
+            }
+            //Ordenar de menor a mayor
+            std::sort(levels.begin(), levels.end(), orderByID);
+        }
+        void printListInfo(){
+            std::cout<<"--- Level List ---\n";
+            if (levels.empty()){
+                std::cout<<"(vacio)\n";
+                return;
+            }
+            for(int i=0; i<levels.size(); i++){
+                std::cout<<"\nLevel Readed #"<<i<<"\n";
+                printLevelHeader(levels[i]);
+            }
         }
 };
 
