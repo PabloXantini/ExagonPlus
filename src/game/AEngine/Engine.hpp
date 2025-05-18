@@ -30,6 +30,7 @@ class AudioEngine {
         bool init();
         void close();
         ALuint makeAudio(const char* path);
+        void eliminateAudio(ALuint ID);
         void registerSource(AudioSource& source);
 };
 

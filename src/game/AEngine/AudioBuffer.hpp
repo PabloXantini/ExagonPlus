@@ -45,6 +45,9 @@ class Audio {
         const ALuint getID() const {
             return ID;
         }
+        void free(){
+            alCall(alDeleteBuffers, 1, &ID);
+        }
 };
 
 #endif

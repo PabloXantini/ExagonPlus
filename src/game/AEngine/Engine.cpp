@@ -44,6 +44,15 @@ ALuint AudioEngine::makeAudio(const char* path){
     AudioBuffers.push_back(std::move(newSound));
     return newSound.getID();
 }
+void AudioEngine::eliminateAudio(ALuint ID){
+    for (auto it = AudioBuffers.begin(); it != AudioBuffers.end(); ++it) {
+        if (it->getID() == ID) {
+            it->free();        // liberar memoria del buffer si aplica
+            AudioBuffers.erase(it); // quitarlo del vector
+            break;
+        }
+    }
+}
 void AudioEngine::registerSource(AudioSource& source){
     Sources.push_back(source);
 }

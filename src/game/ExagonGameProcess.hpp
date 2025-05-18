@@ -334,6 +334,10 @@ void ExagonGameProcess::restartLevel(){
     T2->restart();
     gameTime.restart();
 }
+void ExagonGameProcess::freeLevel(){
+    delete T1;
+    delete T2;
+}
 //Manejador de eventos
 void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
     switch(STATE){
@@ -353,8 +357,7 @@ void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
         case GAME_OVER:
             if(GEnginePH->consumeKey(256)){//[ESCAPE] Volver al menu
                 STATE = GAME_MENU;
-                delete T1;
-                delete T2;
+                freeLevel();
                 std::cout<<"Estas en el menu de niveles"<<std::endl;
             }
             if(GEnginePH->consumeKey(257)){//[ENTER] Empezar nivel

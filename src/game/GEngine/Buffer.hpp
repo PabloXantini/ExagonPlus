@@ -117,6 +117,7 @@ class Buffer {
         void free(){
             glDeleteVertexArrays(1, &VAO);
             glDeleteBuffers(1, &VBO);
+            if(EBO!=0) glDeleteBuffers(1, &EBO);
         }
         const unsigned int getVAO() const {
             return VAO;
