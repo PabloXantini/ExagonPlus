@@ -255,6 +255,7 @@ class ListLvlLoader {
                     }
                 }
             }
+            fstream.close();
             //Ordenar de menor a mayor
             std::sort(levels.begin(), levels.end(), orderByID);
         }
@@ -691,7 +692,7 @@ class LeverLoader {
         /*
             Carga datos de un txt
         */
-        void loadLevel(const char* filepath){
+        bool loadLevel(const char* filepath){
             obs.clear();
             //Reinicio TODO
             level={};
@@ -847,8 +848,12 @@ class LeverLoader {
                             break;                    
                     }
                 }
+            }else{
+                std::cout<<"Error: No se encontro el archivo o no se pudo abrir"<<std::endl;
+                return false;
             }
             fstream.close();
+            return true;
         }
         void printLevelInfo(){
             // Mostrar resultados

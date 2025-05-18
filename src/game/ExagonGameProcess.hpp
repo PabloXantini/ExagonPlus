@@ -82,9 +82,10 @@ class ExagonGameProcess {
         } STATE = GAME_START;// GAME_ACTIVE;
         //Niveles
         std::vector<Level> gameLevels = {};
+        unsigned int SELECTED_LEVEL_IDX = 0;
+        std::string pth;
         //Cancion
         std::string SONG="levels/songs/Focus.mp3";
-        //bool GAME_ACTIVE=true;
         bool loadLevelFinished=false;
         unsigned int SIDES= 3;
         //Ratio de aparacion de obstaculos
@@ -127,8 +128,10 @@ class ExagonGameProcess {
         Animation* a4;
 
         //Methods
+        void changeToNextLevel();
+        void changeToPreviousLevel();
         void linkLevel();
-        void loadLevel();
+        bool loadLevel();
         void startLevel();
         void freeLevel();
         void restartLevel();
@@ -280,9 +283,14 @@ void ExagonGameProcess::PlayLevel(float dtime, float time){
     }
 }
 //Transfiere datos al nivel
-void ExagonGameProcess::loadLevel(){
+bool ExagonGameProcess::loadLevel(){
     //En un futuro va ir un switch case para la seleccion de niveles
-    gameLevel.loadLevel("levels/vanilla/lvltest2.txt");
+    std::string selectedPath=gameLevels.at(SELECTED_LEVEL_IDX).path;
+    //gameLevel.loadLevel("levels/vanilla/lvltest2.txt");
+    if(!gameLevel.loadLevel(selectedPath.c_str())) {
+        STATE = GAME_MENU;
+        return false;
+    }
     //obstacleData = gameLevel.getInfo();
     currentLevel = gameLevel.getLevelInfo();
     //gameLevel.printLevelInfo();
@@ -294,8 +302,18 @@ void ExagonGameProcess::loadLevel(){
     //Ajustes de vista
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
+    return true;
 }
-//Vincula metadatos
+//Cambia al siguiente nivel
+inline void ExagonGameProcess::changeToNextLevel(){
+    SELECTED_LEVEL_IDX=(SELECTED_LEVEL_IDX+1)%gameLevels.size();
+}
+//Cambia al nivel anterior
+inline void ExagonGameProcess::changeToPreviousLevel()
+{
+    SELECTED_LEVEL_IDX=(SELECTED_LEVEL_IDX+gameLevels.size()-1)%gameLevels.size();
+}
+// Vincula metadatos
 void ExagonGameProcess::linkLevel(){
     this->SONG=currentLevel.song;
     this->SIDES=currentLevel.phaseData[0].sides;
@@ -314,7 +332,7 @@ void ExagonGameProcess::linkLevel(){
 //Arranca un nivel antes de empezar
 void ExagonGameProcess::startLevel(){
     //Esto estara de forma temporal
-    loadLevel();
+    if(!loadLevel()) return;
     //=============================//
     //Elegir las variables iniciales
     T1=new Chronometer(randIntervalR.at(0));   //Rotaciones
@@ -386,10 +404,12 @@ void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
             break;
         case GAME_MENU:
             if(GEnginePH->consumeKey(262)){//[->] Derecha
-                std::cout<<"Apunta al siguiente nivel"<<std::endl;
+                changeToNextLevel();
+                std::cout<<"Apunta al siguiente nivel "<<gameLevels.at(SELECTED_LEVEL_IDX).path<<std::endl;
             }
             if(GEnginePH->consumeKey(263)){//[<-] Izquierda
-                std::cout<<"Apunta al nivel anterior"<<std::endl;
+                changeToPreviousLevel();
+                std::cout<<"Apunta al nivel anterior "<<gameLevels.at(SELECTED_LEVEL_IDX).path<<std::endl;
             }
             if(GEnginePH->consumeKey(256)){//[ESCAPE] Volver al inicio
                 STATE = GAME_START;
