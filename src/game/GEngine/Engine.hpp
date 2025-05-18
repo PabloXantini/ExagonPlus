@@ -34,6 +34,7 @@ class Engine {
         std::vector<Shader*> Shaders={};            //Shaders generados
         GLFWwindow* window;                         //Ventana
         bool keyStates[350];                        //Tokens de teclado
+        bool keyPressed[350];                       //Tokens procesados
         //Methods
         void setupShaders();
         GLFWimage load_icon(int resID);
@@ -76,7 +77,13 @@ class Engine {
         bool& getKey(unsigned int index){
             return keyStates[index];
         }
+        bool& getKeyPressed(unsigned int index){
+            return keyPressed[index];
+        }
         //Setters
+        void setKeyPressed(unsigned int index, bool state){
+            keyPressed[index]=state;
+        }
         void setFOV(float FOV){
             GFOV=FOV;
         }
@@ -95,13 +102,15 @@ class Engine {
         void resize(int width, int height);
         void blockFPS(int FPSRate);
         bool isWindowOpen();
+        void closeWindow();
         void destroyWindow();
         void handle();
         void close();
         //Keyboard Methods
         void initKeyboardListening();
-        //Memory Methods
-        //Buffers
+        bool consumeKey(unsigned int token);
+        // Memory Methods
+        // Buffers
         unsigned int createBuffer(const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
         unsigned int createBuffer(const std::vector<glm::vec3>& verts, const std::vector<unsigned int>* indexes, unsigned int numargs, const std::vector<unsigned int>& argsspace);
         void modBuffer(unsigned int VAO, const std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes);
@@ -139,14 +148,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     void* ptr = glfwGetWindowUserPointer(window);
     if(ptr){
         Engine* engine = static_cast<Engine*>(ptr);
+        /*
         if(key==GLFW_KEY_ESCAPE && action==GLFW_PRESS){
             glfwSetWindowShouldClose(window, true);
         }
+        */
         if(key>=0 && key<350){
             if(action==GLFW_PRESS){
                 engine->getKey(key)=true;
             } else if(action==GLFW_RELEASE){
                 engine->getKey(key)=false;
+                engine->getKeyPressed(key)=false;
             }
         }
     }
@@ -214,6 +226,18 @@ void Engine::initWindowResizing(){
 void Engine::initKeyboardListening(){
     glfwSetWindowUserPointer(window, this);
     glfwSetKeyCallback(window, key_callback);
+    for(unsigned int i=0; i<350; i++){
+        keyStates[i]=false;
+        keyStates[i]=false;
+    }
+}
+bool Engine::consumeKey(unsigned int token){
+    if(this->keyStates[token] && !this->keyPressed[token]){
+        this->keyPressed[token]=true;
+        return true;
+    }else{
+        return false;
+    }
 }
 //Coreccion de reescalado
 void Engine::resize(int width, int height){
@@ -240,7 +264,11 @@ void Engine::blockFPS(int FPSRate){
 bool Engine::isWindowOpen(){
     return !glfwWindowShouldClose(window);
 }
-//Destruye la ventan
+//Cierra la ventana
+void Engine::closeWindow(){
+    glfwSetWindowShouldClose(window, true);
+} 
+//Destruye la ventana
 void Engine::destroyWindow(){
     glfwTerminate();
 }

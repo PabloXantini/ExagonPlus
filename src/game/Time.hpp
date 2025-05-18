@@ -33,6 +33,7 @@ class Timer {
         void restart() {
             time=0.0f;
             glfwSetTime(0.0f);
+            temp=glfwGetTime();
         }  
 };
 //Me sirve para cosas que se repiten en sierto intervalo
@@ -55,6 +56,10 @@ class Chronometer {
                 return true;
             }
             return false;
+        }
+        //Reinicia el cronometro
+        void restart(){
+            timer = 0.0f;
         }
 };
 //Me sirve para cosas demasiado precisas
@@ -91,6 +96,11 @@ class cbChronometer {
                 return true;
             }
             return false;
+        }
+        //Reincia
+        void restart(){
+            timer = 0.0f;
+            elapsedTime = 0.0f;
         }
 };
 #endif

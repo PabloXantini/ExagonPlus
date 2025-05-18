@@ -74,9 +74,16 @@ class ExagonGameProcess {
         //Obstaculos
         std::vector<ObsData>* obstacleData = nullptr;
         //Game
+        enum GameState {
+            GAME_ACTIVE,
+            GAME_OVER,
+            GAME_MENU,
+            GAME_START
+        } STATE = GAME_START;// GAME_ACTIVE;
         //Cancion
         std::string SONG="levels/songs/Focus.mp3";
-        bool GAME_ACTIVE=true;
+        //bool GAME_ACTIVE=true;
+        bool loadLevelFinished=false;
         unsigned int SIDES= 3;
         //Ratio de aparacion de obstaculos
         const float WALLS_SPAWN_RATIO = 0.06f;
@@ -120,7 +127,10 @@ class ExagonGameProcess {
         void linkLevel();
         void loadLevel();
         void startLevel();
-        void handleEvents(float deltaTime);
+        void freeLevel();
+        void restartLevel();
+        void PlayLevel(float dtime, float time);
+        void handleGamePlayEvents(float deltaTime);
         void switchRotBG(float time);
         void switchObstacle();
         float chooseInPoll(std::vector<float>& poll, SwitchMode& mode, unsigned int& ptr);
@@ -144,7 +154,8 @@ class ExagonGameProcess {
             return completeWalls;
         }
         //Methods
-        void PlayLevel();
+        void run();
+        void show();    
 };
 
 ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine):
@@ -181,7 +192,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
     //songPlayer.playSong();
     //gameTime.restart();
     loadLevel();
-    startLevel();
+    //startLevel();
 }
 ExagonGameProcess::~ExagonGameProcess(){
     delete a1;
@@ -189,22 +200,39 @@ ExagonGameProcess::~ExagonGameProcess(){
     delete a3;
     delete a4;
     delete C1;
-    delete T1;
-    delete T2;
+    //delete T1;
+    //delete T2;
 }
-void ExagonGameProcess::PlayLevel(){
-    if(GAME_ACTIVE){
+void ExagonGameProcess::run(){
+    float time = gameTime.getTime(); //Tiempo en general
+    float dtime = gameTime.getDeltaTime();
+    //std::cout<<time<<" "<<dtime<<"\n";
+    handleGamePlayEvents(dtime);
+    PlayLevel(dtime, time);
+}
+void ExagonGameProcess::show(){
+    if(STATE==GAME_ACTIVE||STATE==GAME_OVER){
+        //El orden del renderizado
+        //Fondo
+        background.show();
+        //Paredes
+        for(auto& wall : completeWalls){
+            wall->show();
+        }
+        //Centro
+        center.show();
+        //Jugador
+        player.show();
+    }
+}
+//Juega el nivel
+void ExagonGameProcess::PlayLevel(float dtime, float time){
+    if(STATE==GAME_ACTIVE && loadLevelFinished){
         if(!player.isAlive()){
-            GAME_ACTIVE = false;
+            STATE = GAME_OVER;
             songPlayer.stopSong(); 
             return;
-        } 
-
-        float time = gameTime.getTime(); //Tiempo en general
-        //std::cout<<time<<std::endl;
-        float dtime = gameTime.getDeltaTime();
-        //Eventos
-        handleEvents(dtime);
+        }
         //Cosas que se hacen siempre
         background.changeBGHue(time, hueFactor, hueSpeed);
         background.rotateBG(dtime, deltaRotX, deltaRotY, deltaRotZ);
@@ -291,19 +319,77 @@ void ExagonGameProcess::startLevel(){
     songPlayer.setupSong(0, 0.5f, 1.0f, true);
     songPlayer.playSong();
     gameTime.restart();
+    loadLevelFinished=true;
+}
+void ExagonGameProcess::restartLevel(){
+    //Elimina las Walls restantes
+    completeWalls.clear();
+    obstacle.restart();
+    background.restart();
+    player.setLiveStatus(true);
+    songPlayer.playSong();
+    //Timer
+    C1->restart();
+    T1->restart();
+    T2->restart();
+    gameTime.restart();
 }
 //Manejador de eventos
-void ExagonGameProcess::handleEvents(float deltaTime){
-    //Nivel - Jugador
-    if(GEnginePH->getKey(262)){//Derecha
-        float velocity = - PLAYER_SENSIBILITY * deltaTime;
-        //std::cout<<"Se mueve a la derecha"<<std::endl;
-        player.move(velocity);
-    }
-    if(GEnginePH->getKey(263)){//Izquierda
-        float velocity = PLAYER_SENSIBILITY * deltaTime;
-        //std::cout<<"Se mueve a la izquierda"<<std::endl;
-        player.move(velocity);
+void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
+    switch(STATE){
+        case GAME_ACTIVE:
+            //Nivel - GamePlay
+            if(GEnginePH->getKey(262)){//[->] Derecha
+                float velocity = - PLAYER_SENSIBILITY * deltaTime;
+                //std::cout<<"Se mueve a la derecha"<<std::endl;
+                player.move(velocity);
+            }
+            if(GEnginePH->getKey(263)){//[<-] Izquierda
+                float velocity = PLAYER_SENSIBILITY * deltaTime;
+                //std::cout<<"Se mueve a la izquierda"<<std::endl;
+                player.move(velocity);
+            }
+            break;
+        case GAME_OVER:
+            if(GEnginePH->consumeKey(256)){//[ESCAPE] Volver al menu
+                STATE = GAME_MENU;
+                delete T1;
+                delete T2;
+                std::cout<<"Estas en el menu de niveles"<<std::endl;
+            }
+            if(GEnginePH->consumeKey(257)){//[ENTER] Empezar nivel
+                STATE = GAME_ACTIVE;
+                std::cout<<"ReStart!"<<std::endl;
+                restartLevel();
+            }
+            break;
+        case GAME_MENU:
+            if(GEnginePH->consumeKey(262)){//[->] Derecha
+                std::cout<<"Apunta al siguiente nivel"<<std::endl;
+            }
+            if(GEnginePH->consumeKey(263)){//[<-] Izquierda
+                std::cout<<"Apunta al nivel anterior"<<std::endl;
+            }
+            if(GEnginePH->consumeKey(256)){//[ESCAPE] Volver al inicio
+                STATE = GAME_START;
+                std::cout<<"Estas en el inicio"<<std::endl;
+            }
+            if(GEnginePH->consumeKey(257)){//[ENTER] Empezar nivel
+                STATE = GAME_ACTIVE;
+                std::cout<<"Start!"<<std::endl;
+                startLevel();
+            }
+            break;
+        case GAME_START:
+            if(GEnginePH->consumeKey(257)){//[ENTER] Ir al menu
+                STATE = GAME_MENU;
+                std::cout<<"Estas en el menu de niveles"<<std::endl;
+            }
+            if(GEnginePH->consumeKey(256)){//[ESCAPE] Salir
+                std::cout<<"Goodbye"<<std::endl;
+                GEnginePH->closeWindow();
+            }
+            break;
     }
 }
 //Cambia las rotaciones del escenario

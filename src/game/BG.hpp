@@ -361,6 +361,16 @@ class BG{
             rot = glm::rotate(rot, glm::radians(BGRotZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
             ShaderBG->setMat4("Rotation",rot);
         }
+        /*
+            Reinicia las transformaciones
+        */
+        void restart(){
+            glm::mat4 rot = glm::mat4(1.0);
+            BGRotX=0.0f;
+            BGRotY=0.0f;
+            BGRotZ=0.0f;
+            ShaderBG->setMat4("Rotation",rot);
+        }
 };
 
 #endif

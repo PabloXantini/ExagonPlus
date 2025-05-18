@@ -30,17 +30,9 @@ ExagonPanel::ExagonPanel(Engine* engine, AudioEngine* aengine):
 
 void ExagonPanel::show(){
     //El orden de renderizado
-    game.PlayLevel();
-    //Background
-    game.getBG().show();
-    //Obstaculos
-    for(auto& wall : game.getWalls()){
-        wall->show();
-    }
-    //Centro
-    game.getCenter().show();
-    //Jugador
-    game.getPlayer().show();
+    //game.PlayLevel();
+    game.run();
+    game.show();
 }
 
 #endif
