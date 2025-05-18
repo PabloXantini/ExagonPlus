@@ -33,8 +33,8 @@ class Engine {
         std::vector<Buffer> Buffers={};             //Buffers por VAO generados
         std::vector<Shader*> Shaders={};            //Shaders generados
         GLFWwindow* window;                         //Ventana
-        bool keyStates[350];                        //Tokens de teclado
-        bool keyPressed[350];                       //Tokens procesados
+        bool keyStates[1024];                       //Tokens de teclado
+        bool keyPressed[1024];                      //Tokens procesados
         //Methods
         void setupShaders();
         GLFWimage load_icon(int resID);
@@ -145,15 +145,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 //Teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+    std::cout<<"Tecla: "<<key<<" Action: "<<action<<std::endl;
     void* ptr = glfwGetWindowUserPointer(window);
     if(ptr){
         Engine* engine = static_cast<Engine*>(ptr);
-        /*
-        if(key==GLFW_KEY_ESCAPE && action==GLFW_PRESS){
-            glfwSetWindowShouldClose(window, true);
-        }
-        */
-        if(key>=0 && key<350){
+        if(key>=0 && key<1024){
             switch(action){
                 case GLFW_PRESS:
                     engine->getKey(key)=true;
@@ -163,14 +159,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                     engine->getKeyPressed(key)=false;
                     break;
             }
-            /*
-            if(action==GLFW_PRESS){
-                engine->getKey(key)=true;
-            }else if(action==GLFW_RELEASE){
-                engine->getKey(key)=false;
-                engine->getKeyPressed(key)=false;
-            }
-            */
         }
     }
 }

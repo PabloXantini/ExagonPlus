@@ -422,13 +422,13 @@ void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
             }
             break;
         case GAME_START:
-            if(GEnginePH->consumeKey(257)){//[ENTER] Ir al menu
-                STATE = GAME_MENU;
-                std::cout<<"Estas en el menu de niveles"<<std::endl;
-            }
             if(GEnginePH->consumeKey(256)){//[ESCAPE] Salir
                 std::cout<<"Goodbye"<<std::endl;
                 GEnginePH->closeWindow();
+            }
+            if(GEnginePH->consumeKey(257)){//[ENTER] Ir al menu
+                STATE = GAME_MENU;
+                std::cout<<"Estas en el menu de niveles"<<std::endl;
             }
             break;
     }
