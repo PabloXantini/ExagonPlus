@@ -191,7 +191,7 @@ ExagonGameProcess::ExagonGameProcess(Engine* plhEngine, AudioEngine* plhAEngine)
     //songPlayer.setupSong(0, 0.5f, 1.0f, true);
     //songPlayer.playSong();
     //gameTime.restart();
-    loadLevel();
+    //loadLevel();
     //startLevel();
 }
 ExagonGameProcess::~ExagonGameProcess(){
@@ -280,13 +280,13 @@ void ExagonGameProcess::loadLevel(){
     gameLevel.loadLevel("levels/vanilla/lvltest2.txt");
     //obstacleData = gameLevel.getInfo();
     currentLevel = gameLevel.getLevelInfo();
-    gameLevel.printLevelInfo();
+    //gameLevel.printLevelInfo();
     //Level linking
     linkLevel();
     background = BG(GEnginePH, &Shader1, 200.0f, SIDES, 3, pcolors);
     center = Center(GEnginePH, &Shader1, 0.18f, 0.018f, SIDES, 7, pcolors, wallcolors.at(0));
     player = Player(GEnginePH, &Shader1, PLAYER_SENSIBILITY, 2.0f, 0.21f, 60.0f, wallcolors.at(0));
-
+    //Ajustes de vista
     background.setPerspective(FOV, nearD, farD);  
     background.setCamera(CameraX, CameraY, CameraZ);
 }
@@ -308,16 +308,24 @@ void ExagonGameProcess::linkLevel(){
 }
 //Arranca un nivel antes de empezar
 void ExagonGameProcess::startLevel(){
+    //Esto estara de forma temporal
+    loadLevel();
+    //=============================//
     //Elegir las variables iniciales
     T1=new Chronometer(randIntervalR.at(0));   //Rotaciones
     T2=new Chronometer(COLOR_SWAP_RATIO);     //Cambio de color
     deltaRotX=chooseInPoll(pollRotX, rotMode.modeX, ptrRotX);
     deltaRotY=chooseInPoll(pollRotY, rotMode.modeY, ptrRotY);
     deltaRotZ=chooseInPoll(pollRotZ, rotMode.modeZ, ptrRotZ);
+    player.setLiveStatus(true);
     //Cargar la cancion
     songPlayer.loadSong(SONG.c_str());
     songPlayer.setupSong(0, 0.5f, 1.0f, true);
     songPlayer.playSong();
+    //Timers
+    C1->restart();
+    T1->restart();
+    T2->restart();
     gameTime.restart();
     loadLevelFinished=true;
 }
@@ -328,13 +336,18 @@ void ExagonGameProcess::restartLevel(){
     background.restart();
     player.setLiveStatus(true);
     songPlayer.playSong();
-    //Timer
+    //Timers
     C1->restart();
     T1->restart();
     T2->restart();
     gameTime.restart();
 }
 void ExagonGameProcess::freeLevel(){
+    songPlayer.discardSong();
+    background.free();
+    center.free();
+    player.free();
+    completeWalls.clear();
     delete T1;
     delete T2;
 }

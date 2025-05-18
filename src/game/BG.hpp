@@ -245,14 +245,6 @@ class BG{
             vertexs = setupMesh(allvcoors, vertexcolors, allvcoors, vertexcolors);
             //Memoria del objeto
             IDs.push_back(engine->createBuffer(vertexs, NULL, 12, argspace));
-            //Comentalo si quieres
-            /*
-            std::cout << "[ ";
-            for (float val : vertexs) {
-                std::cout << val << " ";
-            }
-            std::cout << "]" << std::endl;
-            */
         }
         //Getters
         unsigned int getID(unsigned int index) const {
@@ -370,6 +362,12 @@ class BG{
             BGRotY=0.0f;
             BGRotZ=0.0f;
             ShaderBG->setMat4("Rotation",rot);
+        }
+        /*
+            Libera memoria de GPU
+        */
+        void free(){
+            engine->eliminateBuffer(this->getID(0));
         }
 };
 

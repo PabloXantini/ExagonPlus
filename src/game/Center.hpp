@@ -186,19 +186,6 @@ class Center : public BG {
             //Memoria del objeto
             IDs.push_back(engine->createBuffer(wvertexs,&indexes,12,argspace));
             IDs.push_back(engine->createBuffer(vertexs,&indexes,12,argspace));
-            //Comentalo si quieres
-            /*
-            std::cout << "[ ";
-            for (float val : vertexs) {
-                std::cout << val << " ";
-            }
-            std::cout << "]" << std::endl;
-            std::cout << "[ ";
-            for (float val : wvertexs) {
-                std::cout << val << " ";
-            }
-            std::cout << "]" << std::endl;
-            */
         }
         
         //Getters
@@ -301,6 +288,13 @@ class Center : public BG {
             indexes=createIndexes(sides);
             engine->updateBuffer(this->getID(0),wvertexs, &indexes);
             engine->updateBuffer(this->getID(1),vertexs, &indexes);
+        }
+        /*
+            Libera memoria de GPU
+        */
+        void free(){
+            engine->eliminateBuffer(this->getID(0));
+            engine->eliminateBuffer(this->getID(1));
         }
 };
 

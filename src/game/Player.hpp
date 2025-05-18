@@ -181,6 +181,14 @@ class Player : public BG {
             //SOLO DEBUG
             engine->modBuffer(this->getID(1), poses, NULL);
         }
+        /*
+            Libera memoria de GPU
+        */
+        void free(){
+            engine->eliminateBuffer(this->getID(0));
+            //SOLO DEBUG
+            engine->eliminateBuffer(this->getID(1));
+        }
 };
 
 #endif
