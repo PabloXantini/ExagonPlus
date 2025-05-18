@@ -141,11 +141,10 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
         Engine* engine = static_cast<Engine*>(ptr);
         engine->resize(width, height);  // Llama al método de la clase
     }
-    //std::cout<<"Cambio"<<std::endl;
 }
 //Teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-    std::cout<<"Tecla: "<<key<<" Action: "<<action<<std::endl;
+    //std::cout<<"Tecla: "<<key<<" Action: "<<action<<std::endl;
     void* ptr = glfwGetWindowUserPointer(window);
     if(ptr){
         Engine* engine = static_cast<Engine*>(ptr);

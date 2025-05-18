@@ -396,7 +396,7 @@ void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
                 freeLevel();
                 std::cout<<"Estas en el menu de niveles"<<std::endl;
             }
-            if(GEnginePH->consumeKey(257)){//[ENTER] Empezar nivel
+            if(GEnginePH->consumeKey(257)||GEnginePH->consumeKey(335)){//[ENTER] Empezar nivel
                 STATE = GAME_ACTIVE;
                 std::cout<<"ReStart!"<<std::endl;
                 restartLevel();
@@ -415,7 +415,7 @@ void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
                 STATE = GAME_START;
                 std::cout<<"Estas en el inicio"<<std::endl;
             }
-            if(GEnginePH->consumeKey(257)){//[ENTER] Empezar nivel
+            if(GEnginePH->consumeKey(257)||GEnginePH->consumeKey(335)){//[ENTER] Empezar nivel
                 STATE = GAME_ACTIVE;
                 std::cout<<"Start!"<<std::endl;
                 startLevel();
@@ -426,7 +426,7 @@ void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
                 std::cout<<"Goodbye"<<std::endl;
                 GEnginePH->closeWindow();
             }
-            if(GEnginePH->consumeKey(257)){//[ENTER] Ir al menu
+            if(GEnginePH->consumeKey(257)||GEnginePH->consumeKey(335)){//[ENTER] Ir al menu
                 STATE = GAME_MENU;
                 std::cout<<"Estas en el menu de niveles"<<std::endl;
             }
