@@ -44,6 +44,11 @@ class AudioSource {
             this->loopEnabled=loopEnabled;
             makeSource();
         }
+        /*
+        ~AudioSource(){
+            alCall(alDeleteSources, 1, &ID);
+        }
+        */
         //Getters
         const ALuint getID() const {
             return ID;
@@ -61,6 +66,10 @@ class AudioSource {
         }
         void stopSound(){
             alCall(alSourceStop, ID);
+        }
+        void quitAudio(){
+            alCall(alSourceStop, ID);
+            alCall(alSourcei, ID, AL_BUFFER, 0);
         }
 };
 

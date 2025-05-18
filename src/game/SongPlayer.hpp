@@ -11,7 +11,7 @@
 
 class SongPlayer {
     private:
-        //bool firstTime = true;
+        bool firstTime = true;
         std::vector<ALuint> SongID;
         ALuint currentSongID;
         float volume = 1.0f;
@@ -43,7 +43,8 @@ void SongPlayer::discardSong(){
     if (SongID.empty()){
         std::cout<<"Error: No hay musica que descartar"<<std::endl;
         return;
-    } 
+    }
+    src->quitAudio();
     engine->eliminateAudio(currentSongID);
     for (auto ptr = SongID.begin(); ptr != SongID.end(); ++ptr){
         if(*ptr==currentSongID){
@@ -51,12 +52,17 @@ void SongPlayer::discardSong(){
             break;
         }   
     }
-    if(!SongID.empty()) changeSong(SongID.back());
+    if(!SongID.empty()) changeSong(0);
 }
 void SongPlayer::setupSong(unsigned int index, float volume, float pitch, ALboolean loopEnabled){
     if(index<SongID.size()){
-        currentSongID=index;
-        src = new AudioSource(SongID.at(index), volume, pitch, loopEnabled);
+        currentSongID=SongID.at(index);
+        if(firstTime){ 
+            src = new AudioSource(SongID.at(index), volume, pitch, loopEnabled);
+            firstTime = false;
+        }else{
+            changeSong(index);
+        }
         engine->registerSource(*src);
     } else {
         std::cout<<"Error: no se pudo configurar la musica: Fuera de rango"<<std::endl;
@@ -68,7 +74,7 @@ void SongPlayer::changeSong(unsigned int index){
         return;
     }
     if(index<SongID.size()){
-        currentSongID=index;
+        currentSongID=SongID.at(index);
         src->setAudio(SongID.at(index)); 
     } else {
         std::cout<<"Error: no se pudo cambiar la musica: Fuera de rango"<<std::endl;
