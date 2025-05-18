@@ -154,12 +154,23 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
         */
         if(key>=0 && key<350){
+            switch(action){
+                case GLFW_PRESS:
+                    engine->getKey(key)=true;
+                    break;
+                case GLFW_RELEASE:
+                    engine->getKey(key)=false;
+                    engine->getKeyPressed(key)=false;
+                    break;
+            }
+            /*
             if(action==GLFW_PRESS){
                 engine->getKey(key)=true;
-            } else if(action==GLFW_RELEASE){
+            }else if(action==GLFW_RELEASE){
                 engine->getKey(key)=false;
                 engine->getKeyPressed(key)=false;
             }
+            */
         }
     }
 }

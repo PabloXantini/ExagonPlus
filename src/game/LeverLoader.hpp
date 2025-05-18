@@ -510,7 +510,7 @@ class LeverLoader {
             if(token=="X"){
                 unsigned int count = 1;
                 sstream >> count;
-                for(int i=0; i<count; i++){
+                for(unsigned int i=0; i<count; i++){
                     dAnimation.wall.push_back(currentWall);
                 }
             }else{
