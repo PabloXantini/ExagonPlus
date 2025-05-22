@@ -11,6 +11,7 @@ class AudioSource {
     private:
         ALuint ID;
         ALuint audioID;
+        ALint state;
         Coor3D position = {0.0f, 0.0f, 0.0f};
         Coor3D velocity = {0.0f, 0.0f, 0.0f};
         float volume = 1.0f;
@@ -60,6 +61,7 @@ class AudioSource {
         }
         void playSound(){
             alCall(alSourcePlay, ID);
+            alCall(alGetSourcei, ID, AL_SOURCE_STATE, &state);
         }
         void pauseSound(){
             alCall(alSourcePause, ID);
@@ -70,6 +72,12 @@ class AudioSource {
         void quitAudio(){
             alCall(alSourceStop, ID);
             alCall(alSourcei, ID, AL_BUFFER, 0);
+        }
+        void adminAudio(){
+            alCall(alGetSourcei, ID, AL_SOURCE_STATE, &state);
+            if(state==AL_PLAYING){
+
+            }
         }
 };
 

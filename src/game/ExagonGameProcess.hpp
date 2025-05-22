@@ -89,7 +89,7 @@ class ExagonGameProcess {
         bool loadLevelFinished=false;
         unsigned int SIDES= 3;
         //Ratio de aparacion de obstaculos
-        const float WALLS_SPAWN_RATIO = 0.06f;
+        float WALLS_SPAWN_RATIO = 0.06f;
         //ID obstaculo
         unsigned int obsID = 0;
         //Jugador
@@ -140,6 +140,7 @@ class ExagonGameProcess {
         void switchRotBG(float time);
         void switchObstacle();
         float chooseInPoll(std::vector<float>& poll, SwitchMode& mode, unsigned int& ptr);
+        void recalculateSpawnRate(float duration, float margin);
         void spawnWallsByObstacle(float time);
         void changeDynamicSideBG(Animation* anim, float deltamov, unsigned int sides);
     public:
@@ -371,6 +372,7 @@ void ExagonGameProcess::freeLevel(){
     center.free();
     player.free();
     completeWalls.clear();
+    obstacle.restart();
     delete T1;
     delete T2;
 }
@@ -463,10 +465,19 @@ float ExagonGameProcess::chooseInPoll(std::vector<float>& poll, SwitchMode& mode
         default: return 0.0f;          
     }
 }
+//Calcula el tiling del pared
+void ExagonGameProcess::recalculateSpawnRate(float duration, float margin){
+    float WALLS_PER_TIME = center.getRadius()*14.0f/margin;
+    WALLS_SPAWN_RATIO = 1.0f/WALLS_PER_TIME;
+}
 //Invoca una pared completa desde un obstaculo
 void ExagonGameProcess::spawnWallsByObstacle(float time){
+    if(obstacleData->empty()) return;
+    const AnimWallData& currentSubObs = obstacleData->at(obsID).anims.at(obstacle.getNoAnim());
+    const WallData& currentWall = currentSubObs.wall.at(obstacle.getNoWall());
+
     if(C1->track(time)) {
-        if(obstacleData->empty()) return;
+
         if(!obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
             switch (obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).type){
                 case AnimType::LINEAR:

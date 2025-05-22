@@ -211,6 +211,9 @@ class Center : public BG {
         unsigned int getSides() const {
             return tempcoors.size()-1;
         }
+        const float getRadius() const {
+            return radius;
+        }
         /*
             Renderizar/Mostrar
         */
