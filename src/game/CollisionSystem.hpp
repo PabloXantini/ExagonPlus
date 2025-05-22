@@ -184,7 +184,7 @@ class CollisionSystem {
             //Comprueba si para una pared completa (cada pared) esta cerca step>=0.8
             for(auto& cWall : cWalls){
                 for(auto& Wall : cWall->getWalls()){
-                    if(Wall.getProgress()>=0.8f){
+                    if(Wall.getProgress()>=0.8f && Wall.getProgress()<=0.96f){
                         //Checa por SAT
                         Collision collision;
                         collision = checkCollision(player, Wall);

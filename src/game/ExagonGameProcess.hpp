@@ -89,6 +89,7 @@ class ExagonGameProcess {
         bool loadLevelFinished=false;
         unsigned int SIDES= 3;
         //Ratio de aparacion de obstaculos
+        float WALL_TILE_SPACE = 0.1f;
         float WALLS_SPAWN_RATIO = 0.06f;
         //ID obstaculo
         unsigned int obsID = 0;
@@ -140,8 +141,8 @@ class ExagonGameProcess {
         void switchRotBG(float time);
         void switchObstacle();
         float chooseInPoll(std::vector<float>& poll, SwitchMode& mode, unsigned int& ptr);
-        void recalculateSpawnRate(float duration, float margin);
-        void spawnWallsByObstacle(float time);
+        void recalculateSpawnRate(float deltaTime, float duration, float margin);
+        void spawnWallsByObstacle(float deltaTime, float time);
         void changeDynamicSideBG(Animation* anim, float deltamov, unsigned int sides);
     public:
         //Constructor
@@ -250,7 +251,7 @@ void ExagonGameProcess::PlayLevel(float dtime, float time){
         //Cambio de parametros
         switchRotBG(time);
         //Generacion de paredes
-        spawnWallsByObstacle(time);
+        spawnWallsByObstacle(dtime, time);
         //Movimiento de paredes
         for (auto ptr = completeWalls.begin(); ptr != completeWalls.end(); ) {
             (*ptr)->execute(dtime);
@@ -373,6 +374,7 @@ void ExagonGameProcess::freeLevel(){
     player.free();
     completeWalls.clear();
     obstacle.restart();
+    this->obsID=0;
     delete T1;
     delete T2;
 }
@@ -466,30 +468,33 @@ float ExagonGameProcess::chooseInPoll(std::vector<float>& poll, SwitchMode& mode
     }
 }
 //Calcula el tiling del pared
-void ExagonGameProcess::recalculateSpawnRate(float duration, float margin){
-    float WALLS_PER_TIME = center.getRadius()*14.0f/margin;
-    WALLS_SPAWN_RATIO = 1.0f/WALLS_PER_TIME;
+void ExagonGameProcess::recalculateSpawnRate(float deltaTime, float duration, float margin){
+    float WALL_VELOCITY = center.getRadius()*14.0f/duration;
+    WALLS_SPAWN_RATIO = margin/WALL_VELOCITY-deltaTime;
+    C1->setTTime(WALLS_SPAWN_RATIO);
 }
 //Invoca una pared completa desde un obstaculo
-void ExagonGameProcess::spawnWallsByObstacle(float time){
+void ExagonGameProcess::spawnWallsByObstacle(float deltaTime, float time){
     if(obstacleData->empty()) return;
     const AnimWallData& currentSubObs = obstacleData->at(obsID).anims.at(obstacle.getNoAnim());
     const WallData& currentWall = currentSubObs.wall.at(obstacle.getNoWall());
-
+    if(!currentWall.indexes.empty()){
+        WALL_TILE_SPACE = currentWall.marginL;
+    }
+    recalculateSpawnRate(deltaTime, currentSubObs.duration, WALL_TILE_SPACE);
     if(C1->track(time)) {
-
-        if(!obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes.empty()){
-            switch (obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).type){
+        if(!currentWall.indexes.empty()){
+            switch (currentSubObs.type){
                 case AnimType::LINEAR:
                     completeWalls.emplace_back(std::make_unique<CompleteWall>
                         (GEnginePH, 
                         &Shader1, 
                         &center, 
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).duration, 
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).type, 
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
+                        currentSubObs.duration, 
+                        currentSubObs.type, 
+                        currentWall.indexes, 
+                        currentWall.marginL, 
+                        currentWall.marginR, 
                         wallcolors, 4));
                     break;
                 default:
@@ -497,12 +502,12 @@ void ExagonGameProcess::spawnWallsByObstacle(float time){
                         (GEnginePH, 
                         &Shader1, 
                         &center, 
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).duration,
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).factor,
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).type, 
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).indexes, 
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginL, 
-                        obstacleData->at(obsID).anims.at(obstacle.getNoAnim()).wall.at(obstacle.getNoWall()).marginR, 
+                        currentSubObs.duration,
+                        currentSubObs.factor,
+                        currentSubObs.type, 
+                        currentWall.indexes, 
+                        currentWall.marginL, 
+                        currentWall.marginR, 
                         wallcolors, 4));
                     break;  
             }  
