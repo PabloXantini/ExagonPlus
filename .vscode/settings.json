@@ -75,7 +75,8 @@
         "unordered_map": "cpp",
         "xhash": "cpp",
         "array": "cpp",
-        "codecvt": "cpp"
+        "codecvt": "cpp",
+        "unordered_set": "cpp"
     },
     "cmake.useCMakePresets": "never",
     "cmake.ignoreCMakeListsMissing": true

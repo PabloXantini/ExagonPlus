@@ -37,9 +37,16 @@ class BG{
         float radius=1.2f;                              //Es para setear el largo del escenario
         std::vector<RGBColor> pcolors={};               //Gama de colores
         //Transformaciones
+        //Rotaciones globales
+        float BGMinRotX=-30.0f;
+        float BGMaxRotX=30.0f;
+        float BGMinRotY=-30.0f;
+        float BGMaxRotY=30.0f;
         float BGRotX=0.0f;
         float BGRotY=0.0f;
         float BGRotZ=0.0f;
+        //Escalado global
+        //Modelo
         glm::mat4 model = glm::mat4(1.0f);
         //Objectos de referencia
         Engine* engine;
@@ -348,8 +355,10 @@ class BG{
             BGRotX+=step*RX;
             BGRotY+=step*RY;
             BGRotZ+=step*RZ;
-            rot = glm::rotate(rot, glm::radians(BGRotX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
-            rot = glm::rotate(rot, glm::radians(BGRotY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
+            float FinalRotX = std::clamp(BGRotX, BGMinRotX, BGMaxRotX);
+            float FinalRotY = std::clamp(BGRotY, BGMinRotY, BGMaxRotY);
+            rot = glm::rotate(rot, glm::radians(FinalRotX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
+            rot = glm::rotate(rot, glm::radians(FinalRotY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
             rot = glm::rotate(rot, glm::radians(BGRotZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
             ShaderBG->setMat4("Rotation",rot);
         }
