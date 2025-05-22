@@ -41,17 +41,19 @@ class CompleteWall {
             for(auto& index : indexes){
                 //Condicion que siempre se aplica cuando los espacios estan llenos
                 if(manyWalls&&index==exit) continue;
-                walls.emplace_back(engine, shader, center, index, marginL, marginR, timesto, setColorPattern());
+                walls.emplace_back(engine, shader, center, index, marginL, marginR, timesto, setColorPattern(index));
             }
         }
         /*
             Estalbece un color en carrusel
         */
-        std::vector<RGBColor> setColorPattern(){
+        std::vector<RGBColor> setColorPattern(unsigned int pos){
             std::vector<RGBColor> colors;
             if (wallcolorsc.empty()) return colors = {{0.0f, 0.0f, 0.0f}};
-            std::rotate(wallcolorsc.begin(), wallcolorsc.begin()+1, wallcolorsc.end());
-            return wallcolorsc;
+            colors = wallcolorsc;
+            unsigned int offset = pos % colors.size();
+            std::rotate(colors.begin(), colors.begin()+offset, colors.end());
+            return colors;
         }
     public:
         CompleteWall()=default;
