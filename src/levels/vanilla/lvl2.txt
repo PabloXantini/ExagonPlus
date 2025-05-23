@@ -1,0 +1,283 @@
+SONG
+levels/songs/RisingSun.mp3
+
+LEVEL_SEQUENCE
+1 30.0
+2 60.0
+1 90.0
+
+PHASE 1
+
+CONFIG
+
+SIDES 6
+RITHM_PULSING           YES
+COLOR_SWAP_RATIO        1.0
+POLL_SWITCHING ROTX     CYCLIC
+POLL_SWITCHING ROTY     CYCLIC
+POLL_SWITCHING ROTZ     RANDOM
+POLL_SWITCHING ANIM BG  RANDOM PROBABILISTIC    25
+POLL_SWITCHING ANIM CAM RANDOM INTERVAL         3
+
+ENDCONFIG
+
+MAINCOLORS
+0.239   0.082   0.149
+0.259   0.22    0.09
+0.2     0.094   0.024
+
+WALLCOLORS
+1.0     0.667   0.149
+1.0     0.62    0.031
+
+POLLTIME ROT
+4.0     5.0     4.5
+
+POLLDROT
+X 4.0    -4.0
+Y 0.0     1.5    -1.5
+Z 90.0   -90.0   120.0  -120.0   150.0  -150.0
+
+POLLANIM BG
+SOFTCHANGESIDE 5 2.0 LINEAR
+SOFTCHANGESIDE 6 2.0 LINEAR
+SOFTCHANGESIDE 8 2.5 EASEINOUT 2.0
+SOFTCHANGESIDE 3 2.5 EASEINOUT 2.0
+
+POLLANIM CAM
+SEQUENCE
+CAMZ 2.5 0.5 EASEOUT 2.0
+CAMZ 2.0 2.0 EASEIN 2.0
+ENDSEQUENCE
+SEQUENCE
+CAMZ 2.5 0.25 EASEOUT 2.0
+CAMZ 2.0 1.0 EASEIN 2.0
+ENDSEQUENCE
+
+EVENTS
+27.0 ROTZ 400.0 3.0
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+0 2 4   0.1     0.1
+X 3
+1 3 5   0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+0 1 2 3 4   0.1     0.1
+X 5
+0 1 3 4 5   0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+1 2 3 4 5   0.1     0.1
+X 5
+0 1 2 4 5   0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+0 2 3 4 5   0.1     0.1
+X 5
+0 1 2 3 5   0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+0 2 4   0.1     0.1
+X 3
+1 3 5   0.1     0.1
+X 3
+0 2 4   0.1     0.1
+X 3
+1 4     0.1     0.1
+1 4     0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+0 1 2 3 4   0.1     0.1
+X 2
+0 1 2 3 5   0.1     0.1
+X 2
+0 1 2 4 5   0.1     0.1
+X 2
+0 1 3 4 5   0.1     0.1
+X 2
+0 2 3 4 5   0.1     0.1
+X 2
+1 2 3 4 5   0.1     0.1
+X 2
+0 1 2 3 4   0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+0 1 2 3 4   0.1     0.1
+X 2
+1 2 3 4 5   0.1     0.1
+X 2
+0 2 3 4 5   0.1     0.1
+X 2
+0 1 3 4 5   0.1     0.1
+X 2
+0 1 2 4 5   0.1     0.1
+X 2
+0 1 2 3 5   0.1     0.1
+X 2
+0 1 2 3 4   0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+0 1 2 3 4   0.1     0.1
+0           0.1     0.1
+0           0.1     0.1
+0           0.1     0.1
+0           0.1     0.1
+0           0.1     0.1
+0 2 3 4 5   0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+0 1 3 4 5   0.1     0.1
+3           0.1     0.1
+3           0.1     0.1
+3           0.1     0.1
+3           0.1     0.1
+3           0.1     0.1
+0 1 2 3 5   0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+1 2 3 4     0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+0 1 4 5     0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+1 2 3 4     0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+0 1 4 5     0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+1 2 3 4     0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+1           0.1     0.1
+0 1 4 5     0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+1 2 3 4     0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+0 1 4 5     0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+1 2 3 4     0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+0 1 4 5     0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+1 2 3 4     0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+4           0.1     0.1
+0 1 4 5     0.1     0.1
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+OBS
+ANIM
+3.75 LINEAR
+WALLDATA
+0 1 3 4    0.1     0.1
+0 3        0.1     0.1
+0 3        0.1     0.1
+0 3        0.1     0.1
+0 2 3 5    0.1     0.1
+0 3        0.1     0.1
+0 3        0.1     0.1
+0 3        0.1     0.1
+0 1 3 4    0.1     0.1
+0 3        0.1     0.1
+0 3        0.1     0.1
+0 3        0.1     0.1
+0 2 3 5    0.1     0.1  
+X 5
+ENDWALLDATA
+ENDANIM
+ENDOBS
+
+ENDPHASE

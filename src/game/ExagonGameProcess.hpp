@@ -91,6 +91,10 @@ class ExagonGameProcess {
         //Ratio de aparacion de obstaculos
         float WALL_TILE_SPACE = 0.1f;
         float WALLS_SPAWN_RATIO = 0.06f;
+        //Temp
+        float MULTIPLIER = 1.0f;
+        float GROWTH_RATE = 30.0f;
+        float GROWTH_MULTIPLIER = 0.5f; 
         //ID obstaculo
         unsigned int obsID = 0;
         //Jugador
@@ -117,6 +121,8 @@ class ExagonGameProcess {
         cbChronometer* C1;  //Generacion de obstaculos
         Chronometer* T1;    //Cosas random
         Chronometer* T2;    //Cambio de color
+        //Pruebas
+        Chronometer* T3;
         //Punteros de animaciones
         //std::vector<Animation*> animations={};
         //Paredes
@@ -133,11 +139,11 @@ class ExagonGameProcess {
         void changeToPreviousLevel();
         void linkLevel();
         bool loadLevel();
-        void startLevel();
+        void startLevel(float& time);
         void freeLevel();
-        void restartLevel();
+        void restartLevel(float& time);
         void PlayLevel(float dtime, float time);
-        void handleGamePlayEvents(float deltaTime);
+        void handleGamePlayEvents(float deltaTime, float& time);
         void switchRotBG(float time);
         void switchObstacle();
         float chooseInPoll(std::vector<float>& poll, SwitchMode& mode, unsigned int& ptr);
@@ -217,7 +223,7 @@ void ExagonGameProcess::run(){
     float time = gameTime.getTime(); //Tiempo en general
     float dtime = gameTime.getDeltaTime();
     //std::cout<<time<<" "<<dtime<<"\n";
-    handleGamePlayEvents(dtime);
+    handleGamePlayEvents(dtime, time);
     PlayLevel(dtime, time);
 }
 void ExagonGameProcess::show(){
@@ -245,7 +251,7 @@ void ExagonGameProcess::PlayLevel(float dtime, float time){
         }
         //Cosas que se hacen siempre
         background.changeBGHue(time, hueFactor, hueSpeed);
-        background.rotateBG(dtime, deltaRotX, deltaRotY, deltaRotZ);
+        background.rotateBG(dtime, deltaRotX, deltaRotY, MULTIPLIER*deltaRotZ);
         //Cosas de pared
         //WallTest->execute(dtime);
         //Cambio de parametros
@@ -268,6 +274,11 @@ void ExagonGameProcess::PlayLevel(float dtime, float time){
             background.swapColors();
             //center.swapColors();
         }
+        //Pruebas
+        if(T3->track(time)){
+            MULTIPLIER+=GROWTH_MULTIPLIER;
+        }
+        
         /*
         if(time>=8.0f){
             a1->execute(dtime); 
@@ -332,13 +343,14 @@ void ExagonGameProcess::linkLevel(){
     this->pollRotZ=currentLevel.phaseData[0].pollDRot.pollRotZ;
 }
 //Arranca un nivel antes de empezar
-void ExagonGameProcess::startLevel(){
+void ExagonGameProcess::startLevel(float& time){
     //Esto estara de forma temporal
     if(!loadLevel()) return;
     //=============================//
     //Elegir las variables iniciales
     T1=new Chronometer(randIntervalR.at(0));   //Rotaciones
     T2=new Chronometer(COLOR_SWAP_RATIO);     //Cambio de color
+    T3=new Chronometer(GROWTH_RATE);
     deltaRotX=chooseInPoll(pollRotX, rotMode.modeX, ptrRotX);
     deltaRotY=chooseInPoll(pollRotY, rotMode.modeY, ptrRotY);
     deltaRotZ=chooseInPoll(pollRotZ, rotMode.modeZ, ptrRotZ);
@@ -351,10 +363,12 @@ void ExagonGameProcess::startLevel(){
     C1->restart();
     T1->restart();
     T2->restart();
-    gameTime.restart();
+    T3->restart();
+    gameTime.restart(time);
     loadLevelFinished=true;
 }
-void ExagonGameProcess::restartLevel(){
+void ExagonGameProcess::restartLevel(float& time){
+    MULTIPLIER = 1.0f;
     //Elimina las Walls restantes
     completeWalls.clear();
     obstacle.restart();
@@ -365,21 +379,24 @@ void ExagonGameProcess::restartLevel(){
     C1->restart();
     T1->restart();
     T2->restart();
-    gameTime.restart();
+    T3->restart();
+    gameTime.restart(time);
 }
 void ExagonGameProcess::freeLevel(){
     songPlayer.discardSong();
     background.free();
     center.free();
     player.free();
+    MULTIPLIER = 1.0f;
     completeWalls.clear();
     obstacle.restart();
     this->obsID=0;
     delete T1;
     delete T2;
+    delete T3;
 }
 //Manejador de eventos
-void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
+void ExagonGameProcess::handleGamePlayEvents(float deltaTime, float& time){
     switch(STATE){
         case GAME_ACTIVE:
             //Nivel - GamePlay
@@ -403,17 +420,17 @@ void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
             if(GEnginePH->consumeKey(257)||GEnginePH->consumeKey(335)){//[ENTER] Empezar nivel
                 STATE = GAME_ACTIVE;
                 std::cout<<"ReStart!"<<std::endl;
-                restartLevel();
+                restartLevel(time);
             }
             break;
         case GAME_MENU:
             if(GEnginePH->consumeKey(262)){//[->] Derecha
                 changeToNextLevel();
-                std::cout<<"Apunta al siguiente nivel "<<gameLevels.at(SELECTED_LEVEL_IDX).path<<std::endl;
+                std::cout<<"Apunta al siguiente nivel "<<gameLevels.at(SELECTED_LEVEL_IDX).name<<" "<<gameLevels.at(SELECTED_LEVEL_IDX).path<<std::endl;
             }
             if(GEnginePH->consumeKey(263)){//[<-] Izquierda
                 changeToPreviousLevel();
-                std::cout<<"Apunta al nivel anterior "<<gameLevels.at(SELECTED_LEVEL_IDX).path<<std::endl;
+                std::cout<<"Apunta al nivel anterior "<<gameLevels.at(SELECTED_LEVEL_IDX).name<<" "<<gameLevels.at(SELECTED_LEVEL_IDX).path<<std::endl;
             }
             if(GEnginePH->consumeKey(256)){//[ESCAPE] Volver al inicio
                 STATE = GAME_START;
@@ -422,7 +439,7 @@ void ExagonGameProcess::handleGamePlayEvents(float deltaTime){
             if(GEnginePH->consumeKey(257)||GEnginePH->consumeKey(335)){//[ENTER] Empezar nivel
                 STATE = GAME_ACTIVE;
                 std::cout<<"Start!"<<std::endl;
-                startLevel();
+                startLevel(time);
             }
             break;
         case GAME_START:

@@ -30,7 +30,8 @@ class Timer {
             return deltaTime;
         }
         //Setters
-        void restart() {
+        void restart(float& t) {
+            t=0.0f;
             time=0.0f;
             glfwSetTime(0.0f);
             temp=glfwGetTime();
@@ -47,7 +48,7 @@ class Chronometer {
         }
         //Setters
         void setTTime(float totime){
-            tracktime=totime;
+            tracktime = totime;
         }
         //Me va servir para checar
         bool track(float time){

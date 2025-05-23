@@ -355,10 +355,12 @@ class BG{
             BGRotX+=step*RX;
             BGRotY+=step*RY;
             BGRotZ+=step*RZ;
-            float FinalRotX = std::clamp(BGRotX, BGMinRotX, BGMaxRotX);
-            float FinalRotY = std::clamp(BGRotY, BGMinRotY, BGMaxRotY);
-            rot = glm::rotate(rot, glm::radians(FinalRotX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
-            rot = glm::rotate(rot, glm::radians(FinalRotY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
+            //Clampeo de lo valores
+            BGRotX = std::clamp(BGRotX, BGMinRotX, BGMaxRotX);
+            BGRotY = std::clamp(BGRotY, BGMinRotY, BGMaxRotY);
+            //Transforma
+            rot = glm::rotate(rot, glm::radians(BGRotX), glm::vec3(1.0,0.0,0.0)); //Rotation en el eje X
+            rot = glm::rotate(rot, glm::radians(BGRotY), glm::vec3(0.0,1.0,0.0)); //Rotation en el eje Y
             rot = glm::rotate(rot, glm::radians(BGRotZ), glm::vec3(0.0,0.0,1.0)); //Rotation en el eje Z
             ShaderBG->setMat4("Rotation",rot);
         }
