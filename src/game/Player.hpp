@@ -128,7 +128,9 @@ class Player : public BG {
             //Posicion verdadera
             setPos();
             //SOLO DEBUG
+            /*
             IDs.push_back(engine->createBuffer(poses,NULL,3,std::vector<unsigned int>{3}));
+            */
         }
         //Getters
         unsigned int getID(unsigned int index) const {
@@ -161,9 +163,11 @@ class Player : public BG {
             ShaderPlayer->setMat4("Model", model);
             engine->renderPolygon(ShaderPlayer, this->getID(0), indexes.size());
             //SOLO DEBUG
+            /*
             ShaderPlayer->setInt("ObjectType", 2);
             ShaderPlayer->setMat4("Model", glm::mat4(1.0f));
             engine->renderLasso(ShaderPlayer, this->getID(1), poses.size());
+            */
         }
         /*
             Mover
@@ -171,7 +175,9 @@ class Player : public BG {
         void move(float step) {
             rotatePlayerPos(step);
             //SOLO DEBUG
+            /*
             engine->modBuffer(this->getID(1), poses, NULL);
+            */
         }
         /*
             Colisiona
@@ -179,7 +185,9 @@ class Player : public BG {
         void collide(glm::vec3 direction) {
             collidePlayerPos(direction);
             //SOLO DEBUG
+            /*
             engine->modBuffer(this->getID(1), poses, NULL);
+            */
         }
         /*
             Libera memoria de GPU
@@ -187,7 +195,9 @@ class Player : public BG {
         void free(){
             engine->eliminateBuffer(this->getID(0));
             //SOLO DEBUG
+            /*
             engine->eliminateBuffer(this->getID(1));
+            */
         }
 };
 

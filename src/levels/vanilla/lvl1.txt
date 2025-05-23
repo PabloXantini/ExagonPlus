@@ -28,7 +28,7 @@ MAINCOLORS
 
 WALLCOLORS
 0.255   0.863   1.0
-0.212   0.78    0.91
+0.31    0.875   1.0
 
 POLLTIME ROT
 5.0     7.0     6.0
