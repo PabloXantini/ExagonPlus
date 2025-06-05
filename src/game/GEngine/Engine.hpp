@@ -5,8 +5,8 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+//#include <glm/gtc/matrix_transform.hpp>
+//#include <glm/gtc/type_ptr.hpp>
 
 #include "Buffer.hpp"
 #include "Shader.hpp"
@@ -133,7 +133,7 @@ class Engine {
 
 //Callbacks
 //Pantalla
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+inline void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     if (height == 0) return;
     glViewport(0, 0, width, height);
     void* ptr = glfwGetWindowUserPointer(window);
@@ -143,7 +143,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     }
 }
 //Teclado
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
+inline void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode) {
     //std::cout<<"Tecla: "<<key<<" Action: "<<action<<std::endl;
     void* ptr = glfwGetWindowUserPointer(window);
     if(ptr){
@@ -161,7 +161,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         }
     }
 }
-
+/*
 Engine::Engine(){
     std::cout<<"Oh me creooo, dice Engine o Motor"<<std::endl;
 }
@@ -400,5 +400,5 @@ void Engine::close(){
     clearBuffers();
     clearShaders();
 }
-
+*/
 #endif

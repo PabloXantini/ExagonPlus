@@ -1,8 +1,6 @@
 #ifndef AUDIO_PROCESSOR_H
 #define AUDIO_PROCESSOR_H
 
-//#include <AL/al.h>
-//#include <AL/alc.h>
 #include <Audio/dr_mp3.h>
 
 #include <cstdint>

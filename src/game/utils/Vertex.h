@@ -13,7 +13,7 @@ struct WVertex3D {
 /*
     Aniade un vertice con peso
 */
-void pushWVertex(std::vector<WVertex3D>& vertexs, Coor3D coor1, RGBColor color1, Coor3D coor2, RGBColor color2){
+inline void pushWVertex(std::vector<WVertex3D>& vertexs, Coor3D coor1, RGBColor color1, Coor3D coor2, RGBColor color2){
     WVertex3D vertex;
     vertex.Pos = coor1;
     vertex.Color = color1;
@@ -24,19 +24,19 @@ void pushWVertex(std::vector<WVertex3D>& vertexs, Coor3D coor1, RGBColor color1,
 /*
     Aniade un Color
 */
-void putColor(WVertex3D& vertex, RGBColor color){
+inline void putColor(WVertex3D& vertex, RGBColor color){
     vertex.Color = color;
 }
-void putToColor(WVertex3D& vertex, RGBColor color){
+inline void putToColor(WVertex3D& vertex, RGBColor color){
     vertex.toColor = color;
 }
 /*
     Aniade una Posicion
 */
-void putPosition(WVertex3D& vertex, Coor3D coor){
+inline void putPosition(WVertex3D& vertex, Coor3D coor){
     vertex.Pos = coor;
 }
-void putToPosition(WVertex3D& vertex, Coor3D coor){
+inline void putToPosition(WVertex3D& vertex, Coor3D coor){
     vertex.toPos = coor;
 }
 

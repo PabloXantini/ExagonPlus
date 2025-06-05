@@ -4,6 +4,9 @@
 #include <windows.h>
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <fstream>
@@ -42,7 +45,8 @@ class Shader {
         //Quitar el shader
         void kill();
 };
-
+        
+/*
 Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     //Espacios para alojar archivos(Nombre y Datos)
     std::string vertexCode;
@@ -96,7 +100,6 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath) {
     glDeleteShader(vertex);
     glDeleteShader(fragment);
 }
-
 Shader::Shader(int vresID, int fresID) {
     std::string vertexCode = load(vresID);
     std::string fragmentCode = load(fresID);
@@ -217,5 +220,5 @@ std::string Shader::load(int resourceID) {
 
     return std::string(data, size);
 }
-
+*/
 #endif

@@ -418,8 +418,14 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   <ItemGroup>
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\MainFrame.cpp" />
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\AEngine\AudioProcessor.cpp" />
-    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\AEngine\Engine.cpp" />
-    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\glad.c" />
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\AEngine\Engine.cpp">
+      <ObjectFileName>$(IntDir)/src/game/AEngine/Engine.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\GEngine\Engine.cpp">
+      <ObjectFileName>$(IntDir)/src/game/GEngine/Engine.cpp.obj</ObjectFileName>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\GEngine\Shader.cpp" />
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\GEngine\glad.c" />
     <ResourceCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\resource.rc" />
   </ItemGroup>
   <ItemGroup />

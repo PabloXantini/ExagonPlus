@@ -29,8 +29,8 @@ class Animation {
         bool hasFinished=false;
         bool executing=false;
         AnimType type;
-        std::function<void(Animation*, float, unsigned int)> callback;           //Cambio de BG
-        std::function<void(Animation*, float)> callback2;               //General
+        std::function<void(Animation*, float, unsigned int)> callbackt;           //Cambio de BG
+        std::function<void(Animation*, float)> callback;               //General
         //Menos relevantes
         unsigned int newsides;
         float toscale;
@@ -51,22 +51,24 @@ class Animation {
             if(ease>1) return (float)(pow(t,ease)/(pow(t,ease)+pow(1.0f-t,ease)));
             return 0.0f;
         }
-    public:     
+    public:
+        //Ya no voy a utilizarlo     
         Animation(unsigned int sides, float duration, std::function<void(Animation*, float, unsigned int)> cb, AnimType type){
-            callback=cb;
+            callbackt=cb;
             newsides=sides;
             this->duration=duration;
             this->type=type;
             init();
         };
         Animation(float duration, std::function<void(Animation*, float)> cb, AnimType type){
-            callback2=cb;
+            callback=cb;
             this->duration=duration;
             this->type=type;
             init();
         };
+        //Ya no voy a utilizarlo
         Animation(unsigned int sides, float duration, float easing, std::function<void(Animation*, float, unsigned int)> cb, AnimType type){
-            callback=cb;
+            callbackt=cb;
             newsides=sides;
             this->duration=duration;
             this->easing=easing;
@@ -74,7 +76,7 @@ class Animation {
             init();
         };
         Animation(float duration, float easing, std::function<void(Animation*, float)> cb, AnimType type){
-            callback2=cb;
+            callback=cb;
             this->duration=duration;
             this->easing=easing;
             this->type=type;
@@ -100,35 +102,36 @@ class Animation {
             switch(type){
                 case AnimType::BGLINEAR:
                     delta=linear(progress);
-                    callback(this, delta, newsides);
+                    callbackt(this, delta, newsides);
                     break;
                 case AnimType::BGEASEIN:
                     delta=ease_in(progress, easing);
-                    callback(this, delta, newsides);
+                    callbackt(this, delta, newsides);
                     break;
                 case AnimType::BGEASEOUT:
                     delta=ease_out(progress, easing);
-                    callback(this, delta, newsides);
+                    callbackt(this, delta, newsides);
                     break;
                 case AnimType::BGEASEINOUT:
                     delta=ease_in_out(progress, easing);
-                    callback(this, delta, newsides);
+                    callbackt(this, delta, newsides);
                     break;
+                //Vamo a enfocarnos en esto a partir de ahora
                 case AnimType::LINEAR:
                     delta=linear(progress);
-                    callback2(this, delta);
+                    callback(this, delta);
                     break;
                 case AnimType::EASEIN:
                     delta=ease_in(progress, easing);
-                    callback2(this, delta);
+                    callback(this, delta);
                     break;
                 case AnimType::EASEOUT:
                     delta=ease_out(progress, easing);
-                    callback2(this, delta);
+                    callback(this, delta);
                     break;
                 case AnimType::EASEINOUT:
                     delta=ease_in_out(progress, easing);
-                    callback2(this, delta);
+                    callback(this, delta);
                     break;
             }
             //Condicion de fin

@@ -12,7 +12,7 @@ struct RGBColor {
 /*
     Añade un color a la mezcla de vertices, en base a un vector determinado
 */
-void pushColor(std::vector<float>&vertexs, RGBColor color){
+inline void pushColor(std::vector<float>&vertexs, RGBColor color){
     vertexs.push_back(color.R);
     vertexs.push_back(color.G);
     vertexs.push_back(color.B);
@@ -20,13 +20,13 @@ void pushColor(std::vector<float>&vertexs, RGBColor color){
 /*
     Añade un color a la mezcla de vertices, en base a un vector de Colores determinado
 */
-void pushColor(std::vector<RGBColor>&colors, RGBColor color){
+inline void pushColor(std::vector<RGBColor>&colors, RGBColor color){
     colors.push_back(color);
 }
 /*
     Añade un color a la mezcla de vertices, dependiendo del desplazamiento
 */
-void insertColorAt(std::vector<float>&vertexs, RGBColor color, int offset){
+inline void insertColorAt(std::vector<float>&vertexs, RGBColor color, int offset){
     vertexs.insert(vertexs.begin()+offset, color.R);
     vertexs.insert(vertexs.begin()+offset+1, color.G);
     vertexs.insert(vertexs.begin()+offset+2, color.B);

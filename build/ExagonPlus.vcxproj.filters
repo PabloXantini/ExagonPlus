@@ -10,7 +10,13 @@
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\AEngine\Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\glad.c">
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\GEngine\Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\GEngine\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\GEngine\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
