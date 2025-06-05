@@ -20,6 +20,7 @@ file(GLOB_RECURSE SOURCES
     src/game/GEngine/glad.c
     src/game/GEngine/Engine.cpp
     src/game/GEngine/Shader.cpp
+    src/game/GEngine/ImageProcessor.cpp
     src/game/AEngine/Engine.cpp
     src/game/AEngine/AudioProcessor.cpp)
 

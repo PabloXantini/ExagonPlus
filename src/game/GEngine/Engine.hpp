@@ -11,7 +11,7 @@
 #include "Buffer.hpp"
 #include "Shader.hpp"
 //#include "../../resource.h"
-#include "../../ImageProcessor.cpp"
+#include "ImageProcessor.hpp"
 #include "../utils/Color.h"
 #include "../utils/Position.h"
 

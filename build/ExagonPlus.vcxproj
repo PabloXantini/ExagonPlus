@@ -426,6 +426,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ClCompile>
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\GEngine\Shader.cpp" />
     <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\GEngine\glad.c" />
+    <ClCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\game\GEngine\imageProcessor.cpp" />
     <ResourceCompile Include="C:\Users\USER\SideProjects\CPrograms\ExagonPlus\src\resource.rc" />
   </ItemGroup>
   <ItemGroup />
