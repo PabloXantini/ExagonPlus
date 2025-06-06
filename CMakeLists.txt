@@ -11,9 +11,7 @@ if(MSVC)
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/include/AL)
-include_directories(${PROJECT_SOURCE_DIR}/include/GLFW)
-include_directories(${PROJECT_SOURCE_DIR}/include/FreeImage)
+
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 file(GLOB_RECURSE SOURCES
     src/MainFrame.cpp

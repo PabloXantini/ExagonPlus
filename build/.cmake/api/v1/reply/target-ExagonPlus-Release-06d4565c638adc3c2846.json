@@ -30,43 +30,25 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 31,
+				"line" : 29,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 17,
+				"line" : 15,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 33,
+				"line" : 31,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
 				"line" : 13,
-				"parent" : 0
-			},
-			{
-				"command" : 3,
-				"file" : 0,
-				"line" : 14,
-				"parent" : 0
-			},
-			{
-				"command" : 3,
-				"file" : 0,
-				"line" : 15,
-				"parent" : 0
-			},
-			{
-				"command" : 3,
-				"file" : 0,
-				"line" : 16,
 				"parent" : 0
 			}
 		]
@@ -85,18 +67,6 @@
 				{
 					"backtrace" : 4,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/AL"
-				},
-				{
-					"backtrace" : 6,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
-				},
-				{
-					"backtrace" : 7,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/FreeImage"
 				}
 			],
 			"language" : "CXX",
@@ -130,18 +100,6 @@
 				{
 					"backtrace" : 4,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/AL"
-				},
-				{
-					"backtrace" : 6,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
-				},
-				{
-					"backtrace" : 7,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/FreeImage"
 				}
 			],
 			"language" : "C",
@@ -162,18 +120,6 @@
 				{
 					"backtrace" : 4,
 					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/AL"
-				},
-				{
-					"backtrace" : 6,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/GLFW"
-				},
-				{
-					"backtrace" : 7,
-					"path" : "C:/Users/USER/SideProjects/CPrograms/ExagonPlus/include/FreeImage"
 				}
 			],
 			"language" : "RC",

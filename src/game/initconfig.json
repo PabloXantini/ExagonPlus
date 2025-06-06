@@ -1,0 +1,14 @@
+{
+    "OpenGL": {
+        "major_version": 3,
+        "minot_version": 3 
+    },
+    "windows":[
+        {
+            "title": "ExagonPlus",
+            "width": 800,
+            "height": 600,
+            "fullscreen": true
+        }
+    ]
+}

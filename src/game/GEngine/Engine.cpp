@@ -3,7 +3,8 @@
 Engine::Engine(){
     std::cout<<"Oh me creooo, dice Engine o Motor"<<std::endl;
 }
-//Private methods
+//PRIVATE METHODS
+//Este metodo formaria parte de ResourceManager
 GLFWimage Engine::load_icon(int resID) {
     GLFWimage image;
     int width, height;
@@ -20,6 +21,38 @@ bool Engine::linkGLAD(){
         return false;
     }
     return true;
+}
+bool readJSONConfig(json& config){
+    std::ifstream file("../initconfig.json");
+    if(!file.is_open()){
+        return false;
+    }
+    try{
+        config = json::parse(file);
+    }catch(const json::parse_error& exception){
+        std::cerr << "Error al parsear JSON: "<<exception.what()<<std::endl;
+        return false;
+    }
+    return true;
+}
+//PUBLIC METHODS
+//Inicialization
+bool Engine::init(){
+    glfwInit();
+    //Variables preconfiguracion
+    json config;
+    if(!readJSONConfig(config)){
+        std::cout<<"Failed to read JSON: Exit"<<std::endl;
+        return false;
+    }
+    int version, subversion;
+    version = config["OpenGL"]["major_version"];
+    subversion = config["OpenGL"]["minor_version"];
+    //Setea la version de OpenGL
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, version);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, subversion);
+    //Modo de uso de openGL moderno
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 //Window Methods
 //Crea una ventana
