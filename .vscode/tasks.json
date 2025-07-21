@@ -57,6 +57,41 @@
         },
         {
             "type": "cppbuild",
+            "dependsOn": [
+                "Compilar recursos"
+            ],
+            "label": "C/C++: g++.exe compilar archivo activo",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+                "",
+                "-g",
+                "-std=c++17",
+                "-I",
+                "../include",
+                "-L",
+                "../lib",
+                "${workspaceFolder}/src/PEngine/PEngineMain.cpp",
+                "${workspaceFolder}/src/PEngine/ResourceManager/ResourceManager.cpp",
+                "${workspaceFolder}/src/PEngine/GraphicsCore/GraphicsCore.cpp",
+                "${workspaceFolder}/src/MainFrameT.cpp",
+                "${workspaceFolder}/src/resource.o",
+                "-lglfw3dll",
+                "-lFreeImage",
+                "-lOpenAL32",
+                "-o",
+                "${workspaceFolder}/ExagonPlus.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Tarea generada por el depurador."
+        },
+        {
+            "type": "cppbuild",
             "label": "C/C++: cl.exe compilar archivo activo",
             "command": "cl.exe",
             "args": [
