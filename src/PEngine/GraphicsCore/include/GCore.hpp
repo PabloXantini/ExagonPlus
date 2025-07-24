@@ -1,6 +1,8 @@
 #ifndef G_CORE_HPP
 #define G_CORE_HPP
 
+#include "../Desktop/WindowManager.hpp"
+
 #include <iostream>
 
 class IBufferManager {
@@ -14,10 +16,11 @@ class IGCore {
     protected:
         IBufferManager* bufferManager; 
     public:
-        IGCore(): 
-            bufferManager(bufferManager)
-        {};
+        IGCore(){};
         virtual ~IGCore(){};
+        virtual WindowManager* getWinManager(){
+            return nullptr;
+        }
         IBufferManager* allocate(){
             return bufferManager;
         };

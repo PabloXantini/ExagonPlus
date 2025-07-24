@@ -73,6 +73,8 @@
                 "${workspaceFolder}/src/PEngine/PEngineMain.cpp",
                 "${workspaceFolder}/src/PEngine/ResourceManager/ResourceManager.cpp",
                 "${workspaceFolder}/src/PEngine/GraphicsCore/GraphicsCore.cpp",
+                "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/glad.c",
+                "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/WindowManager.cpp",
                 "${workspaceFolder}/src/MainFrameT.cpp",
                 "${workspaceFolder}/src/resource.o",
                 "-lglfw3dll",

@@ -5,6 +5,8 @@ int main(){
     printf("Me ejecuto\n");
     PEngine engine;
     engine.init();
-    engine.getGraphics().allocate()->decirAlgo();
+    //engine.getGraphics().allocate()->decirAlgo();
+    engine.getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus");
+    engine.getGraphics().getWinManager()->createWindow(1200, 800, "ExagonPlus");
     return 0;
 };

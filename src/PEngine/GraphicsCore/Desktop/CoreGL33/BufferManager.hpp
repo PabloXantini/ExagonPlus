@@ -1,7 +1,7 @@
 #ifndef BUFFER_MANAGER_HPP
 #define BUFFER_MANAGER_HPP
 
-#include "../include/GCore.hpp"
+#include "../../include/GCore.hpp"
 
 //#include <iostream>
 
