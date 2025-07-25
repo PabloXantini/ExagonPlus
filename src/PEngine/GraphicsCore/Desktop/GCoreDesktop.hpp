@@ -10,7 +10,7 @@ class GCoreDesktop: public IGCore {
         WindowManager* windowManager;
     public:
         GCoreDesktop(){
-            windowManager = new WindowManager();
+            //windowManager = new WindowManager();
             std::cout<<"GCoreDesktop ha sido instanciado"<<std::endl;
         }
         ~GCoreDesktop(){

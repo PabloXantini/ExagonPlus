@@ -3,6 +3,7 @@
 
 #include "../GCoreDesktop.hpp"
 
+#include "WRendererGL33.hpp"
 #include "BufferManager.hpp"
 
 class GCoreGL33: public GCoreDesktop {
@@ -10,13 +11,16 @@ class GCoreGL33: public GCoreDesktop {
     public:
         GCoreGL33(){
             std::cout<<"Este codigo del motor grafico debe haberse inicializado"<<std::endl;
-            windowManager->init(3, 3);
+            windowManager = new WindowRenderer();
             bufferManager = new BufferManager();
+            
+            windowManager->init(3, 3);
         }
         ~GCoreGL33(){
             delete bufferManager;
             std::cout<<"Este codigo del motor grafico debe haberse limpiado"<<std::endl;
         }
+        
 };
 
 #endif

@@ -25,6 +25,7 @@ Window* WindowManager::createWindow(unsigned int width, unsigned int height, con
             height = mode->height;
         }
     }
+    //Genera una ventana
     newWindow = new Window(width, height, title, monitorSelected, windowShared);
     if(!GLADLinked){
         GLADLinked = linkGLAD();
@@ -34,6 +35,17 @@ Window* WindowManager::createWindow(unsigned int width, unsigned int height, con
         }
     }
     return newWindow;
+}
+
+void WindowManager::runAsOnlyWindow(Window* mainWindow){
+    setGLconfig(mainWindow);
+    glfwSwapInterval(1);
+    while(!glfwWindowShouldClose(mainWindow->getWindowReference())){
+        glfwPollEvents();
+        renderInWindow();
+        glfwSwapBuffers(mainWindow->getWindowReference());
+    }
+    glfwTerminate();
 }
 
 bool WindowManager::linkGLAD(){
@@ -50,5 +62,13 @@ void WindowManager::checkMonitors(){
         mainMonitor = allMonitors[0];
     }else{
         mainMonitor = nullptr;
+    }
+}
+
+void doAtCloseWindow(GLFWwindow* window){
+    void* ptr = glfwGetWindowUserPointer(window);
+    if(ptr){
+        Window* concreteWindow = static_cast<Window*>(ptr);
+        delete concreteWindow;
     }
 }

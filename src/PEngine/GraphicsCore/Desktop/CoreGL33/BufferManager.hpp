@@ -10,7 +10,7 @@ class BufferManager : public IBufferManager {
         BufferManager(){
             std::cout<<"Hola, esto significa que el BufferManager se instancio correctamente"<<std::endl;
         }
-        virtual void decirAlgo() override {
+        void decirAlgo() override {
             std::cout<<"Bienvenido a la programacion, hijo de perr4"<<std::endl;
         }
 };

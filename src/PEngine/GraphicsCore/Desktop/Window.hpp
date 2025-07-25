@@ -15,26 +15,18 @@ class Window {
         const char* title;
         bool fullscreenEnabled;
         //unsigned int windowSharedID;
+    public:
+        Window(unsigned int width, unsigned int height, const char* title, GLFWmonitor* monitorSelected, Window* windowShared);
+        ~Window();
         GLFWwindow* getWindowReference(){
             return windowReference;
         }
-    public:
-        Window(int width, unsigned int height, const char* title, GLFWmonitor* monitorSelected, Window* windowShared):
-            windowSharedReference(windowShared),
-            monitorReference(monitorSelected)
-        {
-            if(windowShared){
-                windowReference = glfwCreateWindow(width, height, title, monitorSelected, windowShared->getWindowReference());
-            }else{
-                windowReference = glfwCreateWindow(width, height, title, monitorSelected, NULL);
-            }
-            if(windowReference == NULL){
-                std::cout<<"ERROR: WINDOW COULD NOT CREATED"<<std::endl;
-                glfwTerminate();
-            }
-            glfwMakeContextCurrent(windowReference);
+        unsigned int getWidth(){
+            return width;
         }
-        ~Window(){}
+        unsigned int getHeight(){
+            return height;
+        }
 };
 
 #endif

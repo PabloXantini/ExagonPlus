@@ -6,7 +6,8 @@ int main(){
     PEngine engine;
     engine.init();
     //engine.getGraphics().allocate()->decirAlgo();
-    engine.getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus");
-    engine.getGraphics().getWinManager()->createWindow(1200, 800, "ExagonPlus");
+    auto mainWindow = engine.getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus");
+    //engine.getGraphics().getWinManager()->createWindow(1200, 800, "ExagonPlus Ventana 2");
+    engine.getGraphics().getWinManager()->runAsOnlyWindow(mainWindow);
     return 0;
 };
