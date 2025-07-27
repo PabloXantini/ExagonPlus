@@ -7,10 +7,12 @@
 #include "Window.hpp"
 
 #include <iostream>
+#include <vector>
 
 class WindowManager {
     private:
         bool GLADLinked = false;
+        std::vector<Window*> windows = {};
         int monitorCount = 0;
         GLFWmonitor* mainMonitor;
         GLFWmonitor** allMonitors;

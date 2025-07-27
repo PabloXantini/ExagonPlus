@@ -1,32 +1,53 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
+#include "../include/GCore.hpp"
 #include "WindowManager.hpp"
 
 #include <iostream>
 
+class IRenderer;
+class Scene;
+
+struct WindowResolution{
+    unsigned int width;
+    unsigned int height;
+    unsigned int currentWidth;
+    unsigned int currentHeight;
+};
+
 class Window {
     private:
+        IRenderer* renderer = nullptr;
+        Scene* scene = nullptr;
+        //SpriteRenderer
         GLFWmonitor* monitorReference;
         GLFWwindow* windowReference;
         Window* windowSharedReference;
-        unsigned int width;
-        unsigned int height;
+        WindowResolution resolution;
         const char* title;
-        bool fullscreenEnabled;
-        //unsigned int windowSharedID;
+        bool shouldClose = false;
+        //bool fullscreenEnabled;
     public:
-        Window(unsigned int width, unsigned int height, const char* title, GLFWmonitor* monitorSelected, Window* windowShared);
+        Window(WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, Window* windowShared);
         ~Window();
         GLFWwindow* getWindowReference(){
-            return windowReference;
+            return this->windowReference;
         }
         unsigned int getWidth(){
-            return width;
+            return this->resolution.currentWidth;
         }
         unsigned int getHeight(){
-            return height;
+            return this->resolution.currentHeight;
         }
+        bool isShouldClose(){
+            return this->shouldClose;
+        }
+        void markAsClosed(bool value){
+            this->shouldClose = value;
+        }
+        void close();
+        void render();
 };
 
 #endif

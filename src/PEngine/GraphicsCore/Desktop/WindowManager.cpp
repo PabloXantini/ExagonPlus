@@ -16,17 +16,24 @@ bool WindowManager::init(int GLmajorVersion, int GLminorVersion){
 Window* WindowManager::createWindow(unsigned int width, unsigned int height, const char* title, bool fullscreen, unsigned int monitorIndex, Window* windowShared){
     GLFWmonitor* monitorSelected = nullptr;
     Window* newWindow;
+    WindowResolution res;
+    res.width = width;
+    res.height = height;
     if(fullscreen){
         checkMonitors();
         if (monitorIndex > 0 && monitorIndex <= (unsigned int)(monitorCount)){
             monitorSelected = allMonitors[monitorIndex-1];
             const GLFWvidmode* mode = glfwGetVideoMode(monitorSelected);
-            width = mode->width;
-            height = mode->height;
+            res.currentWidth = mode->width;
+            res.currentHeight = mode->height;
         }
+    }else{
+        res.currentWidth = width;
+        res.currentHeight = height;
     }
     //Genera una ventana
-    newWindow = new Window(width, height, title, monitorSelected, windowShared);
+    newWindow = new Window(res, title, monitorSelected, windowShared);
+    /*
     if(!GLADLinked){
         GLADLinked = linkGLAD();
         if(!GLADLinked) {
@@ -34,18 +41,54 @@ Window* WindowManager::createWindow(unsigned int width, unsigned int height, con
             return nullptr;
         }
     }
+    */
+    //*
+    if(!linkGLAD()) {
+        delete newWindow;
+        return nullptr;
+    }
+    //*/
+    windows.push_back(newWindow);
     return newWindow;
+
 }
 
 void WindowManager::runAsOnlyWindow(Window* mainWindow){
     setGLconfig(mainWindow);
     glfwSwapInterval(1);
-    while(!glfwWindowShouldClose(mainWindow->getWindowReference())){
+    while(!mainWindow->isShouldClose()){
         glfwPollEvents();
         renderInWindow();
-        glfwSwapBuffers(mainWindow->getWindowReference());
+        mainWindow->render();
     }
+    delete mainWindow;
     glfwTerminate();
+}
+
+void WindowManager::runAsVariousWindows(Window* mainWindow){
+    //De momento voy a poner esto
+    glfwSwapInterval(1);
+    while(!mainWindow->isShouldClose()){
+        for(auto window = windows.begin(); window != windows.end();){
+            glfwMakeContextCurrent((*window)->getWindowReference());
+            setGLconfig(*window);
+            renderInWindow();
+            (*window)->render();
+            if((*window)->isShouldClose()){
+                delete *window;
+                window = windows.erase(window);
+            }else{
+                ++window;
+            }
+        }
+        glfwPollEvents();
+    }
+    for (auto window = windows.begin(); window != windows.end();){
+        (*window)->close();
+        delete *window;
+        window = windows.erase(window);
+    }
+    glfwTerminate();    
 }
 
 bool WindowManager::linkGLAD(){
@@ -69,6 +112,7 @@ void doAtCloseWindow(GLFWwindow* window){
     void* ptr = glfwGetWindowUserPointer(window);
     if(ptr){
         Window* concreteWindow = static_cast<Window*>(ptr);
-        delete concreteWindow;
+        std::cout<<concreteWindow->getWidth()<<std::endl;
+        concreteWindow->markAsClosed(true);
     }
 }

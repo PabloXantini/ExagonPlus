@@ -1,21 +1,20 @@
 #include "WindowManager.hpp"
 #include "Window.hpp"
 
-Window::Window(unsigned int width, unsigned int height, const char* title, GLFWmonitor* monitorSelected, Window* windowShared):
+Window::Window(WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, Window* windowShared):
     windowSharedReference(windowShared),
     monitorReference(monitorSelected)
 {
     if(windowShared){
-        windowReference = glfwCreateWindow(width, height, title, monitorSelected, windowShared->getWindowReference());
+        windowReference = glfwCreateWindow(resolution.currentWidth, resolution.currentHeight, title, monitorSelected, windowShared->getWindowReference());
     }else{
-        windowReference = glfwCreateWindow(width, height, title, monitorSelected, NULL);
+        windowReference = glfwCreateWindow(resolution.currentWidth, resolution.currentHeight, title, monitorSelected, NULL);
     }
     if(windowReference == NULL){
         std::cout<<"ERROR: WINDOW COULD NOT CREATED"<<std::endl;
         glfwTerminate();
     }
-    this->width = width;
-    this->height = height;
+    this->resolution = resolution;
     glfwMakeContextCurrent(windowReference);
     glfwSetWindowUserPointer(windowReference, this);
     //Callbacks settings
@@ -23,5 +22,14 @@ Window::Window(unsigned int width, unsigned int height, const char* title, GLFWm
 }
 Window::~Window(){
     std::cout<<"Se destruyo esta ventana"<<std::endl;
+    std::cout<<this->getWidth()<<std::endl;
     glfwDestroyWindow(windowReference);
+}
+void Window::close(){
+    markAsClosed(true);
+    glfwSetWindowShouldClose(windowReference, GL_FALSE);
+}
+void Window::render(){
+    if (renderer) renderer->render(scene);
+    glfwSwapBuffers(windowReference);
 }

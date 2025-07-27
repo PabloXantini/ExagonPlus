@@ -1,9 +1,12 @@
 #ifndef G_CORE_HPP
 #define G_CORE_HPP
 
+#include "Scene.hpp"
 #include "../Desktop/WindowManager.hpp"
 
 #include <iostream>
+
+class WindowManager;
 
 class IBufferManager {
     public:
@@ -12,9 +15,19 @@ class IBufferManager {
         virtual void decirAlgo() = 0;
 };
 
+class IRenderer {
+    public:
+        IRenderer() = default;
+        virtual ~IRenderer(){}
+        void render(Scene* scene){
+            if(scene) scene->show();
+        }
+};
+
 class IGCore {
     protected:
-        IBufferManager* bufferManager; 
+        IBufferManager* bufferManager;
+        IRenderer* renderer; 
     public:
         IGCore(){};
         virtual ~IGCore(){};
@@ -23,7 +36,10 @@ class IGCore {
         }
         IBufferManager* allocate(){
             return bufferManager;
-        };
+        }
+        IRenderer* render(){
+            return renderer;
+        }
 };
 
 #endif
