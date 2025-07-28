@@ -34,6 +34,9 @@ class IGCore {
         virtual WindowManager* getWinManager(){
             return nullptr;
         }
+        virtual Time* manageTime(){
+            return nullptr;
+        }
         IBufferManager* allocate(){
             return bufferManager;
         }

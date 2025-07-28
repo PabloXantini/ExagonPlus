@@ -3,11 +3,16 @@
 
 #include "../WindowManager.hpp"
 
-class WindowRenderer : public WindowManager {
+class WindowRendererGL33 : public WindowManager {
     private:
     public:
-        WindowRenderer(){}
-        ~WindowRenderer(){}
+        WindowRendererGL33(Time* time): WindowManager(time)
+        {
+             std::cout<<"El gestor de ventanas se ha instanciado"<<std::endl;
+        }
+        ~WindowRendererGL33(){
+            std::cout<<"El gestor de ventanas se ha limpiado"<<std::endl;
+        }
         void setGLconfig(Window* window) override {
             if(!window){
                 return;

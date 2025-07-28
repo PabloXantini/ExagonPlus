@@ -2,12 +2,14 @@
 #define GCORE_DESKTOP_HPP
 
 #include "../include/GCore.hpp"
+#include "Time.hpp"
 #include "WindowManager.hpp"
 
 class GCoreDesktop: public IGCore {
     private:
     protected:
         WindowManager* windowManager;
+        Time* time;
     public:
         GCoreDesktop(){
             //windowManager = new WindowManager();
@@ -15,9 +17,13 @@ class GCoreDesktop: public IGCore {
         }
         ~GCoreDesktop(){
             delete windowManager;
+            delete time;
         }
         WindowManager* getWinManager() override {
             return windowManager;
+        }
+        Time* manageTime() override {
+            return time;
         }
 };
 

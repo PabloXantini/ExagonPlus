@@ -1,5 +1,8 @@
 #include "WindowManager.hpp"
 
+WindowManager::WindowManager(Time* time): time(time){}
+WindowManager::~WindowManager(){}
+
 bool WindowManager::init(int GLmajorVersion, int GLminorVersion){
     //Establece la version del contexto de OpenGL
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GLmajorVersion);
@@ -12,7 +15,6 @@ bool WindowManager::init(int GLmajorVersion, int GLminorVersion){
     checkMonitors();
     return true;   
 }
-
 Window* WindowManager::createWindow(unsigned int width, unsigned int height, const char* title, bool fullscreen, unsigned int monitorIndex, Window* windowShared){
     GLFWmonitor* monitorSelected = nullptr;
     Window* newWindow;
@@ -57,9 +59,11 @@ void WindowManager::runAsOnlyWindow(Window* mainWindow){
     setGLconfig(mainWindow);
     glfwSwapInterval(1);
     while(!mainWindow->isShouldClose()){
+        time->check();
         glfwPollEvents();
         renderInWindow();
         mainWindow->render();
+        std::cout<<time->getDeltaTime()<<"\n";
     }
     delete mainWindow;
     glfwTerminate();

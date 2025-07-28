@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Time.hpp"
 #include "Window.hpp"
 
 #include <iostream>
@@ -19,11 +20,12 @@ class WindowManager {
         bool linkGLAD();
         void checkMonitors();
     protected:
+        Time* time;
         virtual void setGLconfig(Window* window) = 0;
         virtual void renderInWindow() = 0;
     public:
-        WindowManager(){};
-        ~WindowManager(){};
+        WindowManager(Time* time);
+        ~WindowManager();
         bool init(int GLmajorVersion, int GLminorVersion);
         Window* createWindow(unsigned int width, unsigned int height, const char* title, bool fullscreen = false, unsigned int monitorIndex = 1, Window* windowShared = nullptr);
         void runAsOnlyWindow(Window* mainWindow);

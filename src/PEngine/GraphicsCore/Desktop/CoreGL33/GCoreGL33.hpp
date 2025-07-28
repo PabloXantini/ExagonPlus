@@ -2,6 +2,7 @@
 #define G_CORE_GL33_HPP
 
 #include "../GCoreDesktop.hpp"
+#include "../Time.hpp"
 
 #include "WRendererGL33.hpp"
 #include "BufferManager.hpp"
@@ -11,9 +12,9 @@ class GCoreGL33: public GCoreDesktop {
     public:
         GCoreGL33(){
             std::cout<<"Este codigo del motor grafico debe haberse inicializado"<<std::endl;
-            windowManager = new WindowRenderer();
+            time = new Time();
+            windowManager = new WindowRendererGL33(time);
             bufferManager = new BufferManager();
-            
             windowManager->init(3, 3);
         }
         ~GCoreGL33(){
