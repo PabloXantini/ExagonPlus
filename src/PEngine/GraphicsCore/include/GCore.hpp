@@ -20,7 +20,8 @@ class IRenderer {
         IRenderer() = default;
         virtual ~IRenderer(){}
         void render(Scene* scene){
-            if(scene) scene->show();
+            if(!scene) return;
+            scene->show();
         }
 };
 

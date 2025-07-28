@@ -47,7 +47,7 @@ class Window {
             this->shouldClose = value;
         }
         void close();
-        void render();
+        void render(Time* time);
 };
 
 #endif

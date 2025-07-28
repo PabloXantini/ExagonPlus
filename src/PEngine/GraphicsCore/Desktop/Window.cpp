@@ -29,7 +29,11 @@ void Window::close(){
     markAsClosed(true);
     glfwSetWindowShouldClose(windowReference, GL_FALSE);
 }
-void Window::render(){
+void Window::render(Time* time){
+    while(time->isFrameDelayed()){
+        if (scene) scene->update(time->getDeltaTime());
+        std::cout<<"Si ves esto mas veces es que se retraso el frame\n";
+    }
     if (renderer) renderer->render(scene);
     glfwSwapBuffers(windowReference);
 }

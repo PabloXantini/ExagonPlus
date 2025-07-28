@@ -5,6 +5,7 @@ class Scene {
     public:
         Scene() = default;
         virtual void show(){}
+        virtual void update(float deltaTime){}
 };
 
 #endif

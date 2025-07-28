@@ -62,7 +62,7 @@ void WindowManager::runAsOnlyWindow(Window* mainWindow){
         time->check();
         glfwPollEvents();
         renderInWindow();
-        mainWindow->render();
+        mainWindow->render(time);
         std::cout<<time->getDeltaTime()<<"\n";
     }
     delete mainWindow;
@@ -73,14 +73,17 @@ void WindowManager::runAsVariousWindows(Window* mainWindow){
     //De momento voy a poner esto
     glfwSwapInterval(1);
     while(!mainWindow->isShouldClose()){
+        time->check();
         for(auto window = windows.begin(); window != windows.end();){
             glfwMakeContextCurrent((*window)->getWindowReference());
             setGLconfig(*window);
             renderInWindow();
-            (*window)->render();
+            (*window)->render(time);
+            std::cout<<time->getDeltaTime()<<"\n";
             if((*window)->isShouldClose()){
                 delete *window;
                 window = windows.erase(window);
+                time->sync();
             }else{
                 ++window;
             }
