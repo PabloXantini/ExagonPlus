@@ -12,8 +12,9 @@ class GCoreDesktop: public IGCore {
         Time* time;
     public:
         GCoreDesktop(){
-            //windowManager = new WindowManager();
             std::cout<<"GCoreDesktop ha sido instanciado"<<std::endl;
+            //Inicia GLFW
+            glfwInit();
         }
         ~GCoreDesktop(){
             delete windowManager;

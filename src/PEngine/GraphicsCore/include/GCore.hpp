@@ -1,7 +1,7 @@
 #ifndef G_CORE_HPP
 #define G_CORE_HPP
 
-#include "Scene.hpp"
+#include "../../Utils/Scene.hpp"
 #include "../Desktop/WindowManager.hpp"
 
 #include <iostream>

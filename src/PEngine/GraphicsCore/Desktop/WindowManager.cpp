@@ -60,10 +60,10 @@ void WindowManager::runAsOnlyWindow(Window* mainWindow){
     glfwSwapInterval(1);
     while(!mainWindow->isShouldClose()){
         time->check();
-        glfwPollEvents();
         renderInWindow();
         mainWindow->render(time);
         std::cout<<time->getDeltaTime()<<"\n";
+        glfwPollEvents();
     }
     delete mainWindow;
     glfwTerminate();

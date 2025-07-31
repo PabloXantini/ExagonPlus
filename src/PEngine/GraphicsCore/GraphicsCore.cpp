@@ -13,8 +13,6 @@ bool GraphicCore::init(){
     /*
         Desktop Initialization
     */
-    //Inicia GLFW
-    glfwInit();
     //Seleccion de Logica   
     gImplementation = new GCoreGL33(); 
     /*
