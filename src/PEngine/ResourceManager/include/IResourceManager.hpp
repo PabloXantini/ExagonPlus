@@ -1,7 +1,7 @@
 #ifndef RESOURCE_MANAGER_INTERFACE_HPP
 #define RESOURCE_MANAGER_INTERFACE_HPP
 
-#include "../GraphicsCore/include/GCore.hpp"
+#include "../../GraphicsCore/include/GCore.hpp"
 
 #include <memory>
 #include <iostream>
@@ -24,7 +24,7 @@ class IShaderManager {
     public:
         IShaderManager() = default;
         virtual ~IShaderManager(){}
-        virtual IShader* loadShader(std::string name, const char* vShaderFile, const char* fShaderFile, const char* gShaderFile) = 0;
+        virtual IShader* loadShader(std::string name, const std::vector<std::pair<ShaderPart, const char*>>& files) = 0;
         virtual IShader* getShader(std::string name) = 0;
         void setShaderMaker(std::shared_ptr<IShaderMaker> newShaderMaker){
             this->shaderMaker = std::move(newShaderMaker);

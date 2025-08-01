@@ -2,16 +2,18 @@
 #define RESOURCE_MANAGER_DESK_HPP
 
 #include "../include/IResourceManager.hpp"
-
+#include "ShaderManager.hpp"
 
 class ResourceManagerDesk : public IResourceManager {
     private:
     public:
         ResourceManagerDesk(){
-            std::cout<<"Este codigo del RM debe haberse inicializado"<<std::endl;  
+            std::cout<<"Este codigo del RM debe haberse inicializado"<<std::endl;
+            shaderFileManager = new ShaderManagerDesk(); 
         }
         ~ResourceManagerDesk(){
             //delete structuredFileLoader;
+            delete shaderFileManager;
             std::cout<<"Este codigo del RM debe haberse limpiado"<<std::endl;
         }
 };

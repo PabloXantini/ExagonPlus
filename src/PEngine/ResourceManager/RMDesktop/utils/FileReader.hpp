@@ -5,7 +5,7 @@
 #include <sstream>
 #include <fstream>
 
-std::string readFile(const char* filePath){
+inline std::string readFile(const char* filePath){
     std::string info;
     std::ifstream file;
     //Excepciones

@@ -1,7 +1,7 @@
 #ifndef SHADER_RMANAGER_DESK_HPP
 #define SHADER_RMANAGER_DESK_HPP
 
-#include "../GraphicsCore/include/Shader.hpp"
+#include "../../GraphicsCore/include/Shader.hpp"
 #include "../include/IResourceManager.hpp"
 #include "utils/FileReader.hpp"
 
@@ -55,7 +55,7 @@ class ShaderManagerDesk : public IShaderManager {
     public:
         ShaderManagerDesk(){}
         ~ShaderManagerDesk(){}
-        IShader* loadShader(std::string name, const std::vector<std::pair<ShaderPart, const char*>>& files){
+        IShader* loadShader(std::string name, const std::vector<std::pair<ShaderPart, const char*>>& files) override {
             shaderList[name] = loadShaderFromFile(files);
             return shaderList[name].get();
         }
@@ -65,7 +65,7 @@ class ShaderManagerDesk : public IShaderManager {
             return shaderList[name].get();
         }
         */
-        IShader* getShader(std::string name){
+        IShader* getShader(std::string name) override {
             auto res = shaderList.find(name);
             if (res==shaderList.end() || !res->second){
                 shaderList.erase(res);

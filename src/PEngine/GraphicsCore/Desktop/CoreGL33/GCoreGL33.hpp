@@ -17,11 +17,11 @@ class GCoreGL33: public GCoreDesktop {
             time = new Time();
             windowManager = new WindowRendererGL33(time);
             shaderMaker = std::make_shared<ShaderMakerGL33>();
-            bufferManager = new BufferManagerGL33();
+            //bufferManager = new BufferManagerGL33();
             windowManager->init(3, 3);
         }
         ~GCoreGL33(){
-            delete bufferManager;
+            //delete bufferManager;
             std::cout<<"Este codigo del motor grafico debe haberse limpiado"<<std::endl;
         }
         
