@@ -13,8 +13,11 @@ class ResourceManager {
         ResourceManager();
         ~ResourceManager();
         bool init();
-        IStructuredFileLoader* processsStructuredFile(){
-            return rmImplementation->processStruct();
+        IStructuredFileManager* processsStructuredFile(){
+            return rmImplementation->callStructManager();
+        }
+        IShaderManager* processShader(){
+            return rmImplementation->callShaderManager();
         }
 };
 

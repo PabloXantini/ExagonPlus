@@ -10,6 +10,7 @@ PEngine::PEngine():
 bool PEngine::init(){
     if(!rManager.init()) return false;
     if(!gEngine.init()) return false;
+    rManager.processShader()->setShaderMaker(gEngine.getShaderMaker());
     inited = true;
     return inited;
 }

@@ -73,6 +73,7 @@
                 "${workspaceFolder}/src/PEngine/PEngineMain.cpp",
                 "${workspaceFolder}/src/PEngine/ResourceManager/ResourceManager.cpp",
                 "${workspaceFolder}/src/PEngine/GraphicsCore/GraphicsCore.cpp",
+                "${workspaceFolder}/src/PEngine/GraphicsCore/GL/GL33/Shader33.cpp",
                 "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/glad.c",
                 "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/WindowManager.cpp",
                 "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/Window.cpp",

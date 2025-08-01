@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-//Desktop Especification
+//Platform Especification
 #include "GCore.hpp"
 #include "../Desktop/CoreGL33/GCoreGL33.hpp"
 
@@ -22,6 +22,9 @@ class GraphicCore {
         }
         IBufferManager* allocate(){
             return gImplementation->allocate();
+        }
+        std::shared_ptr<IShaderMaker> getShaderMaker(){
+            return gImplementation->getShaderMaker();
         }
 };
 

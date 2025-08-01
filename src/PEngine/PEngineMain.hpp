@@ -21,6 +21,10 @@ class PEngine {
         PEngine();
         bool init();
         bool close();
+        ResourceManager& getResourceManager(){
+            if (!inited) throw std::runtime_error("ERROR: GAME ENGINE NOT INITIALIZED");
+            return rManager;
+        }
         GraphicCore& getGraphics(){ 
             if (!inited) throw std::runtime_error("ERROR: GAME ENGINE NOT INITIALIZED"); 
             return gEngine;
