@@ -18,6 +18,8 @@ class WindowRendererGL33 : public WindowManager {
                 return;
             }
             glViewport(0, 0, window->getWidth(), window->getHeight());
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         }
         void renderInWindow() override {
             glClearColor(0.2f, 0.2f, 0.2f, 1.0f);

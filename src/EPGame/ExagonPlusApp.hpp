@@ -29,7 +29,7 @@ class RenderTest : public Scene {
             //Esto de aqui es un ejemplo de datos que yo puedo generar a traves de una clase o simplemente para cargar un modelo
             std::vector<WVertex3D> data = {
                 {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-                {{0.5f, -0.5f, 0.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+                {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
                 {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
                 {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f, 0.0f}}
             };
