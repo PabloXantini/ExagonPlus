@@ -1,7 +1,8 @@
 #include "WindowManager.hpp"
 #include "Window.hpp"
 
-Window::Window(WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, Window* windowShared):
+Window::Window(SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, Window* windowShared):
+    renderer(renderContext),
     windowSharedReference(windowShared),
     monitorReference(monitorSelected)
 {
@@ -32,8 +33,8 @@ void Window::close(){
 void Window::render(Time* time){
     while(time->isFrameDelayed()){
         if (scene) scene->update(time->getDeltaTime());
-        std::cout<<"Si ves esto mas veces es que se retraso el frame\n";
+        //std::cout<<"Si ves esto mas veces es que se retraso el frame\n";
     }
-    if (renderer) renderer->render(scene);
+    renderer->render(scene);
     glfwSwapBuffers(windowReference);
 }

@@ -1,12 +1,11 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include "../include/GCore.hpp"
 #include "WindowManager.hpp"
 
 #include <iostream>
 
-class IRenderer;
+class SceneRenderer;
 class Scene;
 
 struct WindowResolution{
@@ -18,9 +17,10 @@ struct WindowResolution{
 
 class Window {
     private:
-        IRenderer* renderer = nullptr;
+        //Scene Specs
+        SceneRenderer* renderer;
         Scene* scene = nullptr;
-        //SpriteRenderer
+        //Window Attributes
         GLFWmonitor* monitorReference;
         GLFWwindow* windowReference;
         Window* windowSharedReference;
@@ -29,7 +29,7 @@ class Window {
         bool shouldClose = false;
         //bool fullscreenEnabled;
     public:
-        Window(WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, Window* windowShared);
+        Window(SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, Window* windowShared);
         ~Window();
         GLFWwindow* getWindowReference(){
             return this->windowReference;
@@ -45,6 +45,9 @@ class Window {
         }
         void markAsClosed(bool value){
             this->shouldClose = value;
+        }
+        void setScene(Scene* scene){
+            this->scene = scene;
         }
         void close();
         void render(Time* time);

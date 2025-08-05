@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "../include/GCore.hpp"
 #include "Time.hpp"
 #include "Window.hpp"
 
@@ -13,6 +14,7 @@
 class WindowManager {
     private:
         bool GLADLinked = false;
+        SceneRenderer* renderer;
         std::vector<Window*> windows = {};
         int monitorCount = 0;
         GLFWmonitor* mainMonitor;

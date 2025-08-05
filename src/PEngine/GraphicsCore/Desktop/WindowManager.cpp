@@ -1,7 +1,11 @@
 #include "WindowManager.hpp"
 
-WindowManager::WindowManager(Time* time): time(time){}
-WindowManager::~WindowManager(){}
+WindowManager::WindowManager(Time* time): time(time){
+    renderer = new SceneRenderer();
+}
+WindowManager::~WindowManager(){
+    delete renderer;
+}
 
 bool WindowManager::init(int GLmajorVersion, int GLminorVersion){
     //Establece la version del contexto de OpenGL
@@ -11,6 +15,7 @@ bool WindowManager::init(int GLmajorVersion, int GLminorVersion){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     //MacOS
     //glfwWindowHint(GLFW_OPENGL_COMPAT_PROFILE, GL_TRUE);
+
     //Checa el estado de los monitores
     checkMonitors();
     return true;   
@@ -34,7 +39,8 @@ Window* WindowManager::createWindow(unsigned int width, unsigned int height, con
         res.currentHeight = height;
     }
     //Genera una ventana
-    newWindow = new Window(res, title, monitorSelected, windowShared);
+    newWindow = new Window(renderer, res, title, monitorSelected, windowShared);
+
     /*
     if(!GLADLinked){
         GLADLinked = linkGLAD();
@@ -62,7 +68,7 @@ void WindowManager::runAsOnlyWindow(Window* mainWindow){
         time->check();
         renderInWindow();
         mainWindow->render(time);
-        std::cout<<time->getDeltaTime()<<"\n";
+        //std::cout<<time->getDeltaTime()<<"\n";
         glfwPollEvents();
     }
     delete mainWindow;

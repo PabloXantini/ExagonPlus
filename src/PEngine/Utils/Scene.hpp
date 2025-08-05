@@ -1,9 +1,20 @@
 #ifndef SCENE_HPP
 #define SCENE_HPP
 
+/*
+    This class waits an implementation of the PEngine
+*/
+class PEngine;
+
 class Scene {
+    protected:
+        PEngine* context;
     public:
-        Scene() = default;
+        Scene(PEngine* engineContext): context(engineContext){};
+        /*
+            Implement this function for load your elements in this scene
+        */
+        virtual void init(){}
         /*
             Implement this function for show elements on the main or specified window
         */

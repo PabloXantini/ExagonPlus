@@ -2,11 +2,12 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-struct DecRGB
+struct DecRGBA
 {
     float R;
     float G;
     float B;
+    float A;
 };
 
 

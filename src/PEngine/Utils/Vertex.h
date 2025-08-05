@@ -7,7 +7,7 @@
 
 struct WVertex3D{
     Vec3f position;
-    DecRGB color;
+    DecRGBA color;
 };
 
 struct Vertex3D{

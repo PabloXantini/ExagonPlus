@@ -5,7 +5,8 @@
 
 #include "../include/Buffer.hpp"
 
-class BufferGL : public Buffer {
+template <typename VertexType>
+class BufferGL : public Buffer<VertexType> {
     public:
         BufferGL() = default;
         ~BufferGL() = default;

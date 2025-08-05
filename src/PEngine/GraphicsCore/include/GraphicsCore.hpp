@@ -20,11 +20,14 @@ class GraphicCore {
         WindowManager* getWinManager(){
             return gImplementation->getWinManager();
         }
-        IBufferManager* allocate(){
+        MeshCreator* allocate(){
             return gImplementation->allocate();
         }
         std::shared_ptr<IShaderMaker> getShaderMaker(){
             return gImplementation->getShaderMaker();
+        }
+        IRendererMaker* render(){
+            return gImplementation->render();
         }
 };
 
