@@ -17,7 +17,7 @@ class ExagonPlus {
 //Test class (Finally)
 class RenderTest : public Scene {
     private:
-        IRenderer<WVertex3D>* simpleRenderer;
+        Renderer* simpleRenderer;
         Mesh<WVertex3D>* testMesh;
     public:
         RenderTest(PEngine* engine) : Scene(engine){}

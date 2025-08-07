@@ -5,10 +5,9 @@
 
 #include "../include/GCore.hpp"
 
-template<typename VertexType>
-class RendererGL : public IRenderer<VertexType> {
+class RendererGL : public Renderer {
     public:
-        RendererGL(IShader* shader) : IRenderer<VertexType>(shader){}
+        RendererGL(IShader* shader) : Renderer(shader){}
         ~RendererGL(){}
 };
 

@@ -8,8 +8,8 @@ class RendererMaker33 : public IRendererMaker {
     public:
         RendererMaker33(){};
         ~RendererMaker33(){};
-        IRenderer<WVertex3D>* makeRenderer(IShader* shader) override {
-            return new MeshRenderer33<WVertex3D>(shader);
+        Renderer* makeRenderer(IShader* shader) override {
+            return new MeshRenderer33(shader);
         }
 };
 

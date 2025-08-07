@@ -44,21 +44,20 @@ class MeshCreator {
         };
 };
 
-template<typename VertexType>
-class IRenderer {
+class Renderer {
     protected:
         IShader* shader;
     public:
-        IRenderer(IShader* shader): shader(shader){};
-        virtual ~IRenderer(){}
-        virtual void draw(Mesh<VertexType>* mesh) = 0;
+        Renderer(IShader* shader): shader(shader){};
+        virtual ~Renderer(){}
+        virtual void draw(IMesh* mesh) = 0;
 };
-//Abstract Factory of Renderers
+//Factory of Renderers
 class IRendererMaker {
     public:
         IRendererMaker(){};
         virtual ~IRendererMaker(){};
-        virtual IRenderer<WVertex3D>* makeRenderer(IShader* shader) = 0;
+        virtual Renderer* makeRenderer(IShader* shader) = 0;
 };
 
 class IGCore {

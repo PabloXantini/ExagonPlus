@@ -9,8 +9,19 @@ class IBufferManager {
         virtual Buffer<WVertex3D>* createBuffer(std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes = nullptr) = 0;
 };
 
+class IMesh {
+    public:
+        IMesh(){}
+        virtual ~IMesh(){}
+        virtual void bind() = 0;
+        virtual bool noIndexes() = 0;
+        virtual const size_t getIndexCount() const = 0;
+        virtual const size_t getVertCount() const = 0;
+
+};
+
 template<typename VertexType>
-class Mesh {
+class Mesh : public IMesh {
     private:
         IBufferManager* bufferManager;
         Buffer<VertexType>* buffer;
@@ -26,20 +37,24 @@ class Mesh {
             if(textures) this->textures = *textures;
             buffer = bufferManager->createBuffer(verts, indexes);
         }
+        bool noIndexes() override {
+            return indexes.empty();
+        }
+        const size_t getIndexCount() const override {
+            return indexes.size();
+        }
+        const size_t getVertCount() const override {
+            return verts.size();
+        }
+        //Less relevant
         const std::vector<unsigned int>& getIndexes() const {
             return indexes;
         }
         const std::vector<VertexType>& getVerts() const {
             return verts;
         }
-        const size_t getIndexCount() const {
-            return indexes.size();
-        }
-        const size_t getVertCount() const {\
-            return verts.size();
-        }
-        virtual Buffer<VertexType>* getBuffer(){
-            return buffer;
+        void bind() override {
+            buffer->bind();
         }
 };
 
