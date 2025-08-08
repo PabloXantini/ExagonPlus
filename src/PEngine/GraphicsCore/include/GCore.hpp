@@ -7,6 +7,7 @@
 #include "Shader.hpp"
 #include "Buffer.hpp"
 #include "Mesh.hpp"
+#include "Transformation3D.hpp"
 
 #include <memory>
 #include <vector>
@@ -44,6 +45,15 @@ class MeshCreator {
         };
 };
 
+//Abstract Factory of Transforms
+class TransformUser {
+    public:
+        TransformUser() = default;
+        virtual ~TransformUser() = default;
+        virtual Transform3D* useTransform3D() = 0;
+        //Transform2D* useTransform2D() = 0;
+};
+
 class Renderer {
     protected:
         IShader* shader;
@@ -65,7 +75,8 @@ class IGCore {
         std::shared_ptr<IShaderMaker> shaderMaker = nullptr;
         IBufferManager* bufferManager;
         MeshCreator* meshCreator;
-        IRendererMaker* renderCreator; 
+        TransformUser* transformUser;
+        IRendererMaker* renderCreator;
     public:
         IGCore(){};
         virtual ~IGCore(){};
@@ -77,6 +88,9 @@ class IGCore {
         }
         MeshCreator* allocate(){
             return meshCreator;
+        }
+        TransformUser* getTransform(){
+            return transformUser;
         }
         IRendererMaker* render(){
             return renderCreator;

@@ -5,6 +5,7 @@
 #include "../Time.hpp"
 
 #include "WRendererGL33.hpp"
+#include "../../GL/Transform.hpp"
 #include "../../GL/GL33/ShaderMaker33.hpp"
 #include "../../GL/GL33/BufferManager33.hpp"
 #include "../../GL/GL33/RendererMaker33.hpp"
@@ -22,11 +23,13 @@ class GCoreGL33: public GCoreDesktop {
             shaderMaker = std::make_shared<ShaderMakerGL33>();
             bufferManager = new BufferManagerGL33();
             meshCreator = new MeshCreator(bufferManager);
+            transformUser = new TransformUserGL();
             renderCreator = new RendererMaker33();
             windowManager->init(3, 3);
         }
         ~GCoreGL33(){
             delete meshCreator;
+            delete transformUser;
             delete bufferManager;
             std::cout<<"Este codigo del motor grafico debe haberse limpiado"<<std::endl;
         }

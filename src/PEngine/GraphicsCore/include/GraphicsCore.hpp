@@ -23,6 +23,9 @@ class GraphicCore {
         MeshCreator* allocate(){
             return gImplementation->allocate();
         }
+        TransformUser* getTransform(){
+            return gImplementation->getTransform();
+        }
         std::shared_ptr<IShaderMaker> getShaderMaker(){
             return gImplementation->getShaderMaker();
         }

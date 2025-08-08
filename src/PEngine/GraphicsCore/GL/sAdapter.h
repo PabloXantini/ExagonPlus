@@ -2,8 +2,11 @@
 #ifndef SHADER_DATA_ADAPTER_H
 #define SHADER_DATA_ADAPTER_H
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "../../Utils/Matrix.h"
-#include "Shader.hpp"
 
 #include <cstring>
 
