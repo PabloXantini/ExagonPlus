@@ -1,6 +1,6 @@
 #ifndef VERTEX_H
 #define VERTEX_H
-#define MAX_BONE_INFUENCE 32
+#define MAX_BONE_INFUENCE 4
 
 #include "Position.h"
 #include "Color.h"

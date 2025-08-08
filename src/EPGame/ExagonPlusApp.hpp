@@ -4,8 +4,8 @@
 
 //Reminder: Cambiar la implementacion de la carpeta pls en algun futuro
 #include "../PEngine/PEngineMain.hpp"
-#include <vector>
 
+#include <vector>
 #include <iostream>
 
 class ExagonPlus {
@@ -26,6 +26,7 @@ class RenderTest : public Scene {
             context->getResourceManager().processShader()->loadShader("background", 
                 {{ShaderPart::VERTEX, "EPGame/shaders/shape.vert"},{ShaderPart::FRAGMENT, "EPGame/shaders/shape.frag"}});
             simpleRenderer = context->getGraphics().render()->makeRenderer(context->getResourceManager().processShader()->getShader("background"));
+            context->getResourceManager().processShader()->getShader("background")->setMat4("projection", Mat4f(1.0f));
             //Esto de aqui es un ejemplo de datos que yo puedo generar a traves de una clase o simplemente para cargar un modelo
             std::vector<WVertex3D> data = {
                 {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},

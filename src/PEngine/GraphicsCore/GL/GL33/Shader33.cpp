@@ -39,46 +39,7 @@ void ShaderGL33::load(const std::vector<ShaderPartData>& parts){
         glDeleteShader(geometryShader);
     }
 }
-/*
-void ShaderGL33::compile(const char* vsSource, const char* fsSource, const char* gsSource) {
-    unsigned int vertexShader, fragmentShader, geometryShader;
-    // Vertex Shader
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vsSource, nullptr);
-    glCompileShader(vertexShader);
-    checkCompileErrors(vertexShader, "VERTEX");
 
-    // Fragment Shader
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fsSource, nullptr);
-    glCompileShader(fragmentShader);
-    checkCompileErrors(fragmentShader, "FRAGMENT");
-
-    // Geometry Shader
-    if (gsSource){
-        geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
-        glShaderSource(geometryShader, 1, &gsSource, nullptr);
-        glCompileShader(geometryShader);
-        checkCompileErrors(geometryShader, "GEOMETRY");
-    }
-
-    // Shader Program
-    ShaderProgramID = glCreateProgram();
-    glAttachShader(ShaderProgramID, vertexShader);
-    glAttachShader(ShaderProgramID, fragmentShader);
-    if (gsSource){
-        glAttachShader(ShaderProgramID, geometryShader);
-    }
-    glLinkProgram(ShaderProgramID);
-    checkCompileErrors(ShaderProgramID, "PROGRAM");
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-    if(gsSource){
-        glDeleteShader(geometryShader);
-    }
-}
-*/
 void ShaderGL33::checkCompileErrors(unsigned int shader, std::string type){
     int success;
     char infoLog[1024];
@@ -120,12 +81,20 @@ void ShaderGL33::setVec2(const std::string &name, float x, float y) const {
     glUniform2f(glGetUniformLocation(ShaderProgramID, name.c_str()), x, y); 
 }
 
+void ShaderGL33::setVec2(const std::string &name, const Vec2f& vec2) const {
+    glUniform2f(glGetUniformLocation(ShaderProgramID, name.c_str()), vec2.X, vec2.Y);
+}
+
 void ShaderGL33::setVec3(const std::string &name, const glm::vec3 &value) const { 
     glUniform3fv(glGetUniformLocation(ShaderProgramID, name.c_str()), 1, &value[0]); 
 }
 
 void ShaderGL33::setVec3(const std::string &name, float x, float y, float z) const { 
     glUniform3f(glGetUniformLocation(ShaderProgramID, name.c_str()), x, y, z); 
+}
+
+void ShaderGL33::setVec3(const std::string &name, const Vec3f& vec3) const {
+    glUniform3f(glGetUniformLocation(ShaderProgramID, name.c_str()), vec3.X, vec3.Y, vec3.Z);
 }
     
 void ShaderGL33::setVec4(const std::string &name, const glm::vec4 &value) const { 
@@ -139,13 +108,28 @@ void ShaderGL33::setVec4(const std::string &name, float x, float y, float z, flo
 void ShaderGL33::setMat2(const std::string &name, const glm::mat2 &mat) const {
     glUniformMatrix2fv(glGetUniformLocation(ShaderProgramID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
+
+void ShaderGL33::setMat2(const std::string &name, const Mat2f& mat) const {
+
+    glUniformMatrix2fv(glGetUniformLocation(ShaderProgramID, name.c_str()), 1, GL_FALSE, &mat.mat2x2[0][0]);
+}
     
 void ShaderGL33::setMat3(const std::string &name, const glm::mat3 &mat) const {
     glUniformMatrix3fv(glGetUniformLocation(ShaderProgramID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
+
+void ShaderGL33::setMat3(const std::string &name, const Mat3f& mat) const {
+
+    glUniformMatrix3fv(glGetUniformLocation(ShaderProgramID, name.c_str()), 1, GL_FALSE, &mat.mat3x3[0][0]);
+}
     
 void ShaderGL33::setMat4(const std::string &name, const glm::mat4 &mat) const {
     glUniformMatrix4fv(glGetUniformLocation(ShaderProgramID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+}
+
+void ShaderGL33::setMat4(const std::string &name, const Mat4f& mat) const {
+    
+    glUniformMatrix4fv(glGetUniformLocation(ShaderProgramID, name.c_str()), 1, GL_FALSE, &mat.mat4x4[0][0]);
 }
 
 void ShaderGL33::kill(){
