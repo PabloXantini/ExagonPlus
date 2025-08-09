@@ -11,7 +11,8 @@ class MeshRenderer33 : public RendererGL {
         {}
         ~MeshRenderer33(){}
         void draw(IMesh* mesh) override {
-            this->shader->use();
+            //Bind textures if it has
+            //Bind and draw the Mesh
             mesh->bind();
             if(!mesh->noIndexes()){
                 glDrawElements(GL_TRIANGLES, mesh->getIndexCount(), GL_UNSIGNED_INT, 0);  

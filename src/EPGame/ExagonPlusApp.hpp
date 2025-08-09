@@ -58,6 +58,7 @@ class RenderTest : public Scene {
             //t->apply(context->getResourceManager().processShader()->getShader("background"), "Model");
         }
         void show() override {
+            context->getResourceManager().processShader()->getShader("background")->use();
             t->apply(context->getResourceManager().processShader()->getShader("background"), "Model");
             simpleRenderer->draw(testMesh);
         }

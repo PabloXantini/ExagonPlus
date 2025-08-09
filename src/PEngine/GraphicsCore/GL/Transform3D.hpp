@@ -31,7 +31,6 @@ class Transform3D_GL : public Transform3D {
         }
         void apply(IShader* shader, const std::string &name) override {
             Mat4f mat = fromGLMMat4(model);
-            shader->use();
             shader->setMat4(name, mat);      
         }
 };
