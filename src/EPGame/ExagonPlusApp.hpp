@@ -58,13 +58,13 @@ class RenderTest : public Scene {
             //t->apply(context->getResourceManager().processShader()->getShader("background"), "Model");
         }
         void show() override {
+            t->apply(context->getResourceManager().processShader()->getShader("background"), "Model");
             simpleRenderer->draw(testMesh);
         }
         void update(float dT) override {
             ROTZ+=dT*SPEEDZ;
             t->reset();
             t->rotate(0.0f, 0.0f, ROTZ);
-            t->apply(context->getResourceManager().processShader()->getShader("background"), "Model");
         }
 };
 

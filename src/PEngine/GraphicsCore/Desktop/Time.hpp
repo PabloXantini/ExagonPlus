@@ -26,6 +26,7 @@ class Time {
         }
         bool isFrameDelayed(){
             if(timeBetweenFrames > timeSlice){
+                deltaTime = timeSlice;
                 timeBetweenFrames -= timeSlice;
                 return true;
             }else{
