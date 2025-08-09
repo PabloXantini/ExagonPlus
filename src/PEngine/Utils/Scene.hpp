@@ -6,6 +6,9 @@
 */
 class PEngine;
 
+/*
+    This class is the pipeline for your application
+*/
 class Scene {
     protected:
         PEngine* context;
