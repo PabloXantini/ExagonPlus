@@ -23,6 +23,9 @@ class GraphicCore {
         MeshCreator* allocate(){
             return gImplementation->allocate();
         }
+        ModelCreator* model(){
+            return gImplementation->model();
+        }
         TransformUser* getTransform(){
             return gImplementation->getTransform();
         }

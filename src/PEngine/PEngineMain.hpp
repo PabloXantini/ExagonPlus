@@ -5,6 +5,8 @@
 #include "GraphicsCore/include/GraphicsCore.hpp"
 //ResourceManager
 #include "ResourceManager/include/ResourceManager.hpp"
+//Objects
+#include "UComponents/GameObject.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -29,6 +31,8 @@ class PEngine {
             if (!inited) throw std::runtime_error("ERROR: GAME ENGINE NOT INITIALIZED"); 
             return gEngine;
         }
+        GameObject3D* createGameObject3D(Renderer* renderer = nullptr);
+        GameObject2D* createGameObject2D(Renderer* renderer = nullptr);
 };
 
 #endif

@@ -6,7 +6,7 @@
 #include "../Desktop/WindowManager.hpp"
 #include "Shader.hpp"
 #include "Buffer.hpp"
-#include "Mesh.hpp"
+#include "Model.hpp"
 #include "Transformation3D.hpp"
 
 #include <memory>
@@ -40,9 +40,19 @@ class MeshCreator {
     public:
         MeshCreator(IBufferManager* bufferManager): bufferManagerUsed(bufferManager){};
         ~MeshCreator(){}
-        Mesh<WVertex3D>* createMesh(std::vector<WVertex3D>& verts, std::vector<unsigned int>* indexes = nullptr){
-            return new Mesh<WVertex3D>(bufferManagerUsed, verts, indexes, nullptr);
+        std::unique_ptr<Mesh<WVertex3D>> createMesh(std::vector<WVertex3D>& verts, std::vector<unsigned int>* indexes = nullptr){
+            return std::make_unique<Mesh<WVertex3D>>(bufferManagerUsed, verts, indexes, nullptr);
         };
+};
+
+//Factory of Models
+class ModelCreator {
+    public:
+        ModelCreator(){}
+        ~ModelCreator(){}
+        Model* createModel(){
+            return new Model();
+        }
 };
 
 //Abstract Factory of Transforms
@@ -61,6 +71,11 @@ class Renderer {
         Renderer(IShader* shader): shader(shader){};
         virtual ~Renderer(){}
         virtual void draw(IMesh* mesh) = 0;
+        void draw(Model* model){
+            for(auto& mesh : model->getMeshes()){
+                draw(mesh.get());
+            }
+        }
 };
 //Factory of Renderers
 class IRendererMaker {
@@ -75,6 +90,7 @@ class IGCore {
         std::shared_ptr<IShaderMaker> shaderMaker = nullptr;
         IBufferManager* bufferManager;
         MeshCreator* meshCreator;
+        ModelCreator* modelCreator;
         TransformUser* transformUser;
         IRendererMaker* renderCreator;
     public:
@@ -88,6 +104,9 @@ class IGCore {
         }
         MeshCreator* allocate(){
             return meshCreator;
+        }
+        ModelCreator* model(){
+            return modelCreator;
         }
         TransformUser* getTransform(){
             return transformUser;

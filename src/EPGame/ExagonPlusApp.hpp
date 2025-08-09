@@ -18,7 +18,12 @@ class ExagonPlus {
 class RenderTest : public Scene {
     private:
         Renderer* simpleRenderer;
-        Mesh<WVertex3D>* testMesh;
+        //UNA CLASE
+        //Su referencia
+        Model* model;
+        //El objeto en cuestion
+        GameObject3D* rectangle;
+        //std::unique_ptr<Mesh<WVertex3D>> testMesh;
         Transform3D* t;
         //Variables de un objeto custom (ajeno a Object Engine)
         float ROTZ = 0.0f;
@@ -52,20 +57,30 @@ class RenderTest : public Scene {
                 0,1,3,
                 1,2,3
             };
-            testMesh = context->getGraphics().allocate()->createMesh(data, &indexes);
-            t = context->getGraphics().getTransform()->useTransform3D();
+            auto testMesh = context->getGraphics().allocate()->createMesh(data, &indexes);
+            model = context->getGraphics().model()->createModel();
+            model->addMesh(std::move(testMesh));
+            rectangle = context->createGameObject3D(simpleRenderer);
+            rectangle->attachModel(model);
+
+            //t = context->getGraphics().getTransform()->useTransform3D();
             //t->rotate(0.0f, 0.0f, 30.0f);
             //t->apply(context->getResourceManager().processShader()->getShader("background"), "Model");
         }
         void show() override {
             context->getResourceManager().processShader()->getShader("background")->use();
-            t->apply(context->getResourceManager().processShader()->getShader("background"), "Model");
-            simpleRenderer->draw(testMesh);
+            rectangle->getTransform()->apply(context->getResourceManager().processShader()->getShader("background"), "Model");
+            rectangle->draw();
+
+            //t->apply(context->getResourceManager().processShader()->getShader("background"), "Model");
+            //simpleRenderer->draw(testMesh.get());
         }
         void update(float dT) override {
             ROTZ+=dT*SPEEDZ;
-            t->reset();
-            t->rotate(0.0f, 0.0f, ROTZ);
+            rectangle->getTransform()->reset();
+            rectangle->getTransform()->rotate(0.0f, 0.0f, ROTZ);
+            //t->reset();
+            //t->rotate(0.0f, 0.0f, ROTZ);
         }
 };
 

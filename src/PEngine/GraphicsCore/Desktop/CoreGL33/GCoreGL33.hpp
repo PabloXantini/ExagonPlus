@@ -22,12 +22,15 @@ class GCoreGL33: public GCoreDesktop {
             //Especific Implementation
             shaderMaker = std::make_shared<ShaderMakerGL33>();
             bufferManager = new BufferManagerGL33();
+            modelCreator = new ModelCreator();
             meshCreator = new MeshCreator(bufferManager);
             transformUser = new TransformUserGL();
             renderCreator = new RendererMaker33();
+            //Initialization
             windowManager->init(3, 3);
         }
         ~GCoreGL33(){
+            delete modelCreator;
             delete meshCreator;
             delete transformUser;
             delete bufferManager;

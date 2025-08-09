@@ -14,3 +14,11 @@ bool PEngine::init(){
     inited = true;
     return inited;
 }
+
+GameObject3D* PEngine::createGameObject3D(Renderer* renderer){
+    return new GameObject3D(this, renderer);
+}
+
+GameObject2D* PEngine::createGameObject2D(Renderer* renderer){
+    return new GameObject2D(this, renderer);
+}
