@@ -1,5 +1,5 @@
-#include "../PEngineMain.hpp"
 #include "GameObject.hpp"
+#include "../PEngineMain.hpp"
 
 GameObject::GameObject(PEngine* EngineContext) : context(EngineContext) {}
 
