@@ -78,6 +78,7 @@
                 "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/WindowManager.cpp",
                 "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/Window.cpp",
                 "${workspaceFolder}/src/PEngine/UComponents/GameObject.cpp",
+                "${workspaceFolder}/src/EPGame/Core/States/Gameplay.cpp",
                 "${workspaceFolder}/src/EPGame/ExagonPlusApp.cpp",
                 "${workspaceFolder}/src/Main.cpp",
                 "${workspaceFolder}/src/resource.o",

@@ -14,10 +14,15 @@ class Scene {
         PEngine* context;
     public:
         Scene(PEngine* engineContext): context(engineContext){};
+        virtual ~Scene(){}
         /*
             Implement this function for load your elements in this scene
         */
         virtual void init(){}
+        /*
+            Implement this function for do thing before exit this scene
+        */
+        virtual void close(){}
         /*
             Implement this function for show elements on the main or specified window
         */

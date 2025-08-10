@@ -3,7 +3,7 @@
 #define EXAGON_PLUS_APP_HPP
 
 //Reminder: Cambiar la implementacion de la carpeta pls en algun futuro
-#include "../PEngine/PEngineMain.hpp"
+#include "Core/GameContext.hpp"
 
 #include <vector>
 #include <iostream>
@@ -12,8 +12,9 @@ class ExagonPlus {
     public:
         ExagonPlus();
         ~ExagonPlus();
-        void run();
+        void execute();
 };
+
 //Test class (Finally)
 class RenderTest : public Scene {
     private:
@@ -38,14 +39,6 @@ class RenderTest : public Scene {
             Mat4f mat(1.0f);
             //context->getResourceManager().processShader()->getShader("background")->setFloat("Model", mat);
             
-            //Hijo de
-            for(int i=0 ; i<4; i++){
-                for(int j=0; j<4; j++){
-                    std::cout<<mat.mat4x4[i][j]<<" ";
-                }
-                std::cout<<"\n";
-            }
-
             //Esto de aqui es un ejemplo de datos que yo puedo generar a traves de una clase o simplemente para cargar un modelo
             std::vector<WVertex3D> data = {
                 {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},

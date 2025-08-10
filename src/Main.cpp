@@ -3,6 +3,6 @@
 
 int main(){
     ExagonPlus Game;
-    Game.run();
+    Game.execute();
     return 0;
 };
