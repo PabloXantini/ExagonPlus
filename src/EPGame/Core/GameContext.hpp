@@ -36,6 +36,8 @@ class Game : public Scene {
             global.simpleRenderer = context->getGraphics().render()->makeRenderer(context->getResourceManager().processShader()->getShader("background"));
             //Set the initialstate
             startInState(mapStates[States::GAMEPLAY]->createState(context));
+            //Example: Setup a shared contexts
+            //global.otherWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus Second Window", false, 1U, global.mainWindow);
         }
         void startInState(std::unique_ptr<GameState> initialState){
             this->currentState = std::move(initialState);
@@ -54,7 +56,9 @@ class Game : public Scene {
         }
         void run(){
             global.mainWindow->setScene(this);
+            //global.otherWindow->setScene(this);
             context->getGraphics().getWinManager()->runAsOnlyWindow(global.mainWindow);
+            //context->getGraphics().getWinManager()->runAsVariousWindows(global.mainWindow);
         }
         void update(float dT) override {
             currentState->update(dT);

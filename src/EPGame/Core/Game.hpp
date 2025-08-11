@@ -5,6 +5,7 @@
 
 struct GameGlobalVariables {
     Window* mainWindow;
+    Window* otherWindow;
     Renderer* simpleRenderer;
 };
 

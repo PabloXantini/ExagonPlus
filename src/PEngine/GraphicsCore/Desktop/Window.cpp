@@ -17,6 +17,7 @@ Window::Window(SceneRenderer* renderContext, WindowResolution resolution, const 
     }
     this->resolution = resolution;
     glfwMakeContextCurrent(windowReference);
+    //User Pointer
     glfwSetWindowUserPointer(windowReference, this);
     //Callbacks settings
     glfwSetWindowCloseCallback(windowReference, doAtCloseWindow);

@@ -22,18 +22,17 @@ bool WindowManager::init(int GLmajorVersion, int GLminorVersion){
 }
 Window* WindowManager::createWindow(unsigned int width, unsigned int height, const char* title, bool fullscreen, unsigned int monitorIndex, Window* windowShared){
     GLFWmonitor* monitorSelected = nullptr;
+    const GLFWvidmode* mode = nullptr;
     Window* newWindow;
     WindowResolution res;
     res.width = width;
     res.height = height;
-    if(fullscreen){
-        checkMonitors();
-        if (monitorIndex > 0 && monitorIndex <= (unsigned int)(monitorCount)){
-            monitorSelected = allMonitors[monitorIndex-1];
-            const GLFWvidmode* mode = glfwGetVideoMode(monitorSelected);
-            res.currentWidth = mode->width;
-            res.currentHeight = mode->height;
-        }
+    checkMonitors();
+    if(fullscreen && 0 < monitorIndex <= (unsigned int)(monitorCount)){
+        monitorSelected = allMonitors[monitorIndex-1];
+        mode = glfwGetVideoMode(monitorSelected);
+        res.currentWidth = mode->width;
+        res.currentHeight = mode->height;
     }else{
         res.currentWidth = width;
         res.currentHeight = height;
@@ -66,10 +65,10 @@ void WindowManager::runAsOnlyWindow(Window* mainWindow){
     glfwSwapInterval(1);
     while(!mainWindow->isShouldClose()){
         time->check();
+        glfwPollEvents();
         renderInWindow();
         mainWindow->render(time);
         //std::cout<<time->getDeltaTime()<<"\n";
-        glfwPollEvents();
     }
     delete mainWindow;
     glfwTerminate();
@@ -85,11 +84,11 @@ void WindowManager::runAsVariousWindows(Window* mainWindow){
             setGLconfig(*window);
             renderInWindow();
             (*window)->render(time);
-            std::cout<<time->getDeltaTime()<<"\n";
+            //std::cout<<time->getDeltaTime()<<"\n";
             if((*window)->isShouldClose()){
                 delete *window;
                 window = windows.erase(window);
-                time->sync();
+                //time->sync();
             }else{
                 ++window;
             }
