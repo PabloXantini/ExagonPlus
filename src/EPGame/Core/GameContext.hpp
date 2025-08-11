@@ -3,27 +3,31 @@
 
 #include "../../PEngine/PEngineMain.hpp"
 #include "Game.hpp"
-#include "States/Gameplay.hpp"
+#include "States/StateCreator.hpp"
+//#include "States/Gameplay.hpp"
 
 #include <memory>
 
+/*
 enum class States {
     GAMEPLAY
 };
+*/
 
-class Game {
+class Game : public Scene {
     private:
+        std::unordered_map<States, std::unique_ptr<StateCreator>> mapStates;
         std::unique_ptr<GameState> currentState;
-    protected:
-        PEngine* context;
     public:
         GameGlobalVariables global;
-        Game(PEngine* engineContext) : context(engineContext){}
+        Game(PEngine* engineContext) : Scene(engineContext){
+            mapStates = initStateFacts();
+        }
         ~Game(){
             //Sujeto a cambios
             std::cout<<"Ha caido el gaming"<<std::endl;
         }
-        void init(){
+        void init() override {
             //Desktop: Window Setup
             global.mainWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus");
             //Loading Resources
@@ -31,7 +35,7 @@ class Game {
                 {{ShaderPart::VERTEX, "EPGame/shaders/shape.vert"},{ShaderPart::FRAGMENT, "EPGame/shaders/shape.frag"}});
             global.simpleRenderer = context->getGraphics().render()->makeRenderer(context->getResourceManager().processShader()->getShader("background"));
             //Set the initialstate
-            startInState(std::make_unique<GamePlay>(context));
+            startInState(mapStates[States::GAMEPLAY]->createState(context));
         }
         void startInState(std::unique_ptr<GameState> initialState){
             this->currentState = std::move(initialState);
@@ -46,16 +50,18 @@ class Game {
         }
         //Implementacion de estados
         void callState(States state){
-            switch(state){
-                case States::GAMEPLAY:
-                    changeState(std::make_unique<GamePlay>(context));
-                    break;
-            }
+            mapStates[state]->createState(context);
         }
         void run(){
-            global.mainWindow->setScene(currentState.get());
+            global.mainWindow->setScene(this);
             context->getGraphics().getWinManager()->runAsOnlyWindow(global.mainWindow);
-        }        
+        }
+        void update(float dT) override {
+            currentState->update(dT);
+        }
+        void show() override {
+            currentState->show();
+        }
 };
 
 #endif
