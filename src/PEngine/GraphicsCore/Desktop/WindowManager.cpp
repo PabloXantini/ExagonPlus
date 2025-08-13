@@ -27,18 +27,21 @@ Window* WindowManager::createWindow(unsigned int width, unsigned int height, con
     WindowResolution res;
     res.width = width;
     res.height = height;
+    res.currentWidth = width;
+    res.currentHeight = height;
+    //Check monitor state
     checkMonitors();
-    if(fullscreen && 0 < monitorIndex <= (unsigned int)(monitorCount)){
+    if(fullscreen || 1 < monitorIndex <= (unsigned int)(monitorCount)){
         monitorSelected = allMonitors[monitorIndex-1];
-        mode = glfwGetVideoMode(monitorSelected);
-        res.currentWidth = mode->width;
-        res.currentHeight = mode->height;
-    }else{
-        res.currentWidth = width;
-        res.currentHeight = height;
-    }
+        //mode = glfwGetVideoMode(monitorSelected);
+        //res.currentWidth = mode->width;
+        //res.currentHeight = mode->height;
+    }//else{
+        //res.currentWidth = width;
+        //res.currentHeight = height;
+    //}
     //Genera una ventana
-    newWindow = new Window(renderer, res, title, monitorSelected, windowShared);
+    newWindow = new Window(renderer, res, title, monitorSelected, fullscreen, windowShared);
 
     /*
     if(!GLADLinked){

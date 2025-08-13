@@ -1,8 +1,6 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include "WindowManager.hpp"
-
 #include <iostream>
 
 class SceneRenderer;
@@ -24,12 +22,16 @@ class Window {
         GLFWmonitor* monitorReference;
         GLFWwindow* windowReference;
         Window* windowSharedReference;
+        //Window Common Data
         WindowResolution resolution;
+        int position_x;
+        int position_y;
         const char* title;
+        bool fullScreen = false;
         bool shouldClose = false;
         //bool fullscreenEnabled;
     public:
-        Window(SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, Window* windowShared);
+        Window(SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, bool fullscreen, Window* windowShared);
         ~Window();
         GLFWwindow* getWindowReference(){
             return this->windowReference;

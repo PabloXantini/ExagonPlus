@@ -1,11 +1,16 @@
 #include "WindowManager.hpp"
 #include "Window.hpp"
 
-Window::Window(SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, Window* windowShared):
+Window::Window(SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, bool fullscreen, Window* windowShared):
     renderer(renderContext),
     windowSharedReference(windowShared),
     monitorReference(monitorSelected)
 {
+    if(fullscreen && monitorSelected){
+        const GLFWvidmode* mode = glfwGetVideoMode(monitorSelected);
+        resolution.currentWidth = mode->width;
+        resolution.currentHeight = mode->height;
+    }
     if(windowShared){
         windowReference = glfwCreateWindow(resolution.currentWidth, resolution.currentHeight, title, monitorSelected, windowShared->getWindowReference());
     }else{
@@ -15,7 +20,15 @@ Window::Window(SceneRenderer* renderContext, WindowResolution resolution, const 
         std::cout<<"ERROR: WINDOW COULD NOT CREATED"<<std::endl;
         glfwTerminate();
     }
+    if(!fullscreen && monitorSelected){
+        int posX, posY;
+        glfwGetMonitorPos(monitorSelected, &posX, &posY);
+        glfwSetWindowPos(windowReference, posX, posY);
+    }
+    glfwGetWindowPos(windowReference, &position_x, &position_y);
     this->resolution = resolution;
+    this->fullScreen = fullscreen;
+    this->title = title;
     glfwMakeContextCurrent(windowReference);
     //User Pointer
     glfwSetWindowUserPointer(windowReference, this);

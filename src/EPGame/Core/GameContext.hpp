@@ -29,7 +29,7 @@ class Game : public Scene {
         }
         void init() override {
             //Desktop: Window Setup
-            global.mainWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus");
+            global.mainWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus", true);
             //Loading Resources
             context->getResourceManager().processShader()->loadShader("background", 
                 {{ShaderPart::VERTEX, "EPGame/shaders/shape.vert"},{ShaderPart::FRAGMENT, "EPGame/shaders/shape.frag"}});
