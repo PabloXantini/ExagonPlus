@@ -29,6 +29,7 @@ void GamePlay::init(){
     model->addMesh(std::move(testMesh));
     rectangle = context->createGameObject3D(this->gameReference->global.simpleRenderer);
     rectangle->attachModel(model);
+    //gameReference->global.otherWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus Second Window", false, 1U, gameReference->global.mainWindow);
 }
 void GamePlay::update(float dT){
     ROTZ+=dT*SPEEDZ;
