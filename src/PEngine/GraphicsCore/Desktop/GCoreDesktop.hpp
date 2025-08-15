@@ -9,6 +9,7 @@ class GCoreDesktop: public IGCore {
     private:
     protected:
         WindowManager* windowManager;
+        ContextManager* contextManager;
         Time* time;
     public:
         GCoreDesktop(){
@@ -18,6 +19,7 @@ class GCoreDesktop: public IGCore {
         }
         ~GCoreDesktop(){
             delete windowManager;
+            delete contextManager;
             delete time;
         }
         WindowManager* getWinManager() override {

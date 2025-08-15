@@ -5,6 +5,7 @@
 #include "../Time.hpp"
 
 #include "WRendererGL33.hpp"
+#include "../../GL/ContextManager.hpp"
 #include "../../GL/Transform.hpp"
 #include "../../GL/GL33/ShaderMaker33.hpp"
 #include "../../GL/GL33/BufferManager33.hpp"
@@ -18,7 +19,8 @@ class GCoreGL33: public GCoreDesktop {
             //Final instance creation
             //Global Desktop Instance
             time = new Time();
-            windowManager = new WindowRendererGL33(time);
+            contextManager = new ContextManager();
+            windowManager = new WindowRendererGL33(contextManager, time);
             //Especific Implementation
             shaderMaker = std::make_shared<ShaderMakerGL33>();
             bufferManager = new BufferManagerGL33();
@@ -28,6 +30,7 @@ class GCoreGL33: public GCoreDesktop {
             renderCreator = new RendererMaker33();
             //Initialization
             windowManager->init(3, 3);
+            bufferManager->setContextManager(contextManager);
         }
         ~GCoreGL33(){
             delete modelCreator;

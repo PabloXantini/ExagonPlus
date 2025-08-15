@@ -13,7 +13,7 @@ class MeshRenderer33 : public RendererGL {
         void draw(IMesh* mesh) override {
             //Bind textures if it has
             //Bind and draw the Mesh
-            mesh->bind();
+            if(!mesh->bind()) return;
             if(!mesh->noIndexes()){
                 glDrawElements(GL_TRIANGLES, mesh->getIndexCount(), GL_UNSIGNED_INT, 0);  
             }else {

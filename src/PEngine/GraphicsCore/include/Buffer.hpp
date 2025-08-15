@@ -8,7 +8,7 @@ class Buffer {
     public:
         Buffer() = default;
         virtual ~Buffer() = default;
-        virtual void bind() = 0;
+        virtual bool bind() = 0;
         virtual void updateSoftly(const std::vector<VertexType>& verts, const std::vector<unsigned int>* indexes = nullptr) = 0;
         virtual void updateHardly(const std::vector<VertexType>& verts, const std::vector<unsigned int>* indexes = nullptr) = 0;
         virtual void free() = 0;

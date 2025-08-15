@@ -1,10 +1,17 @@
 #ifndef MESH_INTERFACE_HPP
 #define MESH_INTERFACE_HPP
 
+class ContextManager;
+
 //Abstract Factory of Buffers
 class IBufferManager {
+    protected:
+        ContextManager* contextManager;
     public:
         IBufferManager() = default;
+        void setContextManager(ContextManager* ctxManager){
+            contextManager = ctxManager;
+        }
         virtual ~IBufferManager(){}
         virtual Buffer<WVertex3D>* createBuffer(std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes = nullptr) = 0;
 };
@@ -13,7 +20,7 @@ class IMesh {
     public:
         IMesh(){}
         virtual ~IMesh(){}
-        virtual void bind() = 0;
+        virtual bool bind() = 0;
         virtual bool noIndexes() = 0;
         virtual const size_t getIndexCount() const = 0;
         virtual const size_t getVertCount() const = 0;
@@ -53,8 +60,8 @@ class Mesh : public IMesh {
         const std::vector<VertexType>& getVerts() const {
             return verts;
         }
-        void bind() override {
-            buffer->bind();
+        bool bind() override {
+            return buffer->bind();
         }
 };
 

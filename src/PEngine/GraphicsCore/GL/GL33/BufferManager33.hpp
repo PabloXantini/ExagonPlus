@@ -9,7 +9,7 @@ class BufferManagerGL33 : public IBufferManager {
         BufferManagerGL33() = default;
         ~BufferManagerGL33() = default;
         Buffer<WVertex3D>* createBuffer(std::vector<WVertex3D>& verts, const std::vector<unsigned int>* indexes = nullptr) override {
-            return new Buffer33<WVertex3D>(verts, indexes);
+            return new Buffer33<WVertex3D>(contextManager, verts, indexes);
         }
 };
 

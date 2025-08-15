@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 
+#include "ContextManager.hpp"
 #include "../include/Buffer.hpp"
 
 template <typename VertexType>

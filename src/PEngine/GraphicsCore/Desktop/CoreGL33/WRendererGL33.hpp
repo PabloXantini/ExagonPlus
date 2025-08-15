@@ -6,7 +6,7 @@
 class WindowRendererGL33 : public WindowManager {
     private:
     public:
-        WindowRendererGL33(Time* time): WindowManager(time)
+        WindowRendererGL33(ContextManager* ctxManager, Time* time): WindowManager(ctxManager, time)
         {
              std::cout<<"El gestor de ventanas se ha instanciado"<<std::endl;
         }

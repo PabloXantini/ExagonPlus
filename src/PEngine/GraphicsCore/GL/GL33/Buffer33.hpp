@@ -5,6 +5,8 @@
 #include "../Buffer.hpp"
 #include "../../../Utils/Vertex.h"
 
+#include <unordered_map>
+
 template<typename VertexType>
 struct VertexDescriptor;
 
@@ -37,8 +39,14 @@ class Buffer33 : public BufferGL<VertexType> {
             }
         }
     protected:
+        //Context
+        ContextManager* contextManager;
+        unsigned int SharedID = 0;
+        std::unordered_map<unsigned int, unsigned int> VAOs;
+        //Payload Handling
         unsigned int attribPointer = 0;
-        unsigned int VAO = 0;
+        //Buffers IDs
+        //unsigned int VAO = 0;
         unsigned int VBO = 0;
         unsigned int EBO = 0;
         void bindAttr(GLuint argsize, GLenum type, const void* ptr, GLboolean normalized){
@@ -50,15 +58,21 @@ class Buffer33 : public BufferGL<VertexType> {
             }
             this->attribPointer++;
         }
-        void make(std::vector<VertexType>& vertexs, const std::vector<unsigned int>* indexes){         
+        unsigned int make(std::vector<VertexType>& vertexs, const std::vector<unsigned int>* indexes){
+            unsigned int new_VAO, currentContext;         
             //Vertex Array Object Creation
-            glGenVertexArrays(1, &VAO);
+            glGenVertexArrays(1, &new_VAO);
+            //Request to ContextManager our context current
+            currentContext = contextManager->getCurrentContextID();
+            this->SharedID = contextManager->getCurrentSharedContextID();
+            //Store in own VAOs
+            VAOs[currentContext] = new_VAO;
             //Vertex Buffer Object Creation
             glGenBuffers(1, &VBO);
             //Element Buffer Object Creation
             if(indexes) glGenBuffers(1, &EBO);
             //Focus on VAO
-            glBindVertexArray(VAO);
+            glBindVertexArray(new_VAO);
             //Focus on VBO
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(GL_ARRAY_BUFFER, vertexs.size() * sizeof(VertexType), vertexs.data(), GL_STATIC_DRAW);
@@ -69,9 +83,11 @@ class Buffer33 : public BufferGL<VertexType> {
             }
             //Unlink
             glBindVertexArray(0);
+            return new_VAO;
         }
-        void map(){
-            glBindVertexArray(VAO);
+        void map(unsigned int rVAO){
+            //Define the payload of the Vertex Buffer Object
+            glBindVertexArray(rVAO);
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             const auto& attrs = VertexDescriptor<VertexType>::getAttributes();
             for (const auto& attr : attrs){
@@ -80,22 +96,39 @@ class Buffer33 : public BufferGL<VertexType> {
             glBindVertexArray(0);
         }
     public:
-        Buffer33(std::vector<VertexType>& verts, const std::vector<unsigned int>* indexes){
-            make(verts, indexes);
-            map();
+        Buffer33(ContextManager* ctxManager, std::vector<VertexType>& verts, const std::vector<unsigned int>* indexes):
+            contextManager(ctxManager)
+        {
+            unsigned int init_VAO = make(verts, indexes);
+            map(init_VAO);
         };
         ~Buffer33() = default;
+        /*
         const unsigned int getVAO_ID() const {
             return this->VAO;
         }
+        */
         const unsigned int getVBO_ID() const {
             return this->VBO;
         }
         const unsigned int getEBO_ID() const {
             return this->EBO;
         }
-        void bind() override {
-            glBindVertexArray(this->VAO);
+        bool bind() override {
+            unsigned int new_VAO, currentContext, currentSharedCtx;
+            //Request to ContextManager the context current
+            currentContext = contextManager->getCurrentContextID();
+            currentSharedCtx = contextManager->getCurrentSharedContextID();
+            if(currentSharedCtx != SharedID) return false;
+            //Creates a VAO when not exist a VAO in this shared context
+            if(VAOs.find(currentContext) == VAOs.end()){
+                glGenVertexArrays(1, &new_VAO);
+                VAOs[currentContext]=new_VAO;
+                attribPointer = 0;
+                map(new_VAO);
+            }
+            glBindVertexArray(VAOs[currentContext]);
+            return true;
         }
         void updateSoftly(const std::vector<VertexType>& verts, const std::vector<unsigned int>* indexes = nullptr) override {
             //Modify memory in VBO
@@ -117,7 +150,9 @@ class Buffer33 : public BufferGL<VertexType> {
             }
         }
         void free() override {
-            glDeleteVertexArrays(1, &VAO);
+            for(auto& [ctx, vao]: VAOs){
+                glDeleteVertexArrays(1, &vao);
+            }
             glDeleteBuffers(1, &VBO);
             if(EBO!=0) glDeleteBuffers(1, &EBO);
         }

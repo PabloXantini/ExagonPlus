@@ -30,14 +30,14 @@ class Game : public Scene {
         void init() override {
             //Desktop: Window Setup
             global.mainWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus");
+            //Example: Setup a shared contexts
+            global.otherWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus Second Window", false, 1U, global.mainWindow);
             //Loading Resources
             context->getResourceManager().processShader()->loadShader("background", 
                 {{ShaderPart::VERTEX, "EPGame/shaders/shape.vert"},{ShaderPart::FRAGMENT, "EPGame/shaders/shape.frag"}});
             global.simpleRenderer = context->getGraphics().render()->makeRenderer(context->getResourceManager().processShader()->getShader("background"));
             //Set the initialstate
-            startInState(mapStates[States::GAMEPLAY]->createState(context));
-            //Example: Setup a shared contexts
-            //global.otherWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus Second Window", false, 1U, global.mainWindow);
+            startInState(mapStates[States::GAMEPLAY]->createState(context));  
         }
         void startInState(std::unique_ptr<GameState> initialState){
             this->currentState = std::move(initialState);
@@ -56,9 +56,9 @@ class Game : public Scene {
         }
         void run(){
             global.mainWindow->setScene(this);
-            //global.otherWindow->setScene(this);
-            context->getGraphics().getWinManager()->runAsOnlyWindow(global.mainWindow);
-            //context->getGraphics().getWinManager()->runAsVariousWindows(global.mainWindow);
+            global.otherWindow->setScene(this);
+            //context->getGraphics().getWinManager()->runAsOnlyWindow(global.mainWindow);
+            context->getGraphics().getWinManager()->runAsVariousWindows(global.mainWindow);
         }
         void update(float dT) override {
             currentState->update(dT);

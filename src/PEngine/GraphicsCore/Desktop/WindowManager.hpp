@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "../include/GCore.hpp"
+#include "../GL/ContextManager.hpp"
 #include "Time.hpp"
 #include "Window.hpp"
 
@@ -14,6 +15,7 @@
 class WindowManager {
     private:
         bool GLADLinked = false;
+        ContextManager* ctxManager;
         SceneRenderer* renderer;
         std::vector<Window*> windows = {};
         int monitorCount = 0;
@@ -26,7 +28,7 @@ class WindowManager {
         virtual void setGLconfig(Window* window) = 0;
         virtual void renderInWindow() = 0;
     public:
-        WindowManager(Time* time);
+        WindowManager( ContextManager* ctxManager, Time* time);
         ~WindowManager();
         bool init(int GLmajorVersion, int GLminorVersion);
         Window* createWindow(unsigned int width, unsigned int height, const char* title, bool fullscreen = false, unsigned int monitorIndex = 1, Window* windowShared = nullptr);

@@ -1,7 +1,8 @@
 #include "WindowManager.hpp"
 #include "Window.hpp"
 
-Window::Window(SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, bool fullscreen, Window* windowShared):
+Window::Window(ContextManager* contextMgr, SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, bool fullscreen, Window* windowShared):
+    ctxManager(contextMgr),
     renderer(renderContext),
     windowSharedReference(windowShared),
     monitorReference(monitorSelected)
@@ -29,7 +30,17 @@ Window::Window(SceneRenderer* renderContext, WindowResolution resolution, const 
     this->resolution = resolution;
     this->fullScreen = fullscreen;
     this->title = title;
-    glfwMakeContextCurrent(windowReference);
+    //Context Management
+    ctxManager->registerNewContext();
+    this->contextID = ctxManager->getLastContext();
+    if(!windowShared){
+        ctxManager->registerNewSharedContext();
+        this->sharedID = ctxManager->getLastSharedContext();
+    }else{
+        this->sharedID = windowShared->getSharedID();
+    }
+    //Now make the context current
+    makeCurrent();
     //User Pointer
     glfwSetWindowUserPointer(windowReference, this);
     //Callbacks settings
@@ -39,6 +50,11 @@ Window::~Window(){
     std::cout<<"Se destruyo esta ventana"<<std::endl;
     std::cout<<this->getWidth()<<std::endl;
     glfwDestroyWindow(windowReference);
+}
+void Window::makeCurrent(){
+    //Now make the context current in GLFW
+    glfwMakeContextCurrent(windowReference);
+    ctxManager->setCurrentContext(contextID, sharedID);
 }
 void Window::close(){
     markAsClosed(true);

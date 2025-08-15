@@ -1,6 +1,6 @@
 #include "WindowManager.hpp"
 
-WindowManager::WindowManager(Time* time): time(time){
+WindowManager::WindowManager(ContextManager* ctxManager, Time* time): ctxManager(ctxManager), time(time){
     renderer = new SceneRenderer();
 }
 WindowManager::~WindowManager(){
@@ -35,8 +35,7 @@ Window* WindowManager::createWindow(unsigned int width, unsigned int height, con
         monitorSelected = allMonitors[monitorIndex-1];
     }
     //Genera una ventana
-    newWindow = new Window(renderer, res, title, monitorSelected, fullscreen, windowShared);
-
+    newWindow = new Window(ctxManager, renderer, res, title, monitorSelected, fullscreen, windowShared);
     /*
     if(!GLADLinked){
         GLADLinked = linkGLAD();
@@ -77,7 +76,7 @@ void WindowManager::runAsVariousWindows(Window* mainWindow){
     while(!mainWindow->isShouldClose()){
         time->check();
         for(auto window = windows.begin(); window != windows.end();){
-            glfwMakeContextCurrent((*window)->getWindowReference());
+            (*window)->makeCurrent();
             setGLconfig(*window);
             renderInWindow();
             (*window)->render(time);

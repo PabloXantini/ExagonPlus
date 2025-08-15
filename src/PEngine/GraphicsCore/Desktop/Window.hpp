@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+class ContextManager;
 class SceneRenderer;
 class Scene;
 
@@ -15,10 +16,14 @@ struct WindowResolution{
 
 class Window {
     private:
+        //Context administration
+        ContextManager* ctxManager;
         //Scene Specs
         SceneRenderer* renderer;
         Scene* scene = nullptr;
         //Window Attributes
+        unsigned int sharedID;
+        unsigned int contextID;
         GLFWmonitor* monitorReference;
         GLFWwindow* windowReference;
         Window* windowSharedReference;
@@ -31,10 +36,16 @@ class Window {
         bool shouldClose = false;
         //bool fullscreenEnabled;
     public:
-        Window(SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, bool fullscreen, Window* windowShared);
+        Window(ContextManager* contextMgr, SceneRenderer* renderContext, WindowResolution resolution, const char* title, GLFWmonitor* monitorSelected, bool fullscreen, Window* windowShared);
         ~Window();
         GLFWwindow* getWindowReference(){
             return this->windowReference;
+        }
+        unsigned int getContextID(){
+            return this->contextID;
+        }
+        unsigned int getSharedID(){
+            return this->sharedID;
         }
         unsigned int getWidth(){
             return this->resolution.currentWidth;
@@ -51,6 +62,7 @@ class Window {
         void setScene(Scene* scene){
             this->scene = scene;
         }
+        void makeCurrent();
         void close();
         void render(Time* time);
 };
