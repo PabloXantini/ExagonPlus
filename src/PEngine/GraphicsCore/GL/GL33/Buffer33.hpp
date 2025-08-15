@@ -122,8 +122,15 @@ class Buffer33 : public BufferGL<VertexType> {
             if(currentSharedCtx != SharedID) return false;
             //Creates a VAO when not exist a VAO in this shared context
             if(VAOs.find(currentContext) == VAOs.end()){
+                //VAO creation
                 glGenVertexArrays(1, &new_VAO);
                 VAOs[currentContext]=new_VAO;
+                //Binding again
+                glBindVertexArray(new_VAO);
+                glBindBuffer(GL_ARRAY_BUFFER, VBO);
+                if(EBO!=0) glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+                glBindVertexArray(0);
+                //Map again
                 attribPointer = 0;
                 map(new_VAO);
             }
