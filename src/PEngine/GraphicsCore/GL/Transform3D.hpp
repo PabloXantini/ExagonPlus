@@ -7,9 +7,15 @@
 class Transform3D_GL : public Transform3D {
     private:
         glm::mat4 model = glm::mat4(1.0f);
+        glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
     public:
         Transform3D_GL(){}
         ~Transform3D_GL(){}
+        Vec3f getPosition() override {
+            glm::vec4 final_position(position, 1.0f);
+            final_position = model * final_position;
+            return {final_position.x, final_position.y, final_position.z};
+        }
         void rotate(float DegX = 0.0f, float DegY = 0.0f, float DegZ = 0.0f) override {
             if(DegX!=0.0f) this->model = glm::rotate(model, glm::radians(DegX), glm::vec3(1.0, 0.0, 0.0));
             if(DegY!=0.0f) this->model = glm::rotate(model, glm::radians(DegY), glm::vec3(0.0, 1.0, 0.0));

@@ -29,12 +29,21 @@ void GamePlay::init(){
     model->addMesh(std::move(testMesh));
     rectangle = context->createGameObject3D(this->gameReference->global.simpleRenderer);
     rectangle->attachModel(model);
-    //gameReference->global.otherWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus Second Window", false, 1U, gameReference->global.mainWindow);
 }
 void GamePlay::update(float dT){
     ROTZ+=dT*SPEEDZ;
+    TX+=dT*SPEEDTX;
+    if(TX>0.5f){
+        SPEEDTX=-SPEEDTX;
+    }else if (TX<-0.5f){
+        SPEEDTX=-SPEEDTX;
+    }
+    std::cout<<rectangle->getTransform()->getPosition().X<<"\n";
+    //std::cout<<rectangle->getTransform()->getPosition().Y<<"\n";
+    //std::cout<<rectangle->getTransform()->getPosition().Z<<"\n";
     rectangle->getTransform()->reset();
-    rectangle->getTransform()->rotate(0.0f, 0.0f, ROTZ);
+    //rectangle->getTransform()->rotate(0.0f, 0.0f, ROTZ);
+    rectangle->getTransform()->translate({TX, 0.0f, 0.0f});
 }
 void GamePlay::show(){
     context->getResourceManager().processShader()->getShader("background")->use();

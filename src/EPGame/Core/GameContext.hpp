@@ -30,7 +30,7 @@ class Game : public Scene {
         void init() override {
             //Desktop: Window Setup
             global.mainWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus");
-            //Example: Setup a shared contexts
+            //Example: Setup a shared window
             global.otherWindow = context->getGraphics().getWinManager()->createWindow(800, 600, "ExagonPlus Second Window", false, 1U, global.mainWindow);
             //Loading Resources
             context->getResourceManager().processShader()->loadShader("background", 

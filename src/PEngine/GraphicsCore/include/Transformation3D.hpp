@@ -7,6 +7,7 @@ class Transform3D {
     public:
         Transform3D(){}
         virtual ~Transform3D(){}
+        virtual Vec3f getPosition() = 0;
         virtual void rotate(float DegX = 0.0f, float DegY = 0.0f, float DegZ = 0.0f) = 0;
         virtual void translate(Vec3f objective) = 0;
         virtual void scale(float factor) = 0;

@@ -74,8 +74,8 @@ void WindowManager::runAsVariousWindows(Window* mainWindow){
     //De momento voy a poner esto
     glfwSwapInterval(1);
     while(!mainWindow->isShouldClose()){
-        time->check();
         for(auto window = windows.begin(); window != windows.end();){
+            time->check();
             (*window)->makeCurrent();
             setGLconfig(*window);
             renderInWindow();

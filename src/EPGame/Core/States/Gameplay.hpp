@@ -19,7 +19,9 @@ class GamePlay : public GameState {
         //Transform3D* t;
         //Variables de un objeto custom (ajeno a Object Engine)
         float ROTZ = 0.0f;
+        float TX = 0.0f;
         float SPEEDZ = 30.0f;
+        float SPEEDTX = 0.5f;
     public:
         GamePlay(PEngine* engine);
         ~GamePlay();
