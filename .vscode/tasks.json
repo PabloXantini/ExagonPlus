@@ -70,17 +70,22 @@
                 "../include",
                 "-L",
                 "../lib",
+                //PEngine -- Game Engine
                 "${workspaceFolder}/src/PEngine/PEngineMain.cpp",
-                "${workspaceFolder}/src/PEngine/ResourceManager/ResourceManager.cpp",
+                "${workspaceFolder}/src/PEngine/PlatformCore/PlatformCore.cpp",
+                "${workspaceFolder}/src/PEngine/ResourceManager/ResourceManager.cpp",            
                 "${workspaceFolder}/src/PEngine/GraphicsCore/GraphicsCore.cpp",
+                "${workspaceFolder}/src/PEngine/GraphicsCore/glad.c",
                 "${workspaceFolder}/src/PEngine/GraphicsCore/GL/GL33/Shader33.cpp",
-                "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/glad.c",
                 "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/WindowManager.cpp",
                 "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/Window.cpp",
                 "${workspaceFolder}/src/PEngine/UComponents/GameObject.cpp",
                 "${workspaceFolder}/src/EPGame/Core/States/Gameplay.cpp",
+                //GameProject -- ExagonPlus
                 "${workspaceFolder}/src/EPGame/ExagonPlusApp.cpp",
+                //Main
                 "${workspaceFolder}/src/Main.cpp",
+                //DLL Link Option (Windows)
                 "${workspaceFolder}/src/resource.o",
                 "-lglfw3dll",
                 "-lFreeImage",

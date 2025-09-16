@@ -1,10 +1,14 @@
 #include "WindowManager.hpp"
 
-WindowManager::WindowManager(ContextManager* ctxManager, Time* time): ctxManager(ctxManager), time(time){
+WindowManager::WindowManager(Time* time): time(time){
     renderer = new SceneRenderer();
 }
 WindowManager::~WindowManager(){
     delete renderer;
+}
+
+void WindowManager::setContextManager(ContextManager* CtxManager){
+    this->ctxManager = CtxManager;
 }
 
 bool WindowManager::init(int GLmajorVersion, int GLminorVersion){

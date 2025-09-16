@@ -2,6 +2,7 @@
 #define PENGINE_HPP
 
 //Cores
+#include "PlatformCore/include/PlatformCore.hpp"
 #include "GraphicsCore/include/GraphicsCore.hpp"
 //ResourceManager
 #include "ResourceManager/include/ResourceManager.hpp"
@@ -17,6 +18,7 @@ class PEngine {
         bool inited = false;
         //Components
         ResourceManager rManager;
+        PlatformCore platform;
         GraphicCore gEngine;
         //AudioCore aEngine;
     public:
@@ -26,6 +28,10 @@ class PEngine {
         ResourceManager& getResourceManager(){
             if (!inited) throw std::runtime_error("ERROR: GAME ENGINE NOT INITIALIZED");
             return rManager;
+        }
+        PlatformCore& getPlatform(){
+            if(!inited) throw std::runtime_error("ERROR: GAME ENGINE NOT INITIALIZED");
+            return platform;
         }
         GraphicCore& getGraphics(){ 
             if (!inited) throw std::runtime_error("ERROR: GAME ENGINE NOT INITIALIZED"); 
