@@ -4,7 +4,7 @@ PEngine::PEngine(){
     std::cout<<"Engine instancing..."<<std::endl;
 }
 PEngine::~PEngine(){
-    std::cout<<"Goodbye"<<std::endl;
+    std::cout<<"Engine: Goodbye"<<std::endl;
 }
 bool PEngine::init(){
     return inited = true;

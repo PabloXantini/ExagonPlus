@@ -2,13 +2,13 @@
 
 ExagonPlus::ExagonPlus(){}
 ExagonPlus::~ExagonPlus(){
-    std::cout<<"Goodbye"<<std::endl;
+    std::cout<<"Game: Goodbye"<<std::endl;
 }
 void ExagonPlus::execute(){
     PEngine engine;
     engine.init();
 
-    Game game(&engine);
-    game.init();
-    game.run();
+    //Game game(&engine);
+    //game.init();
+    //game.run();
 }
