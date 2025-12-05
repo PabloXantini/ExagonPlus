@@ -1,12 +1,17 @@
 #include "PEngineMain.hpp"
 
-PEngine::PEngine(){
+PEngine::PEngine():
+    platform(),
+    graphics()
+{
     std::cout<<"Engine instancing..."<<std::endl;
 }
 PEngine::~PEngine(){
     std::cout<<"Engine: Goodbye"<<std::endl;
 }
 bool PEngine::init(){
+    if(!platform.init()) return false;
+    if(!graphics.init()) return false;
     return inited = true;
 }
 

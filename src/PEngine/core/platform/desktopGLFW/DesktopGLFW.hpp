@@ -14,15 +14,15 @@ class DesktopGLFW: public IPlatform {
         bool configure();
 };
 
-DesktopGLFW::DesktopGLFW(){
+inline DesktopGLFW::DesktopGLFW(){
     std::cout<<"Platform: Selecting Desktop (GLFW)"<<std::endl;
     //Initialize GLFW
     glfwInit();
 }
-DesktopGLFW::~DesktopGLFW(){
+inline DesktopGLFW::~DesktopGLFW(){
     std::cout<<"Platform: Closed Desktop (GLFW)"<<std::endl;
 }
-bool DesktopGLFW::configure(){
+inline bool DesktopGLFW::configure(){
     //OpenGL
     
     return true;

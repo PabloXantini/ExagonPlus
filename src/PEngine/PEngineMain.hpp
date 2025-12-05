@@ -1,6 +1,7 @@
 #ifndef PENGINE_HPP
 #define PENGINE_HPP
 
+#include "core/platform/include/Instance.hpp"
 #include "core/graphics/include/Instance.hpp"
 
 #include <iostream>
@@ -10,7 +11,8 @@ class PEngine{
         //Variables
         bool inited = false;
         //Components
-        
+        Platform platform;
+        Graphics graphics;
     public:
         PEngine();
         ~PEngine();
