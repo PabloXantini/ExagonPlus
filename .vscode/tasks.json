@@ -22,10 +22,10 @@
             "dependsOn": [
                 "Compilar recursos"
             ],
-            "label": "C/C++: g++.exe compilar archivo activo",
+            "label": "C/C++: g++.exe Compile ExagonPlus Legacy Edition",
             "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
             "args": [
-                "",
+                "-fdiagnostics-color=always",
                 "-g",
                 "-std=c++17",
                 "-I",
@@ -60,10 +60,10 @@
             "dependsOn": [
                 "Compilar recursos"
             ],
-            "label": "C/C++: g++.exe compilar archivo activo",
+            "label": "C/C++: g++.exe Compile ExagonPlus w/Parallax Engine",
             "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
             "args": [
-                "",
+                "-fdiagnostics-color=always",
                 "-g",
                 "-std=c++17",
                 "-I",
@@ -103,29 +103,6 @@
                 "$gcc"
             ],
             "group": "build",
-            "detail": "Tarea generada por el depurador."
-        },
-        {
-            "type": "cppbuild",
-            "label": "C/C++: cl.exe compilar archivo activo",
-            "command": "cl.exe",
-            "args": [
-                "/Zi",
-                "/EHsc",
-                "/nologo",
-                "/Fe${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "${file}"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$msCompile"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
             "detail": "Tarea generada por el depurador."
         }
     ],
