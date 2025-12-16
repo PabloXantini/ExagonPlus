@@ -54,56 +54,6 @@
             ],
             "group": "build",
             "detail": "Tarea generada por el depurador."
-        },
-        {
-            "type": "cppbuild",
-            "dependsOn": [
-                "Compilar recursos"
-            ],
-            "label": "C/C++: g++.exe Compile ExagonPlus w/Parallax Engine",
-            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
-            "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "-std=c++17",
-                "-I",
-                "../include",
-                "-L",
-                "../lib",
-                //PEngine -- Game Engine
-                "${workspaceFolder}/src/PEngine/PEngineMain.cpp",
-                "${workspaceFolder}/src/PEngine/core/platform/Instance.cpp",
-                "${workspaceFolder}/src/PEngine/core/graphics/Instance.cpp",
-                "${workspaceFolder}/src/PEngine/core/graphics/GL/glad.c",
-//                "${workspaceFolder}/src/PEngine/PlatformCore/PlatformCore.cpp",
-//                "${workspaceFolder}/src/PEngine/ResourceManager/ResourceManager.cpp",            
-//                "${workspaceFolder}/src/PEngine/GraphicsCore/GraphicsCore.cpp",
-//                "${workspaceFolder}/src/PEngine/GraphicsCore/glad.c",
-//                "${workspaceFolder}/src/PEngine/GraphicsCore/GL/GL33/Shader33.cpp",
-//                "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/WindowManager.cpp",
-//                "${workspaceFolder}/src/PEngine/GraphicsCore/Desktop/Window.cpp",
-//                "${workspaceFolder}/src/PEngine/UComponents/GameObject.cpp",
-//                "${workspaceFolder}/src/EPGame/Core/States/Gameplay.cpp",
-                //GameProject -- ExagonPlus
-                "${workspaceFolder}/src/EPGame/ExagonPlusApp.cpp",
-                //Main
-                "${workspaceFolder}/src/Main.cpp",
-                //DLL Link Option (Windows)
-                "${workspaceFolder}/src/resource.o",
-                "-lglfw3dll",
-                "-lFreeImage",
-                "-lOpenAL32",
-                "-o",
-                "${workspaceFolder}/ExagonPlus.exe"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build",
-            "detail": "Tarea generada por el depurador."
         }
     ],
     "version": "2.0.0"
